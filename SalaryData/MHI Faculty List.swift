@@ -5,8 +5,8 @@
 //  Created by Jim Wallace on 2025-02-19.
 //
 
-
-// https://uwaterloo.ca/public-health-sciences/our-people/health-informatics-researchers
+// Source: https://uwaterloo.ca/public-health-sciences/our-people/health-informatics-researchers
+// Includes Hao Luo ("LUO, HAO").
 
 let MHIFacultyNames: [String] = [
     "CHAURASIA, ASHOK",

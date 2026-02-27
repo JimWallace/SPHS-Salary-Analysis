@@ -1,4 +1,5 @@
 Regression summary (cluster-robust SE by person)
+Cohort definition: MHI (UW Health Informatics Researchers)
 
 Pooled OLS (cluster-robust) | Non-MHI annual slope: estimate=4404.586, SE=1828.252, 95% CI [821.212, 7987.959], N=315, clusters=40
 Pooled OLS (cluster-robust) | MHI annual slope: estimate=3684.770, SE=2374.465, 95% CI [-969.182, 8338.722], N=315, clusters=40

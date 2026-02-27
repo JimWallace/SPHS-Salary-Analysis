@@ -215,15 +215,16 @@ func confidenceInterval95(estimate: Double, standardError: Double) -> (Double, D
     return (estimate - margin, estimate + margin)
 }
 
-func modelRowsFromRecords(_ records: [SalaryRecord]) -> [AnalysisRow] {
+func modelRowsFromRecords(_ records: [SalaryRecord], cohort: CohortDefinition) -> [AnalysisRow] {
     guard let minYear = records.map(\.year).min() else { return [] }
     let baseYear = Double(minYear)
     return records.map { record in
-        AnalysisRow(
-            personID: "\(record.surname), \(record.givenName)",
+        let fullName = "\(record.surname), \(record.givenName)"
+        return AnalysisRow(
+            personID: fullName,
             yearCentered: Double(record.year) - baseYear,
             salary: record.salary,
-            mhi: record.mhi ? 1.0 : 0.0
+            mhi: cohort.members.contains(canonicalFacultyName(fullName)) ? 1.0 : 0.0
         )
     }
 }
@@ -334,7 +335,7 @@ func format(_ value: Double) -> String {
     String(format: "%.3f", value)
 }
 
-func writeSummaryOutputs(rows: [SummaryRow]) {
+func writeSummaryOutputs(rows: [SummaryRow], fileStem: String, cohortLabel: String) {
     let fileManager = FileManager.default
     let outputDirectory = URL(fileURLWithPath: fileManager.currentDirectoryPath, isDirectory: true)
         .appendingPathComponent("analysis_output", isDirectory: true)
@@ -343,7 +344,8 @@ func writeSummaryOutputs(rows: [SummaryRow]) {
         try fileManager.createDirectory(at: outputDirectory, withIntermediateDirectories: true, attributes: nil)
 
         var csv = "model,term,estimate,std_error,ci_lower,ci_upper,n_obs,n_clusters\n"
-        var txt = "Regression summary (cluster-robust SE by person)\n\n"
+        var txt = "Regression summary (cluster-robust SE by person)\n"
+        txt += "Cohort definition: \(cohortLabel)\n\n"
 
         for row in rows {
             csv += [
@@ -364,8 +366,8 @@ func writeSummaryOutputs(rows: [SummaryRow]) {
             txt += "N=\(row.nObs), clusters=\(row.nClusters)\n"
         }
 
-        let csvURL = outputDirectory.appendingPathComponent("regression_summary.csv")
-        let txtURL = outputDirectory.appendingPathComponent("regression_summary.txt")
+        let csvURL = outputDirectory.appendingPathComponent("\(fileStem).csv")
+        let txtURL = outputDirectory.appendingPathComponent("\(fileStem).txt")
         try csv.write(to: csvURL, atomically: true, encoding: .utf8)
         try txt.write(to: txtURL, atomically: true, encoding: .utf8)
 
@@ -377,39 +379,51 @@ func writeSummaryOutputs(rows: [SummaryRow]) {
 }
 
 func regressionAnalysisMHI(records: [SalaryRecord]) {
-    let rows = modelRowsFromRecords(records)
-    guard !rows.isEmpty else {
+    guard !records.isEmpty else {
         print("No records available for regression.")
         return
     }
 
-    guard let pooled = pooledModel(rows) else {
-        print("Pooled model failed.")
-        return
-    }
-    guard let fixedEffects = fixedEffectsModel(rows) else {
-        print("Fixed-effects model failed.")
-        return
-    }
+    for cohort in analysisCohorts {
+        let rows = modelRowsFromRecords(records, cohort: cohort)
+        let treatedCount = rows.filter { $0.mhi == 1.0 }.count
+        let untreatedCount = rows.count - treatedCount
+        guard treatedCount > 1, untreatedCount > 1 else {
+            print("Skipping cohort '\(cohort.label)' because one group has too few observations.")
+            continue
+        }
 
-    let pooledSummary = slopeSummaryRows(
-        modelName: "Pooled OLS (cluster-robust)",
-        result: pooled,
-        slopeIndex: 1,
-        interactionIndex: 3
-    )
-    let fixedEffectsSummary = slopeSummaryRows(
-        modelName: "Person FE (cluster-robust)",
-        result: fixedEffects,
-        slopeIndex: 0,
-        interactionIndex: 1
-    )
+        guard let pooled = pooledModel(rows) else {
+            print("Pooled model failed for cohort: \(cohort.label)")
+            continue
+        }
+        guard let fixedEffects = fixedEffectsModel(rows) else {
+            print("Fixed-effects model failed for cohort: \(cohort.label)")
+            continue
+        }
 
-    let allRows = pooledSummary + fixedEffectsSummary
-    writeSummaryOutputs(rows: allRows)
+        let pooledSummary = slopeSummaryRows(
+            modelName: "Pooled OLS (cluster-robust)",
+            result: pooled,
+            slopeIndex: 1,
+            interactionIndex: 3
+        )
+        let fixedEffectsSummary = slopeSummaryRows(
+            modelName: "Person FE (cluster-robust)",
+            result: fixedEffects,
+            slopeIndex: 0,
+            interactionIndex: 1
+        )
 
-    print("Regression Summary:")
-    for row in allRows {
-        print("\(row.model) | \(row.term) = \(format(row.estimate)) (SE \(format(row.standardError)))")
+        let allRows = pooledSummary + fixedEffectsSummary
+        let fileStem = cohort.key == primaryMHICohort.key
+            ? "regression_summary"
+            : "regression_summary_\(cohort.key)"
+        writeSummaryOutputs(rows: allRows, fileStem: fileStem, cohortLabel: cohort.label)
+
+        print("Regression Summary for \(cohort.label):")
+        for row in allRows {
+            print("\(row.model) | \(row.term) = \(format(row.estimate)) (SE \(format(row.standardError)))")
+        }
     }
 }
