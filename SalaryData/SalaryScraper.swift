@@ -38,17 +38,22 @@ struct SalaryScraper {
         
         
         var results: [SalaryRecord] = []
-        
-        await withTaskGroup(of: [SalaryRecord].self) { taskGroup in
-            for urlString in urls {
-                taskGroup.addTask {
-                    return await parseHTML(urlString)
+        if let cachedRecords = loadCachedSalaryRecords(), !cachedRecords.isEmpty {
+            results = cachedRecords
+            print("Loaded \(results.count) salary rows from local cache.")
+        } else {
+            await withTaskGroup(of: [SalaryRecord].self) { taskGroup in
+                for urlString in urls {
+                    taskGroup.addTask {
+                        return await parseHTML(urlString)
+                    }
+                }
+                
+                for await records in taskGroup {
+                    results.append(contentsOf: records)
                 }
             }
-            
-            for await records in taskGroup {
-                results.append(contentsOf: records)
-            }
+            print("Local cache unavailable; fetched \(results.count) salary rows from remote disclosures.")
         }
         results = results.filter{ SPHSFacultyNames.contains($0.surname + ", " + $0.givenName) }
         
@@ -99,6 +104,100 @@ struct SalaryScraper {
         //analyzeSalaries(records: results, for: "JAMES R. WALLACE")
         regressionAnalysisMHI(records: results)
         
+    }
+
+    static func loadCachedSalaryRecords() -> [SalaryRecord]? {
+        let fileManager = FileManager.default
+        let baseURL = URL(fileURLWithPath: fileManager.currentDirectoryPath, isDirectory: true)
+        let candidates = [
+            baseURL.appendingPathComponent("data/sphs.csv"),
+            fileManager.urls(for: .downloadsDirectory, in: .userDomainMask).first?.appendingPathComponent("sphs_dictionary.csv")
+        ].compactMap { $0 }
+
+        for csvURL in candidates where fileManager.fileExists(atPath: csvURL.path) {
+            guard let records = parseCachedSalaryMatrix(from: csvURL), !records.isEmpty else { continue }
+            print("Using local salary cache: \(csvURL.path)")
+            return records
+        }
+        return nil
+    }
+
+    static func parseCachedSalaryMatrix(from csvURL: URL) -> [SalaryRecord]? {
+        let content: String
+        do {
+            content = try String(contentsOf: csvURL, encoding: .utf8)
+        } catch {
+            print("Failed reading cached salary CSV at \(csvURL.path): \(error)")
+            return nil
+        }
+
+        let lines = content
+            .split(whereSeparator: \.isNewline)
+            .map(String.init)
+            .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+
+        guard let headerLine = lines.first else { return nil }
+        let headers = parseCSVLine(headerLine).map { normalizeHeader($0) }
+        guard let surnameIndex = headers.firstIndex(where: { $0 == "surname" || $0 == "surame" }),
+              let givenIndex = headers.firstIndex(where: { $0 == "givenname" }),
+              let mhiIndex = headers.firstIndex(where: { $0 == "mhi" }) else {
+            print("Cached salary CSV missing required columns at \(csvURL.path)")
+            return nil
+        }
+
+        var yearByColumn: [Int: Int] = [:]
+        for (index, header) in headers.enumerated() {
+            if let year = Int(header), (2011...2024).contains(year) {
+                yearByColumn[index] = year
+            }
+        }
+        guard !yearByColumn.isEmpty else { return nil }
+
+        var records: [SalaryRecord] = []
+        for line in lines.dropFirst() {
+            let fields = parseCSVLine(line)
+            guard surnameIndex < fields.count, givenIndex < fields.count, mhiIndex < fields.count else { continue }
+
+            let surname = fields[surnameIndex].trimmingCharacters(in: .whitespacesAndNewlines)
+            let givenName = fields[givenIndex].trimmingCharacters(in: .whitespacesAndNewlines)
+            if surname.isEmpty || givenName.isEmpty { continue }
+            let mhi = parseCSVBool(fields[mhiIndex])
+
+            for (columnIndex, year) in yearByColumn {
+                guard columnIndex < fields.count else { continue }
+                let rawSalary = fields[columnIndex].trimmingCharacters(in: .whitespacesAndNewlines)
+                if rawSalary.isEmpty { continue }
+                let cleaned = rawSalary.replacingOccurrences(of: "[$,]", with: "", options: .regularExpression)
+                guard let salary = Double(cleaned) else { continue }
+                records.append(
+                    SalaryRecord(
+                        surname: surname,
+                        givenName: givenName,
+                        position: "",
+                        salary: salary,
+                        taxableBenefits: 0.0,
+                        year: year,
+                        mhi: mhi
+                    )
+                )
+            }
+        }
+
+        return records
+    }
+
+    static func normalizeHeader(_ value: String) -> String {
+        value
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+            .replacingOccurrences(of: " ", with: "")
+    }
+
+    static func parseCSVBool(_ value: String) -> Bool {
+        let normalized = value
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+        return normalized == "true" || normalized == "1" || normalized == "yes"
     }
     
     
