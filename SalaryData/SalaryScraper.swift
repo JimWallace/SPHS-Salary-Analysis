@@ -75,7 +75,7 @@ struct SalaryScraper {
                 let givenName = nameParts.count > 1 ? String(nameParts[1]).trimmingCharacters(in: .whitespaces) : ""
                 
                 // Add name and salaries for each year
-                let row = [surname, givenName, MHIFacultyNames.contains(name).description] + years.map { year in
+                let row = [surname, givenName, isInPrimaryMHICohort(name).description] + years.map { year in
                     if let salary = salaryByYear[year] {
                         return "\(salary)"
                     } else {
@@ -153,7 +153,7 @@ struct SalaryScraper {
 
                 let taxableBenefits = try Double(columns[4].text().replacingOccurrences(of: "[$,\\s]", with: "", options: .regularExpression)) ?? -1.0
                 
-                let mhi = MHIFacultyNames.contains(surname + ", " + givenName)
+                let mhi = isInPrimaryMHICohort(surname + ", " + givenName)
 
                 let record = SalaryRecord(surname: surname, givenName: givenName, position: position, salary: salary, taxableBenefits: taxableBenefits, year: year, mhi: mhi)
                 //print(record)                
