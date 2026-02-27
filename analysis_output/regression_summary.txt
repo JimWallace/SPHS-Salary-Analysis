@@ -1,0 +1,8 @@
+Regression summary (cluster-robust SE by person)
+
+Pooled OLS (cluster-robust) | Non-MHI annual slope: estimate=4404.586, SE=1828.252, 95% CI [821.212, 7987.959], N=315, clusters=40
+Pooled OLS (cluster-robust) | MHI annual slope: estimate=3684.770, SE=2374.465, 95% CI [-969.182, 8338.722], N=315, clusters=40
+Pooled OLS (cluster-robust) | MHI - Non-MHI annual slope: estimate=-719.815, SE=2996.763, 95% CI [-6593.471, 5153.840], N=315, clusters=40
+Person FE (cluster-robust) | Non-MHI annual slope: estimate=7750.885, SE=597.649, 95% CI [6579.493, 8922.277], N=313, clusters=38
+Person FE (cluster-robust) | MHI annual slope: estimate=6821.914, SE=888.382, 95% CI [5080.686, 8563.142], N=313, clusters=38
+Person FE (cluster-robust) | MHI - Non-MHI annual slope: estimate=-928.971, SE=1070.704, 95% CI [-3027.549, 1169.608], N=313, clusters=38
