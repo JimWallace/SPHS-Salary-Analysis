@@ -63,15 +63,19 @@ struct SalaryScraper {
         // Prepare CSV content
         do {
             
-            var csvContent = "Surame, Given name, MHI," + years.map { "\($0)" }.joined(separator: ",") + "\n"
+            var csvContent = "Surname,Given name,MHI," + years.map { "\($0)" }.joined(separator: ",") + "\n"
             for (name, records) in salaryDictionary {
                 var salaryByYear = [Int: Double]() // Map year to salary for quick lookup
                 for record in records {
                     salaryByYear[record.year] = record.salary
                 }
                 
+                let nameParts = name.split(separator: ",", maxSplits: 1, omittingEmptySubsequences: false)
+                let surname = nameParts.count > 0 ? String(nameParts[0]).trimmingCharacters(in: .whitespaces) : ""
+                let givenName = nameParts.count > 1 ? String(nameParts[1]).trimmingCharacters(in: .whitespaces) : ""
+                
                 // Add name and salaries for each year
-                let row = [name] + [ MHIFacultyNames.contains(name).description  ] + years.map { year in
+                let row = [surname, givenName, MHIFacultyNames.contains(name).description] + years.map { year in
                     if let salary = salaryByYear[year] {
                         return "\(salary)"
                     } else {
@@ -80,7 +84,7 @@ struct SalaryScraper {
                 }
                 
                 if SPHSFacultyNames.contains(name) {
-                    csvContent += row.joined(separator: ",") + "\n"
+                    csvContent += row.map(escapeCSVField).joined(separator: ",") + "\n"
                 }
             }
             
@@ -104,7 +108,20 @@ struct SalaryScraper {
             return []
         }
         
-        let (data, _) = try! await URLSession.shared.data(from: url)
+        let data: Data
+        do {
+            let (fetchedData, response) = try await URLSession.shared.data(from: url)
+            if let httpResponse = response as? HTTPURLResponse,
+               !(200...299).contains(httpResponse.statusCode) {
+                print("Request failed for \(html) with status \(httpResponse.statusCode)")
+                return []
+            }
+            data = fetchedData
+        } catch {
+            print("Network request failed for \(html): \(error)")
+            return []
+        }
+        
         guard let htmlContent = String(data: data, encoding: .utf8) else {
             return []
         }
@@ -126,7 +143,7 @@ struct SalaryScraper {
                 }
                 
                 let columns = try row.select("th, td")
-                guard columns.count >= 3 else { continue }
+                guard columns.count >= 5 else { continue }
                 
                 let surname = try columns[0].text()
                 let givenName = try columns[1].text()
@@ -158,6 +175,13 @@ struct SalaryScraper {
             return Int(urlString[yearRange])
         }
         return nil
+    }
+
+    static func escapeCSVField(_ field: String) -> String {
+        if field.contains(",") || field.contains("\"") || field.contains("\n") {
+            return "\"\(field.replacingOccurrences(of: "\"", with: "\"\""))\""
+        }
+        return field
     }
     
 }
