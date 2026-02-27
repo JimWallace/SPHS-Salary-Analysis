@@ -3,6 +3,8 @@
 \usepackage{amsmath}
 \usepackage{hyperref}
 \usepackage{biblatex}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.18}
 \addbibresource{bib.bib}
 \input{format}
 
@@ -19,24 +21,68 @@
 To investigate potential salary discrepancies between faculty members affiliated with the Master of Health Informatics (MHI) program and those who are not (non-MHI) at the University of Waterloo, data was collected from the following sources: University of Waterloo public salary disclosures 2011--2024 \cite{uw_salary_2011, uw_salary_2012, uw_salary_2013, uw_salary_2014, uw_salary_2015, uw_salary_2016, uw_salary_2017, uw_salary_2018, uw_salary_2019, uw_salary_2020, uw_salary_2021, uw_salary_2022, uw_salary_2023, uw_salary_2024}, faculty association publications outlining salary structures \cite{fauw_salary_structure}, and School of Public Health Sciences faculty listings \cite{uwaterloo_mhi_faculty}. The data included annual salary figures, MHI affiliation status, and spanned a ten-year period to enable a longitudinal analysis of salary progression.
 
 
-\section{Analysis}
+\section{Methods}
 
-Faculty members were categorized into two groups based on their MHI affiliation status. Average salary increases over the ten-year period were then computed for each group. Because the dataset represents the full population of faculty in the department, formal statistical inference was not required. Instead, descriptive comparisons and trend visualizations were used to illustrate the observed differences.
+Faculty members were categorized into MHI and non-MHI groups. Salary progression was estimated using two complementary models:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Pooled OLS with interaction:} salary was modeled as a function of year, MHI status, and a year$\times$MHI interaction.
+    \item \textbf{Person fixed effects (FE):} the same slope comparison was estimated after removing time-invariant faculty-level differences.
+\end{enumerate}
+
+Year was centered at the first observed year to improve interpretation and numerical stability. In both models, the key quantity is the coefficient on the year$\times$MHI term, which measures the annual salary-growth difference (MHI minus non-MHI). Cluster-robust standard errors were computed at the faculty level, and 95\% confidence intervals were reported. Model outputs are generated programmatically and written to \texttt{analysis\_output/regression\_summary.csv}.
+\vspace{0.5em}
+
+The primary MHI cohort is defined from the School of Public Health Sciences \href{https://uwaterloo.ca/public-health-sciences/our-people/health-informatics-researchers}{Health informatics researchers page}.
 
 
 \section{Results}
 
-The analysis reveals a notable disparity in salary progression. Non-MHI faculty members experienced an average annual salary increase of approximately \$3,074, whereas MHI-affiliated faculty members saw a lower average of around \$1,541 per year. Over a ten-year span, this resulted in a cumulative difference of approximately \$15,330 in favour of non-MHI faculty. This disparity is consistent with a hypothesis of systemic bias in performance evaluation, especially given the interdisciplinary nature of the MHI program. 
-\vspace{-10em}
-\begin{figure}[b]
+Table~\ref{tab:regression_summary} summarizes the estimated annual salary slopes and uncertainty intervals. In the pooled model, the MHI-minus-non-MHI annual slope estimate is approximately \(-719.8\) with a 95\% CI of roughly \([-6593.5,\ 5153.8]\). In the person FE model, the corresponding estimate is approximately \(-929.0\) with a 95\% CI of roughly \([-3027.5,\ 1169.6]\). Both point estimates indicate slower growth for MHI-affiliated faculty, but both confidence intervals include zero.
+\vspace{0.5em}
+
+The figure is still useful as a descriptive visualization of salary trajectories by affiliation group. However, it should be interpreted as exploratory rather than inferential, because it does not display the fixed-effects specification or confidence intervals used in the primary statistical comparison.
+\vspace{0.5em}
+
+\IfFileExists{analysis_output/regression_summary.csv}{
+\begin{table}[h]
+    \centering
+    \small
+    \resizebox{\textwidth}{!}{
+    \pgfplotstabletypeset[
+        col sep=comma,
+        string type,
+        columns={model,term,estimate,std_error,ci_lower,ci_upper,n_obs,n_clusters},
+        columns/model/.style={column name=Model},
+        columns/term/.style={column name=Term},
+        columns/estimate/.style={column name=Estimate},
+        columns/std_error/.style={column name=SE},
+        columns/ci_lower/.style={column name=CI Low},
+        columns/ci_upper/.style={column name=CI High},
+        columns/n_obs/.style={column name=N},
+        columns/n_clusters/.style={column name=Clusters},
+        every head row/.style={before row=\toprule,after row=\midrule},
+        every last row/.style={after row=\bottomrule}
+    ]{analysis_output/regression_summary.csv}
+    }
+    \caption{Regression estimates with cluster-robust standard errors (faculty-level clustering).}
+    \label{tab:regression_summary}
+\end{table}
+}{
+\textit{Regression summary CSV not found. Run the SalaryData executable to generate \texttt{analysis\_output/regression\_summary.csv}.}
+}
+
+\begin{figure}[h]
     \centering
     \includegraphics[width=.72\textwidth]{figures/scatter.png}
-    \caption{Faculty salaries over time by MHI affiliation, with regression lines showing different growth rates.}
+    \caption{Descriptive salary trajectories by MHI affiliation. Trend lines are illustrative and separate from the fixed-effects, cluster-robust estimates reported in Table~\ref{tab:regression_summary}.}
     \label{fig:scatter_plot}
 \end{figure}
+
+\section{Conclusion}
+
+The updated analysis provides \textit{suggestive} but not definitive evidence of a disparity in salary growth by MHI affiliation. Both pooled and fixed-effects models estimate lower annual growth for MHI-affiliated faculty, but uncertainty intervals include zero in both specifications. On this evidence, the data do not support a strong claim of confirmed systemic bias; they support a cautious conclusion that a potentially meaningful disparity may exist and should be monitored with additional years, richer controls (for example rank/position changes), and robustness checks.
 
 \newpage
 \printbibliography
 
 \end{document}
-

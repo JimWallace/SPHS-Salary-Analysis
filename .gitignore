@@ -1,0 +1,26 @@
+# macOS
+.DS_Store
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.loc
+*.log
+*.out
+*.run.xml
+*.soc
+
+# Project output
+main.pdf
+
+# Xcode / SwiftPM user-specific files
+DerivedData/
+build/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+xcuserdata/
