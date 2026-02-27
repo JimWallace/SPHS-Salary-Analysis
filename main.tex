@@ -21,14 +21,23 @@
 To investigate potential salary discrepancies between faculty members affiliated with the Master of Health Informatics (MHI) program and those who are not (non-MHI) at the University of Waterloo, data was collected from the following sources: University of Waterloo public salary disclosures 2011--2024 \cite{uw_salary_2011, uw_salary_2012, uw_salary_2013, uw_salary_2014, uw_salary_2015, uw_salary_2016, uw_salary_2017, uw_salary_2018, uw_salary_2019, uw_salary_2020, uw_salary_2021, uw_salary_2022, uw_salary_2023, uw_salary_2024}, faculty association publications outlining salary structures \cite{fauw_salary_structure}, and School of Public Health Sciences faculty listings \cite{uwaterloo_mhi_faculty}. The data included annual salary figures, MHI affiliation status, and spanned a ten-year period to enable a longitudinal analysis of salary progression.
 
 
-\section{Analysis}
+\section{Methods}
 
-Faculty members were categorized into MHI and non-MHI groups. Salary progression was estimated using two complementary models: (1) pooled OLS with a year-by-MHI interaction, and (2) a person fixed-effects model that controls for time-invariant faculty-level differences. Cluster-robust standard errors were computed at the faculty level, and summary results were exported automatically to \texttt{analysis\_output/regression\_summary.csv}.
+Faculty members were categorized into MHI and non-MHI groups. Salary progression was estimated using two complementary models:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Pooled OLS with interaction:} salary was modeled as a function of year, MHI status, and a year$\times$MHI interaction.
+    \item \textbf{Person fixed effects (FE):} the same slope comparison was estimated after removing time-invariant faculty-level differences.
+\end{enumerate}
+
+Year was centered at the first observed year to improve interpretation and numerical stability. In both models, the key quantity is the coefficient on the year$\times$MHI term, which measures the annual salary-growth difference (MHI minus non-MHI). Cluster-robust standard errors were computed at the faculty level, and 95\% confidence intervals were reported. Model outputs are generated programmatically and written to \texttt{analysis\_output/regression\_summary.csv}.
 
 
 \section{Results}
 
-Both models estimated lower annual salary growth for MHI-affiliated faculty relative to non-MHI faculty, but uncertainty intervals for the MHI-minus-non-MHI slope difference include zero. This indicates the direction of the estimated difference is consistent across specifications, while statistical uncertainty remains material.
+Table~\ref{tab:regression_summary} summarizes the estimated annual salary slopes and uncertainty intervals. In the pooled model, the MHI-minus-non-MHI annual slope estimate is approximately \(-719.8\) with a 95\% CI of roughly \([-6593.5,\ 5153.8]\). In the person FE model, the corresponding estimate is approximately \(-929.0\) with a 95\% CI of roughly \([-3027.5,\ 1169.6]\). Both point estimates indicate slower growth for MHI-affiliated faculty, but both confidence intervals include zero.
+\vspace{0.5em}
+
+The figure is still useful as a descriptive visualization of salary trajectories by affiliation group. However, it should be interpreted as exploratory rather than inferential, because it does not display the fixed-effects specification or confidence intervals used in the primary statistical comparison.
 \vspace{0.5em}
 
 \IfFileExists{analysis_output/regression_summary.csv}{
@@ -58,13 +67,17 @@ Both models estimated lower annual salary growth for MHI-affiliated faculty rela
 }{
 \textit{Regression summary CSV not found. Run the SalaryData executable to generate \texttt{analysis\_output/regression\_summary.csv}.}
 }
-\vspace{-10em}
-\begin{figure}[b]
+
+\begin{figure}[h]
     \centering
     \includegraphics[width=.72\textwidth]{figures/scatter.png}
-    \caption{Faculty salaries over time by MHI affiliation, with regression lines showing different growth rates.}
+    \caption{Descriptive salary trajectories by MHI affiliation. Trend lines are illustrative and separate from the fixed-effects, cluster-robust estimates reported in Table~\ref{tab:regression_summary}.}
     \label{fig:scatter_plot}
 \end{figure}
+
+\section{Conclusion}
+
+The updated analysis provides \textit{suggestive} but not definitive evidence of a disparity in salary growth by MHI affiliation. Both pooled and fixed-effects models estimate lower annual growth for MHI-affiliated faculty, but uncertainty intervals include zero in both specifications. On this evidence, the data do not support a strong claim of confirmed systemic bias; they support a cautious conclusion that a potentially meaningful disparity may exist and should be monitored with additional years, richer controls (for example rank/position changes), and robustness checks.
 
 \newpage
 \printbibliography
