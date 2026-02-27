@@ -3,6 +3,8 @@
 \usepackage{amsmath}
 \usepackage{hyperref}
 \usepackage{biblatex}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.18}
 \addbibresource{bib.bib}
 \input{format}
 
@@ -21,12 +23,41 @@ To investigate potential salary discrepancies between faculty members affiliated
 
 \section{Analysis}
 
-Faculty members were categorized into two groups based on their MHI affiliation status. Average salary increases over the ten-year period were then computed for each group. Because the dataset represents the full population of faculty in the department, formal statistical inference was not required. Instead, descriptive comparisons and trend visualizations were used to illustrate the observed differences.
+Faculty members were categorized into MHI and non-MHI groups. Salary progression was estimated using two complementary models: (1) pooled OLS with a year-by-MHI interaction, and (2) a person fixed-effects model that controls for time-invariant faculty-level differences. Cluster-robust standard errors were computed at the faculty level, and summary results were exported automatically to \texttt{analysis\_output/regression\_summary.csv}.
 
 
 \section{Results}
 
-The analysis reveals a notable disparity in salary progression. Non-MHI faculty members experienced an average annual salary increase of approximately \$3,074, whereas MHI-affiliated faculty members saw a lower average of around \$1,541 per year. Over a ten-year span, this resulted in a cumulative difference of approximately \$15,330 in favour of non-MHI faculty. This disparity is consistent with a hypothesis of systemic bias in performance evaluation, especially given the interdisciplinary nature of the MHI program. 
+Both models estimated lower annual salary growth for MHI-affiliated faculty relative to non-MHI faculty, but uncertainty intervals for the MHI-minus-non-MHI slope difference include zero. This indicates the direction of the estimated difference is consistent across specifications, while statistical uncertainty remains material.
+\vspace{0.5em}
+
+\IfFileExists{analysis_output/regression_summary.csv}{
+\begin{table}[h]
+    \centering
+    \small
+    \resizebox{\textwidth}{!}{
+    \pgfplotstabletypeset[
+        col sep=comma,
+        string type,
+        columns={model,term,estimate,std_error,ci_lower,ci_upper,n_obs,n_clusters},
+        columns/model/.style={column name=Model},
+        columns/term/.style={column name=Term},
+        columns/estimate/.style={column name=Estimate},
+        columns/std_error/.style={column name=SE},
+        columns/ci_lower/.style={column name=CI Low},
+        columns/ci_upper/.style={column name=CI High},
+        columns/n_obs/.style={column name=N},
+        columns/n_clusters/.style={column name=Clusters},
+        every head row/.style={before row=\toprule,after row=\midrule},
+        every last row/.style={after row=\bottomrule}
+    ]{analysis_output/regression_summary.csv}
+    }
+    \caption{Regression estimates with cluster-robust standard errors (faculty-level clustering).}
+    \label{tab:regression_summary}
+\end{table}
+}{
+\textit{Regression summary CSV not found. Run the SalaryData executable to generate \texttt{analysis\_output/regression\_summary.csv}.}
+}
 \vspace{-10em}
 \begin{figure}[b]
     \centering
@@ -39,4 +70,3 @@ The analysis reveals a notable disparity in salary progression. Non-MHI faculty 
 \printbibliography
 
 \end{document}
-
