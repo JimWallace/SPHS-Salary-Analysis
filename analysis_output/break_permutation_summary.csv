@@ -1,0 +1,4 @@
+breakYear,model,term,observed_estimate,null_mean,null_std_dev,null_q025,null_q975,p_two_sided,n_permutations,inference_method
+2021,Person FE (Break Growth),YearCenteredXMHIXPost,757.869875,-76.267582,731.358860,-1388.520132,1450.212082,0.308735,20000,monte-carlo
+2022,Person FE (Break Growth),YearCenteredXMHIXPost,-152.211480,2.105303,1179.935837,-1415.226414,2737.702915,0.899905,20000,monte-carlo
+2023,Person FE (Break Growth),YearCenteredXMHIXPost,2.168752,-12.265408,830.094461,-1282.967442,1896.512513,0.997950,20000,monte-carlo
