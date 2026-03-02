@@ -24,3 +24,14 @@ build/
 *.xcscmblueprint
 *.xccheckout
 xcuserdata/
+
+# Private local-only inputs/outputs for CV-based analysis
+Faculty CVs/
+data/private_terminal_degree_domain.csv
+data/terminal_degree_domain.csv
+data/private_self_defined_factors.csv
+data/public_sphs_scrape/raw_html/
+
+# Python cache artifacts
+__pycache__/
+*.pyc
