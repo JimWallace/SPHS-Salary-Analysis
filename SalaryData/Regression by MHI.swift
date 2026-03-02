@@ -51,6 +51,9 @@ struct RegressionAnalysisConfig {
     var knotsFixed: [Int] = [2014]
     var knot2SalaryYear: Int = 2022
     var knot2SensitivityYears: [Int] = [2021, 2022, 2023]
+    var matchingYearWindow: Int = 1
+    var matchedSlopeHorizonYears: Int = 5
+    var runPermutationInference: Bool = true
     var permutationDraws: Int = 20_000
     var permutationExactCombinationLimit: Double = 200_000
     var permutationSeedBase: UInt64 = 20240300
@@ -928,6 +931,7 @@ func regressionAnalysisMHI(records: [SalaryRecord]) {
         return
     }
 
+    let config = regressionAnalysisConfig
     let nonHealthTerminalByName = loadTerminalDegreeDomainLookup()
 
     for cohort in analysisCohorts {
@@ -1019,59 +1023,61 @@ func regressionAnalysisMHI(records: [SalaryRecord]) {
             : "regression_summary_\(cohort.key)"
         writeSummaryOutputs(rows: allRows, fileStem: fileStem, cohortLabel: cohort.label)
 
-        var permutationRows: [PermutationSummaryRow] = []
-        if let pooledLevelPermutation = permutationSummaryForSlopeGap(
-            rows: rows,
-            modelName: "Pooled OLS",
-            slopeGapTerm: "MHI - Non-MHI level (centered year)",
-            fitModel: pooledModel,
-            slopeGapCoefficientIndex: 2,
-            randomDraws: 20_000,
-            exactCombinationLimit: 200_000,
-            seed: 20240300
-        ) {
-            permutationRows.append(pooledLevelPermutation)
-        } else {
-            print("Permutation inference failed for pooled level model in cohort: \(cohort.label)")
-        }
-
-        if let pooledPermutation = permutationSummaryForSlopeGap(
-            rows: rows,
-            modelName: "Pooled OLS",
-            slopeGapTerm: "MHI - Non-MHI annual slope",
-            fitModel: pooledModel,
-            slopeGapCoefficientIndex: 3,
-            randomDraws: 20_000,
-            exactCombinationLimit: 200_000,
-            seed: 20240301
-        ) {
-            permutationRows.append(pooledPermutation)
-        } else {
-            print("Permutation inference failed for pooled model in cohort: \(cohort.label)")
-        }
-
-        let feRows = rowsWithAtLeastTwoObservations(rows)
-        if let fixedEffectsPermutation = permutationSummaryForSlopeGap(
-            rows: feRows,
-            modelName: "Person FE",
-            slopeGapTerm: "MHI - Non-MHI annual slope",
-            fitModel: fixedEffectsModel,
-            slopeGapCoefficientIndex: 1,
-            randomDraws: 20_000,
-            exactCombinationLimit: 200_000,
-            seed: 20240302
-        ) {
-            permutationRows.append(fixedEffectsPermutation)
-        } else {
-            print("Permutation inference failed for FE model in cohort: \(cohort.label)")
-        }
-
         let permutationFileStem = cohort.key == primaryMHICohort.key
             ? "permutation_inference_summary"
             : "permutation_inference_summary_\(cohort.key)"
+        var permutationRows: [PermutationSummaryRow] = []
+        if config.runPermutationInference {
+            if let pooledLevelPermutation = permutationSummaryForSlopeGap(
+                rows: rows,
+                modelName: "Pooled OLS",
+                slopeGapTerm: "MHI - Non-MHI level (centered year)",
+                fitModel: pooledModel,
+                slopeGapCoefficientIndex: 2,
+                randomDraws: config.permutationDraws,
+                exactCombinationLimit: config.permutationExactCombinationLimit,
+                seed: config.permutationSeedBase
+            ) {
+                permutationRows.append(pooledLevelPermutation)
+            }
+
+            if let pooledPermutation = permutationSummaryForSlopeGap(
+                rows: rows,
+                modelName: "Pooled OLS",
+                slopeGapTerm: "MHI - Non-MHI annual slope",
+                fitModel: pooledModel,
+                slopeGapCoefficientIndex: 3,
+                randomDraws: config.permutationDraws,
+                exactCombinationLimit: config.permutationExactCombinationLimit,
+                seed: config.permutationSeedBase + 1
+            ) {
+                permutationRows.append(pooledPermutation)
+            }
+
+            let feRows = rowsWithAtLeastTwoObservations(rows)
+            if let fixedEffectsPermutation = permutationSummaryForSlopeGap(
+                rows: feRows,
+                modelName: "Person FE",
+                slopeGapTerm: "MHI - Non-MHI annual slope",
+                fitModel: fixedEffectsModel,
+                slopeGapCoefficientIndex: 1,
+                randomDraws: config.permutationDraws,
+                exactCombinationLimit: config.permutationExactCombinationLimit,
+                seed: config.permutationSeedBase + 2
+            ) {
+                permutationRows.append(fixedEffectsPermutation)
+            }
+        } else {
+            print("Skipping permutation inference for cohort: \(cohort.label)")
+        }
         writePermutationOutputs(rows: permutationRows, fileStem: permutationFileStem, cohortLabel: cohort.label)
 
         runSegmentedGrowthAnalysis(
+            rows: rows,
+            cohort: cohort,
+            config: regressionAnalysisConfig
+        )
+        runEntryCohortAnalysis(
             rows: rows,
             cohort: cohort,
             config: regressionAnalysisConfig

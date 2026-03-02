@@ -1,6 +1,6 @@
 Permutation/randomization inference summary
-Cohort definition: MHI (UW Health Informatics Researchers)
+Cohort definition: MHI (Post-2013 Core Cohort)
 
-Pooled OLS | MHI - Non-MHI level (centered year): observed=14213.215, 95% CI [-27774.867, 56201.297], null mean=-4579.010, null SD=30592.183, null 2.5%-97.5% [-70986.417, 49439.267], p(two-sided)=0.631, permutations=20000, method=monte-carlo, N=315, clusters=40, treated clusters=9
-Pooled OLS | MHI - Non-MHI annual slope: observed=-719.815, 95% CI [-6593.471, 5153.840], null mean=484.478, null SD=3698.866, null 2.5%-97.5% [-5810.148, 8649.756], p(two-sided)=0.833, permutations=20000, method=monte-carlo, N=315, clusters=40, treated clusters=9
-Person FE | MHI - Non-MHI annual slope: observed=-928.971, 95% CI [-3027.549, 1169.608], null mean=38.786, null SD=1291.633, null 2.5%-97.5% [-2484.513, 2565.619], p(two-sided)=0.476, permutations=20000, method=monte-carlo, N=313, clusters=38, treated clusters=8
+Pooled OLS | MHI - Non-MHI level (centered year): observed=-52941.697, 95% CI [-80487.943, -25395.452], null mean=-11795.815, null SD=41681.191, null 2.5%-97.5% [-115464.861, 59516.499], p(two-sided)=0.164, permutations=20000, method=monte-carlo, N=315, clusters=40, treated clusters=5
+Pooled OLS | MHI - Non-MHI annual slope: observed=1367.685, 95% CI [-2268.601, 5003.971], null mean=1067.078, null SD=4883.936, null 2.5%-97.5% [-6966.480, 14151.167], p(two-sided)=0.707, permutations=20000, method=monte-carlo, N=315, clusters=40, treated clusters=5
+Person FE | MHI - Non-MHI annual slope: observed=-2026.453, 95% CI [-3376.004, -676.902], null mean=212.685, null SD=2016.591, null 2.5%-97.5% [-3153.173, 4473.027], p(two-sided)=0.227, permutations=73815, method=exact, N=313, clusters=38, treated clusters=4

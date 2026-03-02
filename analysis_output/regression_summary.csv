@@ -1,10 +1,10 @@
 model,term,estimate,std_error,ci_lower,ci_upper,n_obs,n_clusters
-Pooled OLS,MHI - Non-MHI level (centered year),14213.215,21422.491,-27774.867,56201.297,315,40
-Pooled OLS,Non-MHI annual slope,4404.586,1828.252,821.212,7987.959,315,40
-Pooled OLS,MHI annual slope,3684.770,2374.465,-969.182,8338.722,315,40
-Pooled OLS,MHI - Non-MHI annual slope,-719.815,2996.763,-6593.471,5153.840,315,40
-Pooled OLS (Terminal Degree Domain),Non-health - Health annual slope,1412.251,1055.126,-655.796,3480.298,158,17
-Person FE,Non-MHI annual slope,7750.885,597.649,6579.493,8922.277,313,38
-Person FE,MHI annual slope,6821.914,888.382,5080.686,8563.142,313,38
-Person FE,MHI - Non-MHI annual slope,-928.971,1070.704,-3027.549,1169.608,313,38
-Person FE (Terminal Degree Domain),Non-health - Health annual slope,-15.616,866.412,-1713.784,1682.551,158,17
+Pooled OLS,MHI - Non-MHI level (centered year),-52941.697,14054.207,-80487.943,-25395.452,315,40
+Pooled OLS,Non-MHI annual slope,4571.320,1553.240,1526.970,7615.670,315,40
+Pooled OLS,MHI annual slope,5939.005,1014.590,3950.410,7927.601,315,40
+Pooled OLS,MHI - Non-MHI annual slope,1367.685,1855.248,-2268.601,5003.971,315,40
+Pooled OLS (Terminal Degree Domain),Non-health - Health annual slope,914.112,1131.681,-1303.984,3132.207,158,17
+Person FE,Non-MHI annual slope,7641.280,534.233,6594.183,8688.376,313,38
+Person FE,MHI annual slope,5614.826,434.386,4763.429,6466.223,313,38
+Person FE,MHI - Non-MHI annual slope,-2026.453,688.546,-3376.004,-676.902,313,38
+Person FE (Terminal Degree Domain),Non-health - Health annual slope,-104.526,727.331,-1530.094,1321.043,158,17
