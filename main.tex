@@ -6,6 +6,7 @@
 \usepackage{pgfplotstable}
 \usepackage{pdflscape}
 \pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
 \addbibresource{bib.bib}
 \input{format}
 
@@ -20,7 +21,9 @@
 
 \section*{Executive Summary}
 
-Faculty affiliated with the Master of Health Informatics (MHI) have raised concerns that the current APR process may disadvantage interdisciplinary research relative to traditional public health domains. This report evaluates whether such disadvantage is observable in publicly available salary data from 2011–2024 (40 faculty; 315 person-years). We estimate both salary level and salary growth differences between MHI and non-MHI faculty and apply permutation-based inference appropriate for small samples. We do not find statistically definitive differences at conventional thresholds. However, annual growth estimates are consistently negative for MHI faculty (approximately \$720–\$929 per year), implying potentially meaningful cumulative gaps over time. The direction and consistency of the growth estimates suggest that concerns about differential valuation of MHI faculty warrant careful institutional consideration.
+Faculty affiliated with the Master of Health Informatics (MHI) have raised concerns that the current APR process may disadvantage interdisciplinary research relative to traditional public health domains. This report evaluates whether such disadvantage is observable in publicly available salary data from 2011–2024 (40 faculty; 315 person-years). The primary specification now uses a post-2013 core MHI cohort aligned with MHI program institutionalization. We estimate salary level and salary growth differences between MHI and non-MHI faculty and apply permutation-based inference appropriate for small samples.
+
+Under this updated cohort definition, pooled models estimate a lower MHI salary level at the centered year (\(-\$52{,}942\), 95\% CI \([-\$80{,}488,\ -\$25{,}395]\); permutation \(p=0.164\)). Growth findings are mixed in the baseline pooled versus FE specifications (pooled: \(+\$1{,}368\)/year, permutation \(p=0.707\); person FE: \(-\$2{,}026\)/year, permutation \(p=0.227\)). However, cohort-aligned growth analyses are more consistently negative: pooled with entry-cohort fixed effects estimates \(-\$2{,}745\)/year, and matched-entry FE (\(\pm1\) year) estimates \(-\$2{,}862\)/year with permutation \(p=0.008\) (exact). This pattern indicates the strongest evidence appears when comparisons are anchored to similar entry timing.
 
 
 
@@ -30,7 +33,7 @@ Evaluating multidisciplinary scholarship within traditionally structured academi
 
 In principle, the institutional framework is designed to support equitable evaluation across disciplinary boundaries. Policy 77 requires that performance assessment be consistent with University policy and collective agreements. The Memorandum of Agreement (Article 13) governs the annual or biennial review process and the distribution of selective salary increments. The SPHS guidelines further state that indicators must have face validity, that benchmarking should occur against comparable faculty, and that multidisciplinary traditions should be respected when interpreting research outputs. Taken together, these documents articulate a clear institutional commitment: interdisciplinary faculty should be evaluated using standards appropriate to their domain, not disadvantaged by disciplinary mismatch.
 
-This report examines whether that commitment is reflected in observable outcomes. Using publicly available salary disclosures from 2011–2024,\footnote{Salary disclosure archives available at \url{https://uwaterloo.ca/about/accountability/salary-disclosure}} we analyze salary levels and salary growth for MHI and non-MHI faculty within SPHS. Salary is an imperfect proxy for institutional valuation, but it is the only fully public and longitudinal indicator available. We do not find statistically definitive differences at conventional thresholds. However, growth estimates are consistently negative for MHI faculty relative to their peers. Given the limited statistical power inherent in a single-department sample, these findings cannot conclusively establish bias. They do, however, provide disciplined evidence that a decade-long pattern of differential growth cannot be ruled out. In the concluding section, we outline concrete next steps to ensure that multidisciplinary scholarship is evaluated in a manner fully consistent with University policy, collective agreements, and the School’s stated commitments.
+This report examines whether that commitment is reflected in observable outcomes. Using publicly available salary disclosures from 2011–2024,\footnote{Salary disclosure archives available at \url{https://uwaterloo.ca/about/accountability/salary-disclosure}} we analyze salary levels and salary growth for MHI and non-MHI faculty within SPHS. Salary is an imperfect proxy for institutional valuation, but it is the only fully public and longitudinal indicator available. Under the updated post-2013 core MHI definition, estimated growth differences are not uniform across pooled and fixed-effects specifications. Given the limited statistical power inherent in a single-department sample, these findings cannot conclusively establish bias. They do, however, indicate that conclusions are sensitive to cohort construction and specification choice. In the concluding section, we outline concrete next steps to ensure that multidisciplinary scholarship is evaluated in a manner fully consistent with University policy, collective agreements, and the School’s stated commitments.
 
 
 
@@ -40,7 +43,7 @@ This analysis uses publicly available University of Waterloo salary disclosure r
 
 These records constitute the complete set of publicly observable compensation trajectories for SPHS faculty meeting provincial disclosure criteria during the study period. The analysis therefore describes the full observable population of interest rather than a statistical sample drawn from a larger frame.
 
-Faculty were classified as MHI if they appeared on the public Health Informatics roster during the study period; all other SPHS faculty were classified as non-MHI. MHI status was treated as time-invariant in the primary analysis. Because group membership does not vary over time for most individuals, salary level differences cannot be separately identified in strict person fixed-effects models and are therefore estimated using pooled specifications.
+In the primary analysis, faculty were classified as MHI using a post-2013 core MHI cohort definition aligned with MHI program institutionalization, rather than the full public Health Informatics roster. This focuses inference on faculty whose observed salary progression occurred under the contemporary MHI era. All other SPHS faculty were classified as non-MHI. MHI status was treated as time-invariant in the primary analysis. Because group membership does not vary over time for most individuals, salary level differences cannot be separately identified in strict person fixed-effects models and are therefore estimated using pooled specifications.
 
 The primary outcome variable is annual reported salary in nominal Canadian dollars. Year was centred at the first observed year to facilitate interpretation of intercept terms. Public disclosures do not include rank, promotion timing, administrative stipends, workload re-weighting, or APR scores. Salary therefore serves as a transparent but indirect proxy for institutional valuation.
 
@@ -89,14 +92,61 @@ These descriptive patterns do not establish causality. They do, however, suggest
 \textit{Descriptive year-by-group summary not found. Run \texttt{python3 scripts/build\_descriptive\_outputs.py}.}
 }
 
-\IfFileExists{figures/scatter.png}{
+\IfFileExists{analysis_output/plot_scatter_mhi.csv}{
 \begin{figure}[h]
     \centering
-    \includegraphics[width=.78\textwidth]{figures/scatter.png}
-    \caption{Salary trajectories by group with trend overlays (descriptive only).}
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.9\textwidth,
+        height=0.52\textwidth,
+        xlabel={Year},
+        ylabel={Salary (\$CAD)},
+        ymin=90000,
+        ymax=320000,
+        xmin=2010.5,
+        xmax=2024.5,
+        xtick={2011,...,2024},
+        scaled x ticks=false,
+        scaled y ticks=false,
+        grid=major,
+        legend style={at={(0.02,0.98)},anchor=north west,fill=white,draw=none,font=\footnotesize},
+        legend image post style={xscale=1.6,yscale=1.2},
+        legend cell align=left,
+        ytick={100000,150000,200000,250000,300000},
+        yticklabel={\$\pgfmathprintnumber[fixed,precision=0,1000 sep={,}]{\tick}},
+        xticklabel style={/pgf/number format/fixed,/pgf/number format/precision=0,/pgf/number format/1000 sep={}},
+        tick label style={font=\small},
+        label style={font=\small}
+    ]
+        % Non-MHI 95% CI ribbon and trend line
+        \addplot[name path=nonmhi_upper, draw=none] table[col sep=comma, x=year, y=ci_high] {analysis_output/plot_trend_nonmhi.csv};
+        \addplot[name path=nonmhi_lower, draw=none] table[col sep=comma, x=year, y=ci_low] {analysis_output/plot_trend_nonmhi.csv};
+        \addplot[blue!20, draw=none, opacity=0.35, forget plot] fill between[of=nonmhi_upper and nonmhi_lower];
+        \addplot[blue!70!black, thick] table[col sep=comma, x=year, y=fit] {analysis_output/plot_trend_nonmhi.csv};
+
+        % MHI 95% CI ribbon and trend line
+        \addplot[name path=mhi_upper, draw=none] table[col sep=comma, x=year, y=ci_high] {analysis_output/plot_trend_mhi.csv};
+        \addplot[name path=mhi_lower, draw=none] table[col sep=comma, x=year, y=ci_low] {analysis_output/plot_trend_mhi.csv};
+        \addplot[red!20, draw=none, opacity=0.35, forget plot] fill between[of=mhi_upper and mhi_lower];
+        \addplot[red!70!black, thick] table[col sep=comma, x=year, y=fit] {analysis_output/plot_trend_mhi.csv};
+
+        % Individual faculty-year points
+        \addplot[only marks, mark=*, mark size=1.5pt, blue!70!black, opacity=0.35, forget plot] table[col sep=comma, x=year, y=salary] {analysis_output/plot_scatter_nonmhi.csv};
+        \addplot[only marks, mark=*, mark size=1.8pt, red!70!black, opacity=0.45, forget plot] table[col sep=comma, x=year, y=salary] {analysis_output/plot_scatter_mhi.csv};
+
+        % Explicit legend swatches with distinct colors/markers
+        \addlegendimage{line legend, draw=blue, very thick, mark=*, mark options={solid, fill=blue, draw=blue}, mark size=2.2pt}
+        \addlegendentry{Non-MHI}
+        \addlegendimage{line legend, draw=red, very thick, mark=square*, mark options={solid, fill=red, draw=red}, mark size=2.2pt}
+        \addlegendentry{MHI}
+    \end{axis}
+    \end{tikzpicture}
+    \caption{Year-by-year faculty salaries (points), color-coded by post-2013 core MHI grouping, with pooled regression trend lines and 95\% confidence bands.}
     \label{fig:salary_trajectories}
 \end{figure}
-}{}
+}{
+\textit{PGFPlots figure data not found. Run \texttt{python3 scripts/build\_pgfplots\_salary\_figure\_data.py}.}
+}
 
 \IfFileExists{figures/salary_boxplot_by_group.png}{
 \begin{figure}[h]
@@ -171,11 +221,11 @@ Key segmented contrast parameters are \(\phi_{2014}=\beta_6\) and \(\phi_{k_2}=\
 
 \subsection*{6.1 Salary Level Differences}
 
-Estimated pooled level difference at centered year is \(+\$14{,}213\) (95\% CI: \([-\$27{,}775,\ +\$56{,}201]\)); permutation p-value is 0.631. Magnitude is potentially meaningful but highly uncertain.
+Estimated pooled level difference at centered year is \(-\$52{,}942\) (95\% CI: \([-\$80{,}488,\ -\$25{,}395]\)); permutation p-value is 0.164. This indicates a sizable negative level contrast for the post-2013 core MHI cohort in pooled specification, though randomization-based extremity remains moderate.
 
 \subsection*{6.2 Salary Growth Differences}
 
-Growth-difference estimates are \(-\$720\)/year (pooled, 95\% CI: \([-\$6{,}593,\ +\$5{,}154]\), permutation p-value 0.833) and \(-\$929\)/year (person FE, 95\% CI: \([-\$3{,}028,\ +\$1{,}170]\), permutation p-value 0.476). Point estimates are consistently negative, but precision is limited.
+Growth-difference estimates are \(+\$1{,}368\)/year (pooled, 95\% CI: \([-\$2{,}269,\ +\$5{,}004]\), permutation p-value 0.707) and \(-\$2{,}026\)/year (person FE, 95\% CI: \([-\$3{,}376,\ -\$677]\), permutation p-value 0.227). Direction differs by specification, indicating sensitivity to between-person versus within-person identifying variation.
 
 \IfFileExists{analysis_output/regression_summary.csv}{
 \begin{table}[h]
@@ -242,7 +292,60 @@ Growth-difference estimates are \(-\$720\)/year (pooled, 95\% CI: \([-\$6{,}593,
     \item Outlier exclusion, inflation adjustment, and additional subsample checks are not yet implemented in the current version.
 \end{itemize}
 
-\subsection*{6.4 Segmented Growth Results}
+\subsection*{6.4 Entry-Cohort and Matched Comparisons}
+\IfFileExists{analysis_output/entry_cohort_growth_summary.csv}{
+\begin{table}[h]
+    \centering
+    \small
+    \resizebox{\textwidth}{!}{
+    \pgfplotstabletypeset[
+        col sep=comma,
+        string type,
+        columns={analysis,cohort_bucket,estimate,std_error,ci_low,ci_high,n_obs,n_clusters,n_treated_clusters},
+        columns/analysis/.style={column name=Analysis},
+        columns/cohort_bucket/.style={column name=Cohort},
+        columns/estimate/.style={column name=Estimate},
+        columns/std_error/.style={column name=SE},
+        columns/ci_low/.style={column name=CI Low},
+        columns/ci_high/.style={column name=CI High},
+        columns/n_obs/.style={column name=N},
+        columns/n_clusters/.style={column name=Clusters},
+        columns/n_treated_clusters/.style={column name=Treated Clusters},
+        every head row/.style={before row=\toprule,after row=\midrule},
+        every last row/.style={after row=\bottomrule}
+    ]{analysis_output/entry_cohort_growth_summary.csv}
+    }
+    \caption{Entry-cohort and matched growth-difference estimates.}
+    \label{tab:entry_cohort_growth}
+\end{table}
+}{}
+
+\IfFileExists{analysis_output/entry_cohort_permutation_summary.csv}{
+\begin{table}[h]
+    \centering
+    \small
+    \resizebox{\textwidth}{!}{
+    \pgfplotstabletypeset[
+        col sep=comma,
+        string type,
+        columns={analysis,cohort_bucket,observed_estimate,p_two_sided,n_permutations,inference_method},
+        columns/analysis/.style={column name=Analysis},
+        columns/cohort_bucket/.style={column name=Cohort},
+        columns/observed_estimate/.style={column name=Observed},
+        columns/p_two_sided/.style={column name=Permutation p},
+        columns/n_permutations/.style={column name=Shuffles},
+        columns/inference_method/.style={column name=Method},
+        every head row/.style={before row=\toprule,after row=\midrule},
+        every last row/.style={after row=\bottomrule}
+    ]{analysis_output/entry_cohort_permutation_summary.csv}
+    }
+    \caption{Permutation inference for entry-cohort and matched analyses.}
+    \label{tab:entry_cohort_perm}
+\end{table}
+}{}
+
+Cohort-aware specifications reduce entry-timing confounding and show more consistent negative MHI growth contrasts. The matched-entry FE estimate remains negative and permutation-significant (\(p=0.008\), exact), while broader cohort-FE specifications are directionally negative but less permutation-extreme.
+\subsection*{6.5 Segmented Growth Results}
 \IfFileExists{analysis_output/segmented_model_summary.csv}{
 \begin{table}[h]
     \centering
@@ -301,9 +404,9 @@ Growth-difference estimates are \(-\$720\)/year (pooled, 95\% CI: \([-\$6{,}593,
 
 A rough minimum-detectable-effect (MDE) approximation uses \((1.96 + 0.84)\times SE \approx 2.8\times SE\):
 \begin{itemize}[leftmargin=*]
-    \item Level contrast MDE (pooled): about \(\$60{,}000\).
-    \item Growth contrast MDE (pooled): about \(\$8{,}391\)/year.
-    \item Growth contrast MDE (person FE): about \(\$2{,}998\)/year.
+    \item Level contrast MDE (pooled): about \(\$39{,}352\).
+    \item Growth contrast MDE (pooled): about \(\$5{,}195\)/year.
+    \item Growth contrast MDE (person FE): about \(\$1{,}928\)/year.
 \end{itemize}
 
 This implies null findings are compatible with both ``no effect'' and ``effects smaller than current precision allows us to detect reliably.''
@@ -318,13 +421,13 @@ This implies null findings are compatible with both ``no effect'' and ``effects 
 
 \section{9. Interpretation}
 
-Point estimates for growth differences are consistently negative, and the implied practical gap over multi-year horizons may be meaningful. At the same time, uncertainty remains substantial and permutation results are not extreme under the null. Stronger conclusions require richer covariates and additional sample depth.
+Under the post-2013 core MHI cohort definition, estimated salary level differences are negative in pooled models, while baseline growth contrasts remain specification-dependent (positive pooled, negative person FE). Entry-cohort and matched comparisons are more consistently negative, with the strongest randomization evidence in the matched-entry FE analysis (\(p=0.008\), exact). Remaining limitations include small treated-cluster counts and missing rank/promotion covariates.
 
 \section{10. Conclusion}
 \begin{enumerate}[leftmargin=*]
-    \item What the data show: directionally negative growth contrasts for Group A relative to Group B, with wide uncertainty.
-    \item What the data do not show: definitive evidence of persistent level or growth differences at current precision.
-    \item What additional data would clarify the issue: promotion timing, rank/history, workload, and extended longitudinal coverage.
+    \item What the data show: a sizable negative pooled level contrast for the post-2013 core MHI cohort and negative growth contrasts in cohort-aware and matched-entry analyses, including permutation-significant evidence in the matched-entry FE design.
+    \item What the data do not show: fully specification-invariant evidence across all model families, especially in baseline pooled and FE growth contrasts.
+    \item What additional data would clarify the issue: promotion timing, rank/history, workload, explicit hire-year covariates, and extended longitudinal coverage (including 2025 onward).
 \end{enumerate}
 
 \appendix
@@ -363,7 +466,7 @@ Table~\ref{tab:level_growth_main} and Table~\ref{tab:perm_main} provide the full
 \section{Appendix C: Data Cleaning Documentation}
 \begin{itemize}[leftmargin=*]
     \item Faculty names are canonicalized before merges across salary and cohort lists.
-    \item Group labels are assigned from the public Health Informatics roster for Group A.
+    \item Group labels in the primary analysis are assigned from a post-2013 core MHI cohort definition.
     \item Panel remains unbalanced; missing salary years are not imputed.
     \item Local/private CV-based files are excluded from git and used only for local exploratory covariates.
 \end{itemize}

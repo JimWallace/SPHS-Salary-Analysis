@@ -1,12 +1,12 @@
 Regression summary (cluster-robust SE by person)
-Cohort definition: MHI (UW Health Informatics Researchers)
+Cohort definition: MHI (Post-2013 Core Cohort)
 
-Pooled OLS | MHI - Non-MHI level (centered year): estimate=14213.215, SE=21422.491, 95% CI [-27774.867, 56201.297], N=315, clusters=40
-Pooled OLS | Non-MHI annual slope: estimate=4404.586, SE=1828.252, 95% CI [821.212, 7987.959], N=315, clusters=40
-Pooled OLS | MHI annual slope: estimate=3684.770, SE=2374.465, 95% CI [-969.182, 8338.722], N=315, clusters=40
-Pooled OLS | MHI - Non-MHI annual slope: estimate=-719.815, SE=2996.763, 95% CI [-6593.471, 5153.840], N=315, clusters=40
-Pooled OLS (Terminal Degree Domain) | Non-health - Health annual slope: estimate=1412.251, SE=1055.126, 95% CI [-655.796, 3480.298], N=158, clusters=17
-Person FE | Non-MHI annual slope: estimate=7750.885, SE=597.649, 95% CI [6579.493, 8922.277], N=313, clusters=38
-Person FE | MHI annual slope: estimate=6821.914, SE=888.382, 95% CI [5080.686, 8563.142], N=313, clusters=38
-Person FE | MHI - Non-MHI annual slope: estimate=-928.971, SE=1070.704, 95% CI [-3027.549, 1169.608], N=313, clusters=38
-Person FE (Terminal Degree Domain) | Non-health - Health annual slope: estimate=-15.616, SE=866.412, 95% CI [-1713.784, 1682.551], N=158, clusters=17
+Pooled OLS | MHI - Non-MHI level (centered year): estimate=-52941.697, SE=14054.207, 95% CI [-80487.943, -25395.452], N=315, clusters=40
+Pooled OLS | Non-MHI annual slope: estimate=4571.320, SE=1553.240, 95% CI [1526.970, 7615.670], N=315, clusters=40
+Pooled OLS | MHI annual slope: estimate=5939.005, SE=1014.590, 95% CI [3950.410, 7927.601], N=315, clusters=40
+Pooled OLS | MHI - Non-MHI annual slope: estimate=1367.685, SE=1855.248, 95% CI [-2268.601, 5003.971], N=315, clusters=40
+Pooled OLS (Terminal Degree Domain) | Non-health - Health annual slope: estimate=914.112, SE=1131.681, 95% CI [-1303.984, 3132.207], N=158, clusters=17
+Person FE | Non-MHI annual slope: estimate=7641.280, SE=534.233, 95% CI [6594.183, 8688.376], N=313, clusters=38
+Person FE | MHI annual slope: estimate=5614.826, SE=434.386, 95% CI [4763.429, 6466.223], N=313, clusters=38
+Person FE | MHI - Non-MHI annual slope: estimate=-2026.453, SE=688.546, 95% CI [-3376.004, -676.902], N=313, clusters=38
+Person FE (Terminal Degree Domain) | Non-health - Health annual slope: estimate=-104.526, SE=727.331, 95% CI [-1530.094, 1321.043], N=158, clusters=17

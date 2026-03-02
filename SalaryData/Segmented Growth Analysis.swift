@@ -353,6 +353,9 @@ func runSegmentedGrowthAnalysis(
     cohort: CohortDefinition,
     config: RegressionAnalysisConfig
 ) {
+    if !config.runPermutationInference {
+        print("Skipping segmented permutation inference for cohort: \(cohort.label)")
+    }
     let knot2014 = config.knotsFixed.first ?? 2014
     let knotYears = Array(Set(config.knot2SensitivityYears + [config.knot2SalaryYear])).sorted()
     let feRows = rowsWithAtLeastTwoObservations(rows)
@@ -368,26 +371,30 @@ func runSegmentedGrowthAnalysis(
         if let pooled, let summary = segmentedSummaryFromResult(result: pooled, model: "Pooled OLS (Segmented)", breakYear: knot2) {
             modelRows.append(summary)
 
-            let pPhi2014 = permutationSummaryForSelectedCoefficient(
-                rows: rows,
-                modelName: "Pooled OLS (Segmented)",
-                slopeGapTerm: "K2014XMHI",
-                fitModel: { pooledSegmentedGrowthModel(rows: $0, knot2014: knot2014, knot2: knot2) },
-                coefficientIndexResolver: { result in result.variableNames.firstIndex(of: "K2014XMHI") },
-                randomDraws: config.permutationDraws,
-                exactCombinationLimit: config.permutationExactCombinationLimit,
-                seed: config.permutationSeedBase + 100 + UInt64(knot2)
-            )
-            let pPhiK2 = permutationSummaryForSelectedCoefficient(
-                rows: rows,
-                modelName: "Pooled OLS (Segmented)",
-                slopeGapTerm: "KK2XMHI",
-                fitModel: { pooledSegmentedGrowthModel(rows: $0, knot2014: knot2014, knot2: knot2) },
-                coefficientIndexResolver: { result in result.variableNames.firstIndex(of: "KK2XMHI") },
-                randomDraws: config.permutationDraws,
-                exactCombinationLimit: config.permutationExactCombinationLimit,
-                seed: config.permutationSeedBase + 200 + UInt64(knot2)
-            )
+            var pPhi2014: PermutationSummaryRow?
+            var pPhiK2: PermutationSummaryRow?
+            if config.runPermutationInference {
+                pPhi2014 = permutationSummaryForSelectedCoefficient(
+                    rows: rows,
+                    modelName: "Pooled OLS (Segmented)",
+                    slopeGapTerm: "K2014XMHI",
+                    fitModel: { pooledSegmentedGrowthModel(rows: $0, knot2014: knot2014, knot2: knot2) },
+                    coefficientIndexResolver: { result in result.variableNames.firstIndex(of: "K2014XMHI") },
+                    randomDraws: config.permutationDraws,
+                    exactCombinationLimit: config.permutationExactCombinationLimit,
+                    seed: config.permutationSeedBase + 100 + UInt64(knot2)
+                )
+                pPhiK2 = permutationSummaryForSelectedCoefficient(
+                    rows: rows,
+                    modelName: "Pooled OLS (Segmented)",
+                    slopeGapTerm: "KK2XMHI",
+                    fitModel: { pooledSegmentedGrowthModel(rows: $0, knot2014: knot2014, knot2: knot2) },
+                    coefficientIndexResolver: { result in result.variableNames.firstIndex(of: "KK2XMHI") },
+                    randomDraws: config.permutationDraws,
+                    exactCombinationLimit: config.permutationExactCombinationLimit,
+                    seed: config.permutationSeedBase + 200 + UInt64(knot2)
+                )
+            }
 
             if let perm = pPhi2014 {
                 permRows.append(
@@ -442,26 +449,30 @@ func runSegmentedGrowthAnalysis(
         if let fe, let summary = segmentedSummaryFromResult(result: fe, model: "Person FE (Segmented)", breakYear: knot2) {
             modelRows.append(summary)
 
-            let pPhi2014 = permutationSummaryForSelectedCoefficient(
-                rows: feRows,
-                modelName: "Person FE (Segmented)",
-                slopeGapTerm: "K2014XMHI",
-                fitModel: { fixedEffectsSegmentedGrowthModel(rows: $0, knot2014: knot2014, knot2: knot2) },
-                coefficientIndexResolver: { result in result.variableNames.firstIndex(of: "K2014XMHI") },
-                randomDraws: config.permutationDraws,
-                exactCombinationLimit: config.permutationExactCombinationLimit,
-                seed: config.permutationSeedBase + 300 + UInt64(knot2)
-            )
-            let pPhiK2 = permutationSummaryForSelectedCoefficient(
-                rows: feRows,
-                modelName: "Person FE (Segmented)",
-                slopeGapTerm: "KK2XMHI",
-                fitModel: { fixedEffectsSegmentedGrowthModel(rows: $0, knot2014: knot2014, knot2: knot2) },
-                coefficientIndexResolver: { result in result.variableNames.firstIndex(of: "KK2XMHI") },
-                randomDraws: config.permutationDraws,
-                exactCombinationLimit: config.permutationExactCombinationLimit,
-                seed: config.permutationSeedBase + 400 + UInt64(knot2)
-            )
+            var pPhi2014: PermutationSummaryRow?
+            var pPhiK2: PermutationSummaryRow?
+            if config.runPermutationInference {
+                pPhi2014 = permutationSummaryForSelectedCoefficient(
+                    rows: feRows,
+                    modelName: "Person FE (Segmented)",
+                    slopeGapTerm: "K2014XMHI",
+                    fitModel: { fixedEffectsSegmentedGrowthModel(rows: $0, knot2014: knot2014, knot2: knot2) },
+                    coefficientIndexResolver: { result in result.variableNames.firstIndex(of: "K2014XMHI") },
+                    randomDraws: config.permutationDraws,
+                    exactCombinationLimit: config.permutationExactCombinationLimit,
+                    seed: config.permutationSeedBase + 300 + UInt64(knot2)
+                )
+                pPhiK2 = permutationSummaryForSelectedCoefficient(
+                    rows: feRows,
+                    modelName: "Person FE (Segmented)",
+                    slopeGapTerm: "KK2XMHI",
+                    fitModel: { fixedEffectsSegmentedGrowthModel(rows: $0, knot2014: knot2014, knot2: knot2) },
+                    coefficientIndexResolver: { result in result.variableNames.firstIndex(of: "KK2XMHI") },
+                    randomDraws: config.permutationDraws,
+                    exactCombinationLimit: config.permutationExactCombinationLimit,
+                    seed: config.permutationSeedBase + 400 + UInt64(knot2)
+                )
+            }
 
             if let perm = pPhi2014 {
                 permRows.append(
