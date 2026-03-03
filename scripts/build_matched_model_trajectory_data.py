@@ -8,6 +8,8 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA_PATH = ROOT / "data" / "sphs.csv"
 PAIRS_PATH = ROOT / "analysis_output" / "entry_cohort_matched_pairs.csv"
 OUT_PATH = ROOT / "analysis_output" / "plot_matched_model_trajectories.csv"
+OUT_SCATTER_MHI_PATH = ROOT / "analysis_output" / "plot_matched_scatter_mhi.csv"
+OUT_SCATTER_NONMHI_PATH = ROOT / "analysis_output" / "plot_matched_scatter_nonmhi.csv"
 
 
 def norm(value: str) -> str:
@@ -179,6 +181,33 @@ def fit_matched_fe_slopes(records):
     }
 
 
+def build_matched_scatter_rows(records):
+    by_person = {}
+    for r in records:
+        by_person.setdefault(r["person_id"], []).append(r)
+    for person_rows in by_person.values():
+        person_rows.sort(key=lambda x: x["year"])
+
+    mhi_rows = []
+    nonmhi_rows = []
+    for person, person_rows in by_person.items():
+        if not person_rows:
+            continue
+        first_year = person_rows[0]["year"]
+        is_mhi = bool(person_rows[0]["mhi"])
+        for row in person_rows:
+            out_row = {
+                "years_since_entry": int(row["year"] - first_year),
+                "salary": f'{row["salary"]:.3f}',
+                "faculty": person,
+            }
+            if is_mhi:
+                mhi_rows.append(out_row)
+            else:
+                nonmhi_rows.append(out_row)
+    return mhi_rows, nonmhi_rows
+
+
 def main():
     all_records = parse_salary_matrix()
     matched_people = load_matched_people()
@@ -243,7 +272,19 @@ def main():
         writer.writeheader()
         writer.writerows(rows)
 
+    scatter_mhi, scatter_nonmhi = build_matched_scatter_rows(matched_records)
+    with OUT_SCATTER_MHI_PATH.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=["years_since_entry", "salary", "faculty"])
+        writer.writeheader()
+        writer.writerows(scatter_mhi)
+    with OUT_SCATTER_NONMHI_PATH.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=["years_since_entry", "salary", "faculty"])
+        writer.writeheader()
+        writer.writerows(scatter_nonmhi)
+
     print(f"Wrote matched model trajectory data: {OUT_PATH}")
+    print(f"Wrote matched MHI scatter data: {OUT_SCATTER_MHI_PATH}")
+    print(f"Wrote matched non-MHI scatter data: {OUT_SCATTER_NONMHI_PATH}")
     print(
         "Model summary:",
         f"non-MHI slope={beta_non:.3f},",
