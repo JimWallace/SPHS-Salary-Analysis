@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import csv
+import re
 from collections import defaultdict
 from pathlib import Path
 from statistics import mean
@@ -16,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 INPUT_CSV = ROOT / "data" / "sphs.csv"
 OUT_DIR = ROOT / "analysis_output"
 FIG_DIR = ROOT / "figures"
+SPHS_LIST = ROOT / "SalaryData" / "SPHS Faculty List.swift"
 
 
 def parse_float(value: str) -> float | None:
@@ -28,17 +30,38 @@ def parse_float(value: str) -> float | None:
         return None
 
 
+def fmt_number(value: float | None) -> str:
+    if value is None:
+        return ""
+    return f"{value:.2f}"
+
+
+def canon(name: str) -> str:
+    return " ".join(name.strip().upper().split())
+
+
+def load_allowed_faculty() -> set[str]:
+    text = SPHS_LIST.read_text(encoding="utf-8")
+    names = re.findall(r'"([^"\n]+)"', text)
+    return {canon(name) for name in names}
+
+
 def load_panel_rows() -> list[dict[str, object]]:
+    allowed = load_allowed_faculty()
     with INPUT_CSV.open(newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
+        fieldnames = reader.fieldnames or []
+        year_cols = sorted(int(c.strip()) for c in fieldnames if c and c.strip().isdigit())
         rows: list[dict[str, object]] = []
         for raw in reader:
             row = {k.strip(): (v.strip() if isinstance(v, str) else v) for k, v in raw.items()}
             surname = row.get("Surame") or row.get("Surname") or ""
             given = row.get("Given name") or row.get("Given Name") or ""
             full_name = f"{surname}, {given}".strip(", ")
+            if canon(full_name) not in allowed:
+                continue
             is_group_a = str(row.get("MHI", "")).strip().lower() == "true"
-            for year in range(2011, 2025):
+            for year in year_cols:
                 salary = parse_float(str(row.get(str(year), "")))
                 if salary is None:
                     continue
@@ -80,11 +103,11 @@ def write_year_means(panel_rows: list[dict[str, object]]) -> None:
             w.writerow(
                 [
                     year,
-                    f"{mean_a:.3f}" if mean_a is not None else "",
-                    f"{mean_b:.3f}" if mean_b is not None else "",
+                    fmt_number(mean_a),
+                    fmt_number(mean_b),
                     len(a),
                     len(b),
-                    f"{diff:.3f}" if diff is not None else "",
+                    fmt_number(diff),
                 ]
             )
 
