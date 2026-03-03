@@ -1,7 +1,7 @@
 faculty_name,mhi,term_domain,term_non_health,term_reason_code,self_parse_status,self_text_quality,sf_health_services_policy,sf_mental_behavioral,sf_epidemiology_biostatistics,sf_aging_gerontology,sf_rehabilitation_disability,sf_substance_tobacco,sf_environmental_occupational,sf_nutrition_diet,sf_health_informatics_data,sf_global_population_health,public_listed,public_cross_appointment,public_group_count,public_name,public_profile_url,public_group_tags,g_researchers,g_cdpm,g_health_policy,g_health_aging,g_health_environment,g_food_water,g_hi,g_global_health,g_neuro_cog_epi,g_healthy_workplaces
 ANTHONY | KELLY K.,0,unknown,,ambiguous-domain,ok,0.996,0,0,0,0,0,0,0,0,0,0,1,0,1,Kelly Anthony,https://uwaterloo.ca/public-health-sciences/profiles/kelly-anthony,Researchers,1,0,0,0,0,0,0,0,0,0
 BARDWELL | GEOFFREY,0,unknown,,no-doctoral-line,ok,0.744,0,0,0,0,0,0,0,0,0,0,0,0,0,,,,0,0,0,0,0,0,0,0,0,0
-BIELOW | PHILIP L.,0,health,0,other,ok,1.000,1,1,1,0,1,0,1,0,0,0,0,0,0,,,,0,0,0,0,0,0,0,0,0,0
+BIGELOW | PHILIP L.,0,,,,,,,,,,,,,,,,1,0,2,Philip Bigelow,https://uwaterloo.ca/public-health-sciences/profiles/philip-bigelow,Researchers | Healthy workplaces researcher,1,0,0,0,0,0,0,0,0,1
 BUTT | ZAHID,0,health,0,other,ok,0.999,0,0,1,0,0,0,0,0,0,0,1,0,2,Zahid A. Butt,https://uwaterloo.ca/public-health-sciences/profiles/zahid-butt,Health informatics researcher | Global health researcher,0,0,0,0,0,0,1,1,0,0
 CHAURASIA | ASHOK,1,non-health,1,other,ok,0.987,0,0,0,0,0,0,0,0,0,0,1,0,2,Ashok Chaurasia,https://uwaterloo.ca/public-health-sciences/profiles/ashok-chaurasia,Researchers | Health informatics researcher,1,0,0,0,0,0,1,0,0,0
 CHEN | HELEN H.,1,unknown,,ambiguous-domain,ok,0.996,1,0,0,0,0,0,0,0,0,0,1,0,4,Helen Chen,https://uwaterloo.ca/public-health-sciences/profiles/helen-chen,Researchers | Chronic disease prevention and management researcher | Health informatics researcher | Health policy and health systems researcher,1,1,1,0,0,0,1,0,0,0
@@ -37,7 +37,7 @@ WILLIAMS | DIANE,0,unknown,,ambiguous-domain,ok,0.997,0,0,0,0,0,0,0,0,0,0,1,0,2,
 YESSIS | JENNIFER L,0,unknown,,no-doctoral-line,ok,0.798,0,0,0,0,0,0,0,0,0,0,1,0,2,Jennifer Yessis,https://uwaterloo.ca/public-health-sciences/profiles/jennifer-yessis,Researchers | Chronic disease prevention and management researcher,1,1,0,0,0,0,0,0,0,0
 MCKILLOP | IAN,1,unknown,,no-cv-match,no-cv-match,0.000,,,,,,,,,,,0,0,0,,,,0,0,0,0,0,0,0,0,0,0
 AROCHA | JOSE,1,unknown,,no-cv-match,no-cv-match,0.000,,,,,,,,,,,0,0,0,,,,0,0,0,0,0,0,0,0,0,0
-CORBET | KITTY KING,0,unknown,,no-cv-match,no-cv-match,0.000,,,,,,,,,,,0,0,0,,,,0,0,0,0,0,0,0,0,0,0
+CORBET | KITTY,0,,,,,,,,,,,,,,,,0,0,0,,,,0,0,0,0,0,0,0,0,0,0
 GARCIA | JOHN M,0,unknown,,no-cv-match,no-cv-match,0.000,,,,,,,,,,,0,0,0,,,,0,0,0,0,0,0,0,0,0,0
 HANNING | RHONA,0,unknown,,no-cv-match,no-cv-match,0.000,,,,,,,,,,,0,0,0,,,,0,0,0,0,0,0,0,0,0,0
 HORTON | SUSAN E.,0,unknown,,no-cv-match,no-cv-match,0.000,,,,,,,,,,,0,0,0,,,,0,0,0,0,0,0,0,0,0,0

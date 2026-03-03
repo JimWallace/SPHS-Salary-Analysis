@@ -4,9 +4,12 @@ import math
 from collections import defaultdict
 from pathlib import Path
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
+try:
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+except Exception:  # pragma: no cover
+    plt = None
 
 ROOT = Path(__file__).resolve().parent.parent
 ANALYSIS = ROOT / "analysis_output"
@@ -135,7 +138,6 @@ for r in records:
 for p in by_person:
     by_person[p].sort(key=lambda x: x["year"])
 
-first_year = {p: rs[0]["year"] for p, rs in by_person.items()}
 start_salary = {p: rs[0]["salary"] for p, rs in by_person.items()}
 
 mhi_people = [r["mhi_person"] for r in pair_rows]
@@ -147,7 +149,10 @@ matched_n_obs = len(matched_person_years)
 n_clusters = len(matched_people)
 n_treated = len(mhi_people)
 
-entry_balance = mean_diff_with_ci([first_year[p] for p in mhi_people], [first_year[p] for p in non_people])
+entry_balance = mean_diff_with_ci(
+    [to_int(r["mhi_first_year"]) for r in pair_rows],
+    [to_int(r["non_mhi_first_year"]) for r in pair_rows],
+)
 salary_balance = mean_diff_with_ci([start_salary[p] for p in mhi_people], [start_salary[p] for p in non_people])
 
 # D) balance summary md + csv
@@ -270,42 +275,45 @@ for y in [1, 2, 3, 4, 5]:
 
 
 # F) matched FE trajectories figure
-fig, ax = plt.subplots(figsize=(10, 6), dpi=150)
-colors = {True: "#c0392b", False: "#1f4e79"}
-labels_done = {True: False, False: False}
+if plt is not None:
+    fig, ax = plt.subplots(figsize=(10, 6), dpi=150)
+    colors = {True: "#c0392b", False: "#1f4e79"}
+    labels_done = {True: False, False: False}
 
-for person, series in by_person.items():
-    if person not in matched_people:
-        continue
-    first = first_year[person]
-    xs = [r["year"] - first for r in series]
-    ys = [r["salary"] for r in series]
-    grp = series[0]["mhi"]
-    label = "MHI faculty" if grp else "Non-MHI faculty"
-    ax.plot(xs, ys, color=colors[grp], alpha=0.35, linewidth=1.5, label=label if not labels_done[grp] else None)
-    labels_done[grp] = True
-
-for grp in [False, True]:
-    series = defaultdict(list)
-    for person in matched_people:
-        pseries = by_person[person]
-        if pseries[0]["mhi"] != grp:
+    for person, series in by_person.items():
+        if person not in matched_people:
             continue
         first = first_year[person]
-        for r in pseries:
-            series[r["year"] - first].append(r["salary"])
-    xs = sorted(series.keys())
-    ys = [sum(series[x]) / len(series[x]) for x in xs]
-    ax.plot(xs, ys, color=colors[grp], linewidth=3.0, label=("Mean non-MHI" if not grp else "Mean MHI"))
+        xs = [r["year"] - first for r in series]
+        ys = [r["salary"] for r in series]
+        grp = series[0]["mhi"]
+        label = "MHI faculty" if grp else "Non-MHI faculty"
+        ax.plot(xs, ys, color=colors[grp], alpha=0.35, linewidth=1.5, label=label if not labels_done[grp] else None)
+        labels_done[grp] = True
 
-ax.set_title("Matched Sample Salary Trajectories by Years Since Entry")
-ax.set_xlabel("Years Since First Disclosure")
-ax.set_ylabel("Salary (CAD)")
-ax.grid(alpha=0.2)
-ax.legend(frameon=False)
-fig.tight_layout()
-fig.savefig(OUT / "fig_matched_FE_trajectories.png")
-plt.close(fig)
+    for grp in [False, True]:
+        series = defaultdict(list)
+        for person in matched_people:
+            pseries = by_person[person]
+            if pseries[0]["mhi"] != grp:
+                continue
+            first = first_year[person]
+            for r in pseries:
+                series[r["year"] - first].append(r["salary"])
+        xs = sorted(series.keys())
+        ys = [sum(series[x]) / len(series[x]) for x in xs]
+        ax.plot(xs, ys, color=colors[grp], linewidth=3.0, label=("Mean non-MHI" if not grp else "Mean MHI"))
+
+    ax.set_title("Matched Sample Salary Trajectories by Years Since Entry")
+    ax.set_xlabel("Years Since First Disclosure")
+    ax.set_ylabel("Salary (CAD)")
+    ax.grid(alpha=0.2)
+    ax.legend(frameon=False)
+    fig.tight_layout()
+    fig.savefig(OUT / "fig_matched_FE_trajectories.png")
+    plt.close(fig)
+else:
+    print("matplotlib not available; skipping matched FE trajectories figure.")
 
 
 # G) repro commands

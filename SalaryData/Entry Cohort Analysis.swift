@@ -54,6 +54,74 @@ private func firstDisclosureYearByPerson(_ rows: [AnalysisRow]) -> [String: Int]
     return map
 }
 
+private func loadCVStartYearByCanonicalName(
+    allowedConfidences: Set<String> = ["high", "medium"]
+) -> [String: Int] {
+    let fileManager = FileManager.default
+    let csvURL = URL(fileURLWithPath: fileManager.currentDirectoryPath, isDirectory: true)
+        .appendingPathComponent("analysis_output/cv_start_year_crosswalk.csv")
+    guard fileManager.fileExists(atPath: csvURL.path) else {
+        print("CV start-year crosswalk not found at \(csvURL.path). Skipping CV start-year sensitivity.")
+        return [:]
+    }
+
+    do {
+        let contents = try String(contentsOf: csvURL, encoding: .utf8)
+        let lines = contents.split(whereSeparator: \.isNewline).map(String.init)
+        guard let headerLine = lines.first else { return [:] }
+        let headers = parseCSVLine(headerLine)
+        guard let nameIndex = headers.firstIndex(of: "salary_name"),
+              let yearIndex = headers.firstIndex(of: "cv_start_year"),
+              let confidenceIndex = headers.firstIndex(of: "cv_start_confidence") else {
+            print("CV start-year crosswalk missing expected columns. Skipping CV start-year sensitivity.")
+            return [:]
+        }
+
+        var map: [String: Int] = [:]
+        for line in lines.dropFirst() {
+            let fields = parseCSVLine(line)
+            guard nameIndex < fields.count, yearIndex < fields.count, confidenceIndex < fields.count else { continue }
+            let confidence = fields[confidenceIndex].trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+            guard allowedConfidences.contains(confidence) else { continue }
+            guard let year = Int(fields[yearIndex].trimmingCharacters(in: .whitespacesAndNewlines)) else { continue }
+            let canonicalName = canonicalFacultyName(fields[nameIndex])
+            guard !canonicalName.isEmpty else { continue }
+            map[canonicalName] = year
+        }
+        print("Loaded CV start years (confidence \(allowedConfidences.sorted().joined(separator: "/"))): \(map.count) faculty.")
+        return map
+    } catch {
+        print("Failed reading CV start-year crosswalk: \(error). Skipping CV start-year sensitivity.")
+        return [:]
+    }
+}
+
+private func firstYearMapUsingCVOverrides(
+    rows: [AnalysisRow],
+    baseFirstYearMap: [String: Int],
+    cvStartYearByCanonicalName: [String: Int]
+) -> [String: Int] {
+    var canonicalToPersonIDs: [String: Set<String>] = [:]
+    for row in rows {
+        let canonical = canonicalFacultyName(row.personID)
+        canonicalToPersonIDs[canonical, default: []].insert(row.personID)
+    }
+
+    var merged = baseFirstYearMap
+    var overrideCount = 0
+    for (canonical, cvYear) in cvStartYearByCanonicalName {
+        guard let personIDs = canonicalToPersonIDs[canonical] else { continue }
+        for personID in personIDs {
+            if merged[personID] != cvYear {
+                merged[personID] = cvYear
+                overrideCount += 1
+            }
+        }
+    }
+    print("Applied CV first-year overrides to \(overrideCount) person IDs (base: \(baseFirstYearMap.count), merged: \(merged.count)).")
+    return merged
+}
+
 private func cohortBucketLabel(for firstYear: Int) -> String? {
     for bucket in entryCohortBuckets where firstYear >= bucket.start && firstYear <= bucket.end {
         return bucket.label
@@ -375,139 +443,39 @@ func runEntryCohortAnalysis(
     if !config.runPermutationInference {
         print("Skipping entry-cohort permutation inference for cohort: \(cohort.label)")
     }
-    let firstYearMap = firstDisclosureYearByPerson(rows)
+    func runWithFirstYearMap(_ firstYearMap: [String: Int], outputSuffix: String?) {
+        var summaryRows: [EntryCohortSummaryRow] = []
+        var permutationRows: [EntryCohortPermutationRow] = []
 
-    var summaryRows: [EntryCohortSummaryRow] = []
-    var permutationRows: [EntryCohortPermutationRow] = []
-
-    // 1) Full-sample years-since model with entry-cohort FE.
-    if let pooledWithCohort = pooledYearsSinceModelWithCohortFE(rows: rows, firstYearByPerson: firstYearMap),
-       let treatedClusters = Set(rows.filter { $0.mhi == 1.0 }.map(\.personID)).count as Int? {
-        if let summary = summaryRowFromResult(
-            analysis: "Pooled with entry-cohort FE",
-            cohortBucket: "All cohorts",
-            result: pooledWithCohort,
-            interactionTerm: "YearsSinceFirstXMHI",
-            treatedClusterCount: treatedClusters
-        ) {
-            summaryRows.append(summary)
-        }
-
-        if config.runPermutationInference, let perm = permutationSummaryForSelectedCoefficient(
-            rows: rows,
-            modelName: "Pooled with entry-cohort FE",
-            slopeGapTerm: "YearsSinceFirstXMHI",
-            fitModel: { pooledYearsSinceModelWithCohortFE(rows: $0, firstYearByPerson: firstYearMap) },
-            coefficientIndexResolver: { result in
-                result.variableNames.firstIndex(of: "YearsSinceFirstXMHI")
-            },
-            randomDraws: config.permutationDraws,
-            exactCombinationLimit: config.permutationExactCombinationLimit,
-            seed: config.permutationSeedBase + 501
-        ) {
-            permutationRows.append(
-                EntryCohortPermutationRow(
-                    analysis: "Pooled with entry-cohort FE",
-                    cohortBucket: "All cohorts",
-                    model: perm.model,
-                    term: perm.term,
-                    observedEstimate: perm.observedEstimate,
-                    nullMean: perm.nullMean,
-                    nullStdDev: perm.nullStdDev,
-                    nullQ025: perm.nullQ025,
-                    nullQ975: perm.nullQ975,
-                    pTwoSided: perm.pTwoSided,
-                    nPermutations: perm.nPermutations,
-                    inferenceMethod: perm.inferenceMethod
-                )
-            )
-        }
-    }
-
-    // 2) Within-entry-cohort FE growth differences.
-    let personToBucket = firstYearMap.compactMapValues(cohortBucketLabel)
-    for bucket in entryCohortBuckets.map(\.label) {
-        let personIDs = Set(personToBucket.filter { $0.value == bucket }.map(\.key))
-        let subset = rows.filter { personIDs.contains($0.personID) }
-        let feSubset = rowsWithAtLeastTwoObservations(subset)
-        let treatedClusters = Set(feSubset.filter { $0.mhi == 1.0 }.map(\.personID)).count
-        let controlClusters = Set(feSubset.filter { $0.mhi == 0.0 }.map(\.personID)).count
-        guard treatedClusters > 1, controlClusters > 1 else { continue }
-
-        let firstSubsetMap = firstDisclosureYearByPerson(feSubset)
-        guard let feResult = fixedEffectsYearsSinceModel(rows: feSubset, firstYearByPerson: firstSubsetMap) else { continue }
-        if let summary = summaryRowFromResult(
-            analysis: "Within-cohort FE",
-            cohortBucket: bucket,
-            result: feResult,
-            interactionTerm: "YearsSinceFirstXMHI",
-            treatedClusterCount: treatedClusters
-        ) {
-            summaryRows.append(summary)
-        }
-
-        if config.runPermutationInference, let perm = permutationSummaryForSelectedCoefficient(
-            rows: feSubset,
-            modelName: "Within-cohort FE",
-            slopeGapTerm: "YearsSinceFirstXMHI",
-            fitModel: { fixedEffectsYearsSinceModel(rows: $0, firstYearByPerson: firstSubsetMap) },
-            coefficientIndexResolver: { result in result.variableNames.firstIndex(of: "YearsSinceFirstXMHI") },
-            randomDraws: config.permutationDraws,
-            exactCombinationLimit: config.permutationExactCombinationLimit,
-            seed: config.permutationSeedBase + UInt64(600 + (entryCohortBuckets.firstIndex { $0.label == bucket } ?? 0))
-        ) {
-            permutationRows.append(
-                EntryCohortPermutationRow(
-                    analysis: "Within-cohort FE",
-                    cohortBucket: bucket,
-                    model: perm.model,
-                    term: perm.term,
-                    observedEstimate: perm.observedEstimate,
-                    nullMean: perm.nullMean,
-                    nullStdDev: perm.nullStdDev,
-                    nullQ025: perm.nullQ025,
-                    nullQ975: perm.nullQ975,
-                    pTwoSided: perm.pTwoSided,
-                    nPermutations: perm.nPermutations,
-                    inferenceMethod: perm.inferenceMethod
-                )
-            )
-        }
-    }
-
-    // 3) Matched comparison within ±1 year first disclosure.
-    let pairs = buildMatchedPairs(rows: rows, firstYearByPerson: firstYearMap, yearWindow: config.matchingYearWindow)
-    let matchedPeople = Set(pairs.flatMap { [$0.mhiPersonID, $0.nonMHIPersonID] })
-    if !matchedPeople.isEmpty {
-        let matchedRows = rows.filter { matchedPeople.contains($0.personID) }
-        let matchedFirstMap = firstDisclosureYearByPerson(matchedRows)
-        let matchedFERows = rowsWithAtLeastTwoObservations(matchedRows)
-
-        if let feMatched = fixedEffectsYearsSinceModel(rows: matchedFERows, firstYearByPerson: matchedFirstMap),
-           let treatedClusters = Set(matchedFERows.filter { $0.mhi == 1.0 }.map(\.personID)).count as Int?,
-           let summary = summaryRowFromResult(
-                analysis: "Matched FE (±\(config.matchingYearWindow) year)",
-                cohortBucket: "Matched set",
-                result: feMatched,
+        // 1) Full-sample years-since model with entry-cohort FE.
+        if let pooledWithCohort = pooledYearsSinceModelWithCohortFE(rows: rows, firstYearByPerson: firstYearMap),
+           let treatedClusters = Set(rows.filter { $0.mhi == 1.0 }.map(\.personID)).count as Int? {
+            if let summary = summaryRowFromResult(
+                analysis: "Pooled with entry-cohort FE",
+                cohortBucket: "All cohorts",
+                result: pooledWithCohort,
                 interactionTerm: "YearsSinceFirstXMHI",
                 treatedClusterCount: treatedClusters
-           ) {
-            summaryRows.append(summary)
+            ) {
+                summaryRows.append(summary)
+            }
 
             if config.runPermutationInference, let perm = permutationSummaryForSelectedCoefficient(
-                rows: matchedFERows,
-                modelName: "Matched FE",
+                rows: rows,
+                modelName: "Pooled with entry-cohort FE",
                 slopeGapTerm: "YearsSinceFirstXMHI",
-                fitModel: { fixedEffectsYearsSinceModel(rows: $0, firstYearByPerson: matchedFirstMap) },
-                coefficientIndexResolver: { result in result.variableNames.firstIndex(of: "YearsSinceFirstXMHI") },
+                fitModel: { pooledYearsSinceModelWithCohortFE(rows: $0, firstYearByPerson: firstYearMap) },
+                coefficientIndexResolver: { result in
+                    result.variableNames.firstIndex(of: "YearsSinceFirstXMHI")
+                },
                 randomDraws: config.permutationDraws,
                 exactCombinationLimit: config.permutationExactCombinationLimit,
-                seed: config.permutationSeedBase + 700
+                seed: config.permutationSeedBase + 501
             ) {
                 permutationRows.append(
                     EntryCohortPermutationRow(
-                        analysis: "Matched FE (±\(config.matchingYearWindow) year)",
-                        cohortBucket: "Matched set",
+                        analysis: "Pooled with entry-cohort FE",
+                        cohortBucket: "All cohorts",
                         model: perm.model,
                         term: perm.term,
                         observedEstimate: perm.observedEstimate,
@@ -523,27 +491,148 @@ func runEntryCohortAnalysis(
             }
         }
 
-        if let slopeSummary = matchedAverageSlopeGap(
-            rows: matchedRows,
-            matchedPeople: matchedPeople,
-            firstYearByPerson: matchedFirstMap,
-            horizonYears: config.matchedSlopeHorizonYears
-        ) {
-            summaryRows.append(slopeSummary)
+        // 2) Within-entry-cohort FE growth differences.
+        let personToBucket = firstYearMap.compactMapValues(cohortBucketLabel)
+        for bucket in entryCohortBuckets.map(\.label) {
+            let personIDs = Set(personToBucket.filter { $0.value == bucket }.map(\.key))
+            let subset = rows.filter { personIDs.contains($0.personID) }
+            let feSubset = rowsWithAtLeastTwoObservations(subset)
+            let treatedClusters = Set(feSubset.filter { $0.mhi == 1.0 }.map(\.personID)).count
+            let controlClusters = Set(feSubset.filter { $0.mhi == 0.0 }.map(\.personID)).count
+            guard treatedClusters > 1, controlClusters > 1 else { continue }
+
+            let fePersonIDs = Set(feSubset.map(\.personID))
+            let firstSubsetMap = Dictionary(uniqueKeysWithValues: fePersonIDs.compactMap { id in
+                firstYearMap[id].map { (id, $0) }
+            })
+            guard let feResult = fixedEffectsYearsSinceModel(rows: feSubset, firstYearByPerson: firstSubsetMap) else { continue }
+            if let summary = summaryRowFromResult(
+                analysis: "Within-cohort FE",
+                cohortBucket: bucket,
+                result: feResult,
+                interactionTerm: "YearsSinceFirstXMHI",
+                treatedClusterCount: treatedClusters
+            ) {
+                summaryRows.append(summary)
+            }
+
+            if config.runPermutationInference, let perm = permutationSummaryForSelectedCoefficient(
+                rows: feSubset,
+                modelName: "Within-cohort FE",
+                slopeGapTerm: "YearsSinceFirstXMHI",
+                fitModel: { fixedEffectsYearsSinceModel(rows: $0, firstYearByPerson: firstSubsetMap) },
+                coefficientIndexResolver: { result in result.variableNames.firstIndex(of: "YearsSinceFirstXMHI") },
+                randomDraws: config.permutationDraws,
+                exactCombinationLimit: config.permutationExactCombinationLimit,
+                seed: config.permutationSeedBase + UInt64(600 + (entryCohortBuckets.firstIndex { $0.label == bucket } ?? 0))
+            ) {
+                permutationRows.append(
+                    EntryCohortPermutationRow(
+                        analysis: "Within-cohort FE",
+                        cohortBucket: bucket,
+                        model: perm.model,
+                        term: perm.term,
+                        observedEstimate: perm.observedEstimate,
+                        nullMean: perm.nullMean,
+                        nullStdDev: perm.nullStdDev,
+                        nullQ025: perm.nullQ025,
+                        nullQ975: perm.nullQ975,
+                        pTwoSided: perm.pTwoSided,
+                        nPermutations: perm.nPermutations,
+                        inferenceMethod: perm.inferenceMethod
+                    )
+                )
+            }
         }
+
+        // 3) Matched comparison within ±1 year first disclosure/CV.
+        let pairs = buildMatchedPairs(rows: rows, firstYearByPerson: firstYearMap, yearWindow: config.matchingYearWindow)
+        let matchedPeople = Set(pairs.flatMap { [$0.mhiPersonID, $0.nonMHIPersonID] })
+        if !matchedPeople.isEmpty {
+            let matchedRows = rows.filter { matchedPeople.contains($0.personID) }
+            let matchedFirstMap = Dictionary(uniqueKeysWithValues: matchedPeople.compactMap { id in
+                firstYearMap[id].map { (id, $0) }
+            })
+            let matchedFERows = rowsWithAtLeastTwoObservations(matchedRows)
+
+            if let feMatched = fixedEffectsYearsSinceModel(rows: matchedFERows, firstYearByPerson: matchedFirstMap),
+               let treatedClusters = Set(matchedFERows.filter { $0.mhi == 1.0 }.map(\.personID)).count as Int?,
+               let summary = summaryRowFromResult(
+                    analysis: "Matched FE (±\(config.matchingYearWindow) year)",
+                    cohortBucket: "Matched set",
+                    result: feMatched,
+                    interactionTerm: "YearsSinceFirstXMHI",
+                    treatedClusterCount: treatedClusters
+               ) {
+                summaryRows.append(summary)
+
+                if config.runPermutationInference, let perm = permutationSummaryForSelectedCoefficient(
+                    rows: matchedFERows,
+                    modelName: "Matched FE",
+                    slopeGapTerm: "YearsSinceFirstXMHI",
+                    fitModel: { fixedEffectsYearsSinceModel(rows: $0, firstYearByPerson: matchedFirstMap) },
+                    coefficientIndexResolver: { result in result.variableNames.firstIndex(of: "YearsSinceFirstXMHI") },
+                    randomDraws: config.permutationDraws,
+                    exactCombinationLimit: config.permutationExactCombinationLimit,
+                    seed: config.permutationSeedBase + 700
+                ) {
+                    permutationRows.append(
+                        EntryCohortPermutationRow(
+                            analysis: "Matched FE (±\(config.matchingYearWindow) year)",
+                            cohortBucket: "Matched set",
+                            model: perm.model,
+                            term: perm.term,
+                            observedEstimate: perm.observedEstimate,
+                            nullMean: perm.nullMean,
+                            nullStdDev: perm.nullStdDev,
+                            nullQ025: perm.nullQ025,
+                            nullQ975: perm.nullQ975,
+                            pTwoSided: perm.pTwoSided,
+                            nPermutations: perm.nPermutations,
+                            inferenceMethod: perm.inferenceMethod
+                        )
+                    )
+                }
+            }
+
+            if let slopeSummary = matchedAverageSlopeGap(
+                rows: matchedRows,
+                matchedPeople: matchedPeople,
+                firstYearByPerson: matchedFirstMap,
+                horizonYears: config.matchedSlopeHorizonYears
+            ) {
+                summaryRows.append(slopeSummary)
+            }
+        }
+
+        func fileStem(_ base: String) -> String {
+            var stem = cohort.key == primaryMHICohort.key ? base : "\(base)_\(cohort.key)"
+            if let suffix = outputSuffix, !suffix.isEmpty {
+                stem += "_\(suffix)"
+            }
+            return stem
+        }
+
+        writeEntryCohortSummary(rows: summaryRows, fileStem: fileStem("entry_cohort_growth_summary"))
+        writeEntryCohortPermutation(rows: permutationRows, fileStem: fileStem("entry_cohort_permutation_summary"))
+        writeMatchedPairs(rows: pairs, fileStem: fileStem("entry_cohort_matched_pairs"))
     }
 
-    let summaryStem = cohort.key == primaryMHICohort.key
-        ? "entry_cohort_growth_summary"
-        : "entry_cohort_growth_summary_\(cohort.key)"
-    let permutationStem = cohort.key == primaryMHICohort.key
-        ? "entry_cohort_permutation_summary"
-        : "entry_cohort_permutation_summary_\(cohort.key)"
-    let pairsStem = cohort.key == primaryMHICohort.key
-        ? "entry_cohort_matched_pairs"
-        : "entry_cohort_matched_pairs_\(cohort.key)"
-
-    writeEntryCohortSummary(rows: summaryRows, fileStem: summaryStem)
-    writeEntryCohortPermutation(rows: permutationRows, fileStem: permutationStem)
-    writeMatchedPairs(rows: pairs, fileStem: pairsStem)
+    let disclosureFirstYearMap = firstDisclosureYearByPerson(rows)
+    if cohort.key == primaryMHICohort.key {
+        let cvStartYearByCanonicalName = loadCVStartYearByCanonicalName()
+        if !cvStartYearByCanonicalName.isEmpty {
+            let cvFirstYearMap = firstYearMapUsingCVOverrides(
+                rows: rows,
+                baseFirstYearMap: disclosureFirstYearMap,
+                cvStartYearByCanonicalName: cvStartYearByCanonicalName
+            )
+            // Main outputs use CV-derived starts with disclosure fallback.
+            runWithFirstYearMap(cvFirstYearMap, outputSuffix: nil)
+            // Keep disclosure-only outputs for traceability/sensitivity checks.
+            runWithFirstYearMap(disclosureFirstYearMap, outputSuffix: "disclosure_start")
+            return
+        }
+    }
+    runWithFirstYearMap(disclosureFirstYearMap, outputSuffix: nil)
 }
