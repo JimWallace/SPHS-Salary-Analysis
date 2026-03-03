@@ -1,0 +1,6 @@
+metric,value
+faculty_in_list,42
+disclosure_years_scraped,2011;2012;2013;2014;2015;2016;2017;2018;2019;2020;2021;2022;2023;2024
+faculty_with_any_disclosure,41
+faculty_with_no_disclosure,1
+faculty_with_internal_gaps,2

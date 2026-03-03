@@ -8,7 +8,7 @@
 let SPHSFacultyNames: [String] = [
     "ANTHONY, KELLY K.",
     "BARDWELL, GEOFFREY",
-    "BIELOW, PHILIP L.",
+    "BIGELOW, PHILIP L.",
     "BUTT, ZAHID",
     "CHAURASIA, ASHOK",
     "CHEN, HELEN H.",
@@ -44,7 +44,7 @@ let SPHSFacultyNames: [String] = [
     "YESSIS, JENNIFER L",
     "MCKILLOP, IAN",
     "AROCHA, JOSE",
-    "CORBET, KITTY KING",
+    "CORBET, KITTY",
     "GARCIA, JOHN M",
     "HANNING, RHONA",
     "HORTON, SUSAN E."

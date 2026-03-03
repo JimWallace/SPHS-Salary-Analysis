@@ -1,4 +1,4 @@
 model,term,observed_estimate,ci_lower,ci_upper,null_mean,null_std_dev,null_q025,null_q975,p_two_sided,n_permutations,inference_method,n_obs,n_clusters,n_treated_clusters
-Pooled OLS,MHI - Non-MHI level (centered year),-60403.914,-85110.456,-35697.371,-9240.662,32463.288,-63227.624,54996.268,0.052,20000,monte-carlo,305,38,5
-Pooled OLS,MHI - Non-MHI annual slope,3006.863,219.196,5794.529,900.595,2946.632,-5705.258,5467.504,0.382,20000,monte-carlo,305,38,5
-Person FE,MHI - Non-MHI annual slope,-1723.574,-3004.198,-442.950,17.341,1396.736,-2936.241,2458.034,0.225,58905,exact,303,36,4
+Pooled OLS,MHI - Non-MHI level (centered year),-33541.133,-53957.035,-13125.230,-5471.953,27594.292,-53201.574,51247.873,0.238,20000,monte-carlo,369,41,5
+Pooled OLS,MHI - Non-MHI annual slope,330.227,-1453.657,2114.112,530.536,2588.648,-5635.623,4493.161,0.916,20000,monte-carlo,369,41,5
+Person FE,MHI - Non-MHI annual slope,-1431.427,-2279.413,-583.441,29.277,1252.241,-2438.952,2444.251,0.264,91390,exact,368,40,4

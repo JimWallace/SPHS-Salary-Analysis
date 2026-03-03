@@ -1,0 +1,5 @@
+analysis,cohort_bucket,estimate,std_error,ci_low,ci_high,n_obs,n_clusters,n_treated_clusters
+Pooled with entry-cohort FE,All cohorts,-1774.603,724.787,-3195.186,-354.019,364,38,5
+Within-cohort FE,2017-2019,-2945.218,539.922,-4003.465,-1886.971,74,10,3
+Matched FE (±1 year),Matched set,-1698.229,984.988,-3628.806,232.348,74,9,4
+Matched average slope gap (first 5 years),Matched ±1 year,-2434.197,589.154,-3588.939,-1279.455,9,9,4
