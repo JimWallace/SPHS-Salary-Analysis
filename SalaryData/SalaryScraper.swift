@@ -14,27 +14,21 @@ import SwiftSoup
 
 @main
 struct SalaryScraper {
+    static let earliestDisclosureYear = 2011
+    static var defaultLatestDisclosureYear: Int {
+        // Public disclosure pages are typically available up to the previous salary year.
+        Calendar.current.component(.year, from: Date()) - 1
+    }
+
+    static func disclosureYears(latestYear: Int? = nil) -> [Int] {
+        let upper = max(earliestDisclosureYear, latestYear ?? defaultLatestDisclosureYear)
+        return Array(earliestDisclosureYear...upper)
+    }
     
     static func main() async {
         
-        let years = Array(2011...2024)
-        
-        let urls = [
-            "https://uwaterloo.ca/about/accountability/salary-disclosure-2011",
-            "https://uwaterloo.ca/about/accountability/salary-disclosure-2012",
-            "https://uwaterloo.ca/about/accountability/salary-disclosure-2013",
-            "https://uwaterloo.ca/about/accountability/salary-disclosure-2014",
-            "https://uwaterloo.ca/about/accountability/salary-disclosure-2015",
-            "https://uwaterloo.ca/about/accountability/salary-disclosure-2016",
-            "https://uwaterloo.ca/about/accountability/salary-disclosure-2017",
-            "https://uwaterloo.ca/about/accountability/salary-disclosure-2018",
-            "https://uwaterloo.ca/about/accountability/salary-disclosure-2019",
-            "https://uwaterloo.ca/about/accountability/salary-disclosure-2020",
-            "https://uwaterloo.ca/about/accountability/salary-disclosure-2021",
-            "https://uwaterloo.ca/about/accountability/salary-disclosure-2022",
-            "https://uwaterloo.ca/about/accountability/salary-disclosure-2023",
-            "https://uwaterloo.ca/about/accountability/salary-disclosure-2024"
-        ]
+        let candidateYears = disclosureYears()
+        let urls = candidateYears.map { "https://uwaterloo.ca/about/accountability/salary-disclosure-\($0)" }
         
         
         var results: [SalaryRecord] = []
@@ -68,6 +62,12 @@ struct SalaryScraper {
         // Prepare CSV content
         do {
             
+            let observedYears = Array(Set(results.map(\.year))).sorted()
+            let years = {
+                guard let minObserved = observedYears.first, let maxObserved = observedYears.last else { return candidateYears }
+                return Array(minObserved...maxObserved)
+            }()
+
             var csvContent = "Surname,Given name,MHI," + years.map { "\($0)" }.joined(separator: ",") + "\n"
             for (name, records) in salaryDictionary {
                 var salaryByYear = [Int: Double]() // Map year to salary for quick lookup
@@ -147,7 +147,7 @@ struct SalaryScraper {
 
         var yearByColumn: [Int: Int] = [:]
         for (index, header) in headers.enumerated() {
-            if let year = Int(header), (2011...2024).contains(year) {
+            if let year = Int(header), year >= earliestDisclosureYear, year <= 2100 {
                 yearByColumn[index] = year
             }
         }

@@ -1,3 +1,5 @@
+import Accelerate
+import Dispatch
 import Foundation
 
 struct OLSResult {
@@ -86,6 +88,27 @@ func transpose(_ matrix: [[Double]]) -> [[Double]] {
         }
     }
     return output
+}
+
+func flattenRowMajor(_ matrix: [[Double]], rows: Int, cols: Int) -> [Double] {
+    var flat = Array(repeating: 0.0, count: rows * cols)
+    for row in 0..<rows {
+        for col in 0..<cols {
+            flat[row * cols + col] = matrix[row][col]
+        }
+    }
+    return flat
+}
+
+func reshapeRowMajor(_ flat: [Double], rows: Int, cols: Int) -> [[Double]] {
+    guard flat.count == rows * cols else { return [] }
+    var matrix = Array(repeating: Array(repeating: 0.0, count: cols), count: rows)
+    for row in 0..<rows {
+        for col in 0..<cols {
+            matrix[row][col] = flat[row * cols + col]
+        }
+    }
+    return matrix
 }
 
 func multiply(_ lhs: [[Double]], _ rhs: [[Double]]) -> [[Double]] {
@@ -201,27 +224,80 @@ func runClusterRobustOLS(
     guard let k = X.first?.count, k > 0, variableNames.count == k else { return nil }
     guard X.allSatisfy({ $0.count == k }) else { return nil }
 
-    let Xt = transpose(X)
-    let XtX = multiply(Xt, X)
-    guard let XtXInv = invertMatrix(XtX) else { return nil }
+    let xFlat = flattenRowMajor(X, rows: n, cols: k)
 
-    var Xty = Array(repeating: 0.0, count: k)
-    for i in 0..<k {
-        var sum = 0.0
-        for row in 0..<n {
-            sum += Xt[i][row] * y[row]
-        }
-        Xty[i] = sum
-    }
-    let coefficients = matrixVectorMultiply(XtXInv, Xty)
+    var xtxFlat = Array(repeating: 0.0, count: k * k)
+    cblas_dgemm(
+        CblasRowMajor,
+        CblasTrans,
+        CblasNoTrans,
+        Int32(k),
+        Int32(k),
+        Int32(n),
+        1.0,
+        xFlat,
+        Int32(k),
+        xFlat,
+        Int32(k),
+        0.0,
+        &xtxFlat,
+        Int32(k)
+    )
 
+    let xtx = reshapeRowMajor(xtxFlat, rows: k, cols: k)
+    guard let xtxInv = invertMatrix(xtx) else { return nil }
+    let xtxInvFlat = flattenRowMajor(xtxInv, rows: k, cols: k)
+
+    var xty = Array(repeating: 0.0, count: k)
+    cblas_dgemv(
+        CblasRowMajor,
+        CblasTrans,
+        Int32(n),
+        Int32(k),
+        1.0,
+        xFlat,
+        Int32(k),
+        y,
+        1,
+        0.0,
+        &xty,
+        1
+    )
+
+    var coefficients = Array(repeating: 0.0, count: k)
+    cblas_dgemv(
+        CblasRowMajor,
+        CblasNoTrans,
+        Int32(k),
+        Int32(k),
+        1.0,
+        xtxInvFlat,
+        Int32(k),
+        xty,
+        1,
+        0.0,
+        &coefficients,
+        1
+    )
+
+    var fitted = Array(repeating: 0.0, count: n)
+    cblas_dgemv(
+        CblasRowMajor,
+        CblasNoTrans,
+        Int32(n),
+        Int32(k),
+        1.0,
+        xFlat,
+        Int32(k),
+        coefficients,
+        1,
+        0.0,
+        &fitted,
+        1
+    )
     var residuals = Array(repeating: 0.0, count: n)
     for row in 0..<n {
-        var fitted = 0.0
-        for col in 0..<k {
-            fitted += X[row][col] * coefficients[col]
-        }
-        residuals[row] = y[row] - fitted
+        residuals[row] = y[row] - fitted[row]
     }
 
     var clusterToIndices: [String: [Int]] = [:]
@@ -236,7 +312,7 @@ func runClusterRobustOLS(
         var score = Array(repeating: 0.0, count: k)
         for row in indices {
             for col in 0..<k {
-                score[col] += X[row][col] * residuals[row]
+                score[col] += xFlat[row * k + col] * residuals[row]
             }
         }
         addInPlace(&meat, outerProduct(score, score))
@@ -247,7 +323,7 @@ func runClusterRobustOLS(
     let gDouble = Double(clusterCount)
     let correction = (gDouble / (gDouble - 1.0)) * ((nDouble - 1.0) / (nDouble - kDouble))
 
-    let covariance = scaleMatrix(multiply(multiply(XtXInv, meat), XtXInv), by: correction)
+    let covariance = scaleMatrix(multiply(multiply(xtxInv, meat), xtxInv), by: correction)
     let standardErrors = (0..<k).map { sqrt(max(covariance[$0][$0], 0.0)) }
 
     return OLSResult(
@@ -668,17 +744,84 @@ func randomCombinationIndices(n: Int, k: Int, rng: inout SeededGenerator) -> [In
     return Array(values.prefix(k)).sorted()
 }
 
-func permutedRows(_ rows: [AnalysisRow], assignedMHIByPerson: [String: Double]) -> [AnalysisRow] {
-    rows.map { row in
-        AnalysisRow(
-            personID: row.personID,
-            year: row.year,
-            yearCentered: row.yearCentered,
-            salary: row.salary,
-            mhi: assignedMHIByPerson[row.personID] ?? row.mhi,
-            nonHealthTerminal: row.nonHealthTerminal
+func permutedRows(
+    _ rows: [AnalysisRow],
+    rowClusterIndices: [Int],
+    assignedMHIByCluster: [Double]
+) -> [AnalysisRow] {
+    guard rows.count == rowClusterIndices.count else { return rows }
+    var output: [AnalysisRow] = []
+    output.reserveCapacity(rows.count)
+    for idx in rows.indices {
+        let row = rows[idx]
+        let clusterIndex = rowClusterIndices[idx]
+        output.append(
+            AnalysisRow(
+                personID: row.personID,
+                year: row.year,
+                yearCentered: row.yearCentered,
+                salary: row.salary,
+                mhi: assignedMHIByCluster[clusterIndex],
+                nonHealthTerminal: row.nonHealthTerminal
+            )
         )
     }
+    return output
+}
+
+func evaluatePermutationAssignments(
+    assignments: [[Int]],
+    rows: [AnalysisRow],
+    rowClusterIndices: [Int],
+    nClusters: Int,
+    fitModel: ([AnalysisRow]) -> OLSResult?,
+    slopeGapCoefficientIndex: Int,
+    observedGap: Double,
+    maxWorkers: Int
+) -> (nullEstimates: [Double], extremeCount: Int) {
+    guard !assignments.isEmpty else { return ([], 0) }
+    let workerCount = max(1, min(maxWorkers, assignments.count))
+    let chunkSize = (assignments.count + workerCount - 1) / workerCount
+
+    let lock = NSLock()
+    var combinedNullEstimates: [Double] = []
+    combinedNullEstimates.reserveCapacity(assignments.count)
+    var combinedExtremeCount = 0
+
+    DispatchQueue.concurrentPerform(iterations: workerCount) { workerIndex in
+        let start = workerIndex * chunkSize
+        let end = min(start + chunkSize, assignments.count)
+        guard start < end else { return }
+
+        var localNullEstimates: [Double] = []
+        localNullEstimates.reserveCapacity(end - start)
+        var localExtremeCount = 0
+
+        for assignmentIndex in start..<end {
+            let treatedIndices = assignments[assignmentIndex]
+            var assignedMHI = Array(repeating: 0.0, count: nClusters)
+            for treatedIndex in treatedIndices {
+                assignedMHI[treatedIndex] = 1.0
+            }
+
+            if let result = fitModel(
+                permutedRows(rows, rowClusterIndices: rowClusterIndices, assignedMHIByCluster: assignedMHI)
+            ), slopeGapCoefficientIndex < result.coefficients.count {
+                let gap = result.coefficients[slopeGapCoefficientIndex]
+                localNullEstimates.append(gap)
+                if abs(gap) >= abs(observedGap) - 1e-12 {
+                    localExtremeCount += 1
+                }
+            }
+        }
+
+        lock.lock()
+        combinedNullEstimates.append(contentsOf: localNullEstimates)
+        combinedExtremeCount += localExtremeCount
+        lock.unlock()
+    }
+
+    return (combinedNullEstimates, combinedExtremeCount)
 }
 
 func permutationSummaryForSlopeGap(
@@ -689,7 +832,8 @@ func permutationSummaryForSlopeGap(
     slopeGapCoefficientIndex: Int,
     randomDraws: Int,
     exactCombinationLimit: Double,
-    seed: UInt64
+    seed: UInt64,
+    parallelWorkers: Int? = nil
 ) -> PermutationSummaryRow? {
     guard let observed = fitModel(rows),
           slopeGapCoefficientIndex < observed.coefficients.count else {
@@ -704,61 +848,45 @@ func permutationSummaryForSlopeGap(
     let nClusters = personIDs.count
     guard nClusters > 1 else { return nil }
 
-    var observedByPerson: [String: Double] = [:]
-    for personID in personIDs {
-        guard let first = byPerson[personID]?.first else { continue }
-        observedByPerson[personID] = first.mhi
-    }
-
-    let nTreated = personIDs.filter { observedByPerson[$0] == 1.0 }.count
+    let observedMHIByPerson = personIDs.compactMap { byPerson[$0]?.first?.mhi }
+    guard observedMHIByPerson.count == personIDs.count else { return nil }
+    let nTreated = observedMHIByPerson.filter { $0 == 1.0 }.count
     guard nTreated > 0, nTreated < nClusters else { return nil }
+
+    let personIndexByID = Dictionary(uniqueKeysWithValues: personIDs.enumerated().map { ($1, $0) })
+    let rowClusterIndices = rows.compactMap { personIndexByID[$0.personID] }
+    guard rowClusterIndices.count == rows.count else { return nil }
 
     let totalCombinations = binomialCoefficient(nClusters, nTreated)
     let useExact = totalCombinations <= exactCombinationLimit
     let method = useExact ? "exact" : "monte_carlo"
-
-    var nullEstimates: [Double] = []
-    nullEstimates.reserveCapacity(useExact ? Int(totalCombinations) : randomDraws)
-    var extremeCount = 0
+    let maxWorkers = max(1, parallelWorkers ?? ProcessInfo.processInfo.activeProcessorCount)
+    var assignments: [[Int]] = []
+    assignments.reserveCapacity(useExact ? Int(totalCombinations) : randomDraws)
 
     if useExact {
         forEachCombination(n: nClusters, k: nTreated) { combo in
-            var assigned: [String: Double] = [:]
-            assigned.reserveCapacity(nClusters)
-            let treatedIDs = Set(combo.map { personIDs[$0] })
-            for personID in personIDs {
-                assigned[personID] = treatedIDs.contains(personID) ? 1.0 : 0.0
-            }
-
-            if let result = fitModel(permutedRows(rows, assignedMHIByPerson: assigned)),
-               slopeGapCoefficientIndex < result.coefficients.count {
-                let gap = result.coefficients[slopeGapCoefficientIndex]
-                nullEstimates.append(gap)
-                if abs(gap) >= abs(observedGap) - 1e-12 {
-                    extremeCount += 1
-                }
-            }
+            assignments.append(combo)
         }
     } else {
         var rng = SeededGenerator(seed: seed)
         for _ in 0..<randomDraws {
-            let treatedIndexSet = Set(randomCombinationIndices(n: nClusters, k: nTreated, rng: &rng))
-            var assigned: [String: Double] = [:]
-            assigned.reserveCapacity(nClusters)
-            for (idx, personID) in personIDs.enumerated() {
-                assigned[personID] = treatedIndexSet.contains(idx) ? 1.0 : 0.0
-            }
-
-            if let result = fitModel(permutedRows(rows, assignedMHIByPerson: assigned)),
-               slopeGapCoefficientIndex < result.coefficients.count {
-                let gap = result.coefficients[slopeGapCoefficientIndex]
-                nullEstimates.append(gap)
-                if abs(gap) >= abs(observedGap) - 1e-12 {
-                    extremeCount += 1
-                }
-            }
+            assignments.append(randomCombinationIndices(n: nClusters, k: nTreated, rng: &rng))
         }
     }
+
+    let permutationEvaluation = evaluatePermutationAssignments(
+        assignments: assignments,
+        rows: rows,
+        rowClusterIndices: rowClusterIndices,
+        nClusters: nClusters,
+        fitModel: fitModel,
+        slopeGapCoefficientIndex: slopeGapCoefficientIndex,
+        observedGap: observedGap,
+        maxWorkers: maxWorkers
+    )
+    let nullEstimates = permutationEvaluation.nullEstimates
+    let extremeCount = permutationEvaluation.extremeCount
 
     guard !nullEstimates.isEmpty else { return nil }
 
@@ -810,7 +938,8 @@ func permutationSummaryForSelectedCoefficient(
     coefficientIndexResolver: (OLSResult) -> Int?,
     randomDraws: Int,
     exactCombinationLimit: Double,
-    seed: UInt64
+    seed: UInt64,
+    parallelWorkers: Int? = nil
 ) -> PermutationSummaryRow? {
     guard let observed = fitModel(rows),
           let coefficientIndex = coefficientIndexResolver(observed) else {
@@ -824,7 +953,8 @@ func permutationSummaryForSelectedCoefficient(
         slopeGapCoefficientIndex: coefficientIndex,
         randomDraws: randomDraws,
         exactCombinationLimit: exactCombinationLimit,
-        seed: seed
+        seed: seed,
+        parallelWorkers: parallelWorkers
     )
 }
 

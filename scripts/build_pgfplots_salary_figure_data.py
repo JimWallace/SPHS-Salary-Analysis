@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 import csv
+import re
 from math import sqrt
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 INPUT = ROOT / "data" / "sphs.csv"
 OUT = ROOT / "analysis_output"
+SPHS_LIST = ROOT / "SalaryData" / "SPHS Faculty List.swift"
 
 FOCUSED_MHI = {
     "CHAURASIA, ASHOK",
@@ -21,6 +23,12 @@ FOCUSED_MHI = {
 
 def canon(name: str) -> str:
     return " ".join(name.strip().upper().split())
+
+
+def load_allowed_faculty() -> set[str]:
+    text = SPHS_LIST.read_text(encoding="utf-8")
+    names = re.findall(r'"([^"\n]+)"', text)
+    return {canon(name) for name in names}
 
 
 def transpose(m):
@@ -87,6 +95,7 @@ def add_in_place(a, b):
 
 def read_long_rows():
     rows = []
+    allowed = load_allowed_faculty()
     with INPUT.open(newline="", encoding="utf-8") as f:
         r = csv.reader(f)
         header = next(r)
@@ -97,7 +106,7 @@ def read_long_rows():
         for idx, h in enumerate(norm):
             try:
                 y = int(h)
-                if 2011 <= y <= 2024:
+                if 2011 <= y <= 2100:
                     year_cols.append((idx, y))
             except ValueError:
                 pass
@@ -110,6 +119,8 @@ def read_long_rows():
             if not surname or not given:
                 continue
             person = f"{surname}, {given}"
+            if canon(person) not in allowed:
+                continue
             mhi = 1.0 if canon(person) in FOCUSED_MHI else 0.0
             for idx, year in year_cols:
                 if idx >= len(rec):

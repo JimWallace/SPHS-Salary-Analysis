@@ -12,7 +12,6 @@ let MHIFacultyNames: [String] = [
     "CHAURASIA, ASHOK",
     "CHEN, HELEN H.",
     "HIRDES, JOHN",
-    "LIU, LILI",
     "LUO, HAO",
     "MORITA, PLINIO",
     "TORRES ESPIN, ABEL",
