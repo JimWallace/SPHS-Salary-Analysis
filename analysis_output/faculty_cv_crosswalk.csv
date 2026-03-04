@@ -1,4 +1,5 @@
 faculty_name,cv_match_status,cv_filename,cv_path
+"AMSON, ASHLEY",matched,"AMSON, Ashley CV 2025.pdf","/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/AMSON, Ashley CV 2025.pdf"
 "ANTHONY, KELLY K.",matched,"ANTHONY, Kelly CV Dec 2024.pdf","/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/ANTHONY, Kelly CV Dec 2024.pdf"
 "AROCHA, JOSE",missing,,
 "BARDWELL, GEOFFREY",matched,"BARDWELL, Geoff CV 2025.pdf","/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/BARDWELL, Geoff CV 2025.pdf"
@@ -16,8 +17,13 @@ faculty_name,cv_match_status,cv_filename,cv_path
 "HAMMOND, DAVID",matched,"HAMMOND, Dave CV Dec 2024.pdf","/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/HAMMOND, Dave CV Dec 2024.pdf"
 "HANNING, RHONA",missing,,
 "HIRDES, JOHN",matched,"HIRDES, John CV Dec 2024.pdf","/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/HIRDES, John CV Dec 2024.pdf"
+"HOFFMAN-GOETZ, LAURIE",missing,,
 "HORTON, SUSAN E.",missing,,
+"HUSTED, JANICE",missing,,
 "JANDU, NARVEEN",missing,,
+"JANES, CRAIG R.",missing,,
+"JESSUP, LINDA LOUISE",missing,,
+"KING, ALEXANDRA",missing,,
 "KIRKPATRICK, SHARON",matched,"KIRKPATRICK, Sharon, CV Dec 2024.pdf","/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/KIRKPATRICK, Sharon, CV Dec 2024.pdf"
 "LAIRD, BRIAN",matched,LAIRD Brian CV Dec 2024.pdf,/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/LAIRD Brian CV Dec 2024.pdf
 "LAW, JANE",matched,"LAW, Jane CV Dec 2024 Environment.pdf","/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/LAW, Jane CV Dec 2024 Environment.pdf"
@@ -31,11 +37,13 @@ faculty_name,cv_match_status,cv_filename,cv_path
 "MEYER, SAMANTHA",matched,"MEYER, Samantha CV Dec 2024.pdf","/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/MEYER, Samantha CV Dec 2024.pdf"
 "MIELKE, JOHN G.",matched,"MIELKE, John, CV Dec 2024.pdf","/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/MIELKE, John, CV Dec 2024.pdf"
 "MORITA, PLINIO",matched,"MORITA, Plinio, CV Dec 2024.pdf","/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/MORITA, Plinio, CV Dec 2024.pdf"
+"MYERS, ANITA M.",missing,,
 "NEITERMAN, ELENA",matched,"NEITERMAN, Elena CV Jan 2025.pdf","/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/NEITERMAN, Elena CV Jan 2025.pdf"
 "OGA-OMENKA, CHARITY",matched,"OGA-OMENKA, Charity CV 2025.pdf","/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/OGA-OMENKA, Charity CV 2025.pdf"
 "OREMUS, MARK",matched,"OREMUS, Mark, CV Dec 2024.pdf","/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/OREMUS, Mark, CV Dec 2024.pdf"
 "PERLMAN, CHRISTOPHER",matched,PERLMAN_Chris_CV_Dec_2024.pdf,/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/PERLMAN_Chris_CV_Dec_2024.pdf
 "SKINNER, KELLY",matched,"SKINNER, Kelly, CV Dec 2024.pdf","/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/SKINNER, Kelly, CV Dec 2024.pdf"
+"STOLEE, PAUL",missing,,
 "TAIT NEUFELD, HANNAH",matched,"NEUFELD, Hannah, CV Dec 2024.pdf","/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/NEUFELD, Hannah, CV Dec 2024.pdf"
 "TORRES ESPIN, ABEL",matched,"TORRES ESPIN, Abel CV 2025.pdf","/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/TORRES ESPIN, Abel CV 2025.pdf"
 "TYAS, SUZANNE L",matched,TYAS Suzanne CV 2024.pdf,/Users/jim/Documents/SPHS Salary Analysis/Faculty CVs/TYAS Suzanne CV 2024.pdf

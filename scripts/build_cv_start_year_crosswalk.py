@@ -54,7 +54,13 @@ MANUAL_START_YEAR_OVERRIDES: Dict[str, Tuple[int, str]] = {
     "TAIT NEUFELD, HANNAH": (2017, "Manual override per data reconciliation: treat observed salary history as pre-2020 appointment; 2022 reflects promotion timing, not initial start."),
     "TYAS, SUZANNE L": (2006, "Manual override from CV employment history: University of Waterloo appointment begins 2006 (Associate Professor); 2000-2005 assistant professor years are at University of Kentucky."),
     "BUTT, ZAHID": (2019, "Manual override from CV employment history: University of Waterloo appointment begins July 2019 (Assistant Professor); 2015-2019 years correspond to UBC postdoctoral appointments."),
+    "CHAURASIA, ASHOK": (2015, "Manual override per reconciliation: University of Waterloo start year set to 2015."),
     "LEE, JOON H.": (2012, "Manual override per reconciliation: University of Waterloo start year set to 2012."),
+    "STOLEE, PAUL": (2004, "Manual override per reconciliation: University of Waterloo start year set to 2004."),
+    "JANES, CRAIG R.": (2014, "Manual override per reconciliation: University of Waterloo start year set to 2014."),
+    "JESSUP, LINDA LOUISE": (2000, "Manual override per reconciliation: University of Waterloo start year set to 2000."),
+    "CORBET, KITTY": (2014, "Manual override per reconciliation: University of Waterloo start year set to 2014."),
+    "MACEACHEN (STOTHERS), ELLEN": (2014, "Manual override per reconciliation: University of Waterloo start year set to 2014."),
 }
 
 

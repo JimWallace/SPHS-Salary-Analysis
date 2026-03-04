@@ -44,19 +44,33 @@ def load_allowed_faculty() -> set[str]:
     return allowed
 
 
-def load_cv_start_years() -> dict[str, str]:
+def load_cv_start_years() -> dict[str, tuple[str, str, str]]:
     if not CV_START_CROSSWALK.exists():
         return {}
     with CV_START_CROSSWALK.open(newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
-        mapping: dict[str, str] = {}
+        mapping: dict[str, tuple[str, str, str]] = {}
         for row in reader:
             name = (row.get("salary_name") or "").strip().upper()
             year = (row.get("cv_start_year") or "").strip()
-            if not name or not year:
+            confidence = (row.get("cv_start_confidence") or "").strip().lower()
+            method_note = (row.get("method_note") or "").strip().lower()
+            if not name:
                 continue
-            mapping[" ".join(name.replace(",", " ").split())] = year
+            mapping[" ".join(name.replace(",", " ").split())] = (year, confidence, method_note)
         return mapping
+
+
+def start_year_display(
+    first_disclosure_year: str, cv_entry: tuple[str, str, str] | None
+) -> str:
+    if cv_entry:
+        year, confidence, method_note = cv_entry
+        if year and (confidence in {"high", "medium"} or method_note.startswith("manual override")):
+            return year
+    if first_disclosure_year:
+        return f"<{first_disclosure_year}"
+    return ""
 
 
 def main() -> None:
@@ -88,7 +102,7 @@ def main() -> None:
                 if (row.get(yc) or "").strip():
                     first_disclosure_year = yc
                     break
-            start_year = cv_start_years.get(faculty_key, first_disclosure_year)
+            start_year = start_year_display(first_disclosure_year, cv_start_years.get(faculty_key))
 
             out_row = {
                 "Faculty": faculty_display,
@@ -102,7 +116,8 @@ def main() -> None:
     # Sort by starting year (ascending), then faculty name.
     def sort_key(entry: dict[str, str]) -> tuple[int, str]:
         start_raw = (entry.get("Start Year") or "").strip()
-        start_val = int(start_raw) if start_raw.isdigit() else 9999
+        numeric = start_raw[1:] if start_raw.startswith("<") else start_raw
+        start_val = int(numeric) if numeric.isdigit() else 9999
         faculty = (entry.get("Faculty") or "").strip()
         return (start_val, faculty)
 

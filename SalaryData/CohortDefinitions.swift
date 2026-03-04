@@ -23,6 +23,7 @@ let FocusedMHIFacultyNamesSince2013: [String] = [
     "LEE, JOON",
     "LEE, JOON H.",
     "LUO, HAO",
+    "MCKILLOP, IAN",
     "MORITA, PLINIO",
     "TORRES ESPIN, ABEL",
     "WALLACE, JAMES R."

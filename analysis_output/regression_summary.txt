@@ -1,12 +1,12 @@
 Regression summary (cluster-robust SE by person)
 Cohort definition: MHI (Post-2013 Core Cohort)
 
-Pooled OLS | MHI - Non-MHI level (centered year): estimate=-34273.263, SE=10697.227, 95% CI [-55239.828, -13306.699], N=371, clusters=42
-Pooled OLS | Non-MHI annual slope: estimate=3410.623, SE=859.547, 95% CI [1725.911, 5095.336], N=371, clusters=42
-Pooled OLS | MHI annual slope: estimate=3545.156, SE=285.000, 95% CI [2986.557, 4103.755], N=371, clusters=42
-Pooled OLS | MHI - Non-MHI annual slope: estimate=134.532, SE=905.564, 95% CI [-1640.373, 1909.438], N=371, clusters=42
+Pooled OLS | MHI - Non-MHI level (centered year): estimate=-1475.414, SE=24165.303, 95% CI [-48839.408, 45888.580], N=411, clusters=48
+Pooled OLS | Non-MHI annual slope: estimate=3429.831, SE=766.699, 95% CI [1927.100, 4932.562], N=411, clusters=48
+Pooled OLS | MHI annual slope: estimate=1106.769, SE=1892.254, 95% CI [-2602.048, 4815.587], N=411, clusters=48
+Pooled OLS | MHI - Non-MHI annual slope: estimate=-2323.062, SE=2041.679, 95% CI [-6324.752, 1678.629], N=411, clusters=48
 Pooled OLS (Terminal Degree Domain) | Non-health - Health annual slope: estimate=720.468, SE=868.843, 95% CI [-982.464, 2423.399], N=178, clusters=18
-Person FE | Non-MHI annual slope: estimate=7045.430, SE=395.809, 95% CI [6269.644, 7821.215], N=370, clusters=41
-Person FE | MHI annual slope: estimate=5737.968, SE=207.163, 95% CI [5331.929, 6144.006], N=370, clusters=41
-Person FE | MHI - Non-MHI annual slope: estimate=-1307.462, SE=446.745, 95% CI [-2183.082, -431.842], N=370, clusters=41
+Person FE | Non-MHI annual slope: estimate=6954.929, SE=424.133, 95% CI [6123.629, 7786.229], N=410, clusters=47
+Person FE | MHI annual slope: estimate=5471.110, SE=260.400, 95% CI [4960.725, 5981.495], N=410, clusters=47
+Person FE | MHI - Non-MHI annual slope: estimate=-1483.819, SE=497.692, 95% CI [-2459.295, -508.344], N=410, clusters=47
 Person FE (Terminal Degree Domain) | Non-health - Health annual slope: estimate=-18.855, SE=658.636, 95% CI [-1309.782, 1272.072], N=178, clusters=18
