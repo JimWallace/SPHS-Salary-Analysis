@@ -95,6 +95,10 @@ def given_compatible(list_given: List[str], row_given: List[str]) -> bool:
         return True
     if len(rg) == 1 and lg.startswith(rg):
         return True
+    # Handle disclosure variants where first names are concatenated/extended
+    # (e.g., JOON vs JOONWU, ANNE vs ANNEMARIE).
+    if len(lg) >= 4 and len(rg) >= 4 and (lg.startswith(rg) or rg.startswith(lg)):
+        return True
     return False
 
 

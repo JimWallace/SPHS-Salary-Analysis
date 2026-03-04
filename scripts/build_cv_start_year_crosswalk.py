@@ -30,10 +30,17 @@ GIVEN_NAME_ALIASES = {
 }
 
 YEAR_RANGE_RE = re.compile(r"\b((?:19|20)\d{2})\s*[-–]\s*(?:((?:19|20)\d{2})|PRESENT|CURRENT)\b", re.I)
+# Some CVs compress year ranges as 6 digits (e.g., 200510 for 2005-10).
+COMPACT_YEAR_RANGE_RE = re.compile(r"\b((?:19|20)\d{2})(\d{2})\b")
 YEAR_SINGLE_RE = re.compile(r"\b((?:19|20)\d{2})\b")
 UW_RE = re.compile(r"\bUniversity of Waterloo\b", re.I)
-TITLE_RE = re.compile(r"\b(assistant professor|associate professor|professor|lecturer|postdoctoral|post-doc|chair|research professor)\b", re.I)
+TITLE_RE = re.compile(
+    r"\b(assistant professor|associate professor|professor|lecturer|postdoctoral|post-doc|chair|research professor|assistant vice president|associate vice-president|associate vice president|vice-president|vice president|avp)\b",
+    re.I,
+)
 EMPLOYMENT_RE = re.compile(r"\b(employment history|employment|academic appointments|appointments)\b", re.I)
+
+MANUAL_START_YEAR_OVERRIDES: Dict[str, Tuple[int, str]] = {}
 
 
 def canonical_tokens(text: str) -> List[str]:
@@ -165,6 +172,12 @@ def extract_cv_start_year(lines: List[str]) -> Tuple[Optional[int], str, str]:
             if 1990 <= year <= 2030:
                 candidates.append((year, score + 2, uw_suffix[:240]))
 
+        for m in COMPACT_YEAR_RANGE_RE.finditer(uw_suffix):
+            year = int(m.group(1))
+            end_year = int(m.group(2))
+            if 1990 <= year <= 2030 and 0 <= end_year <= 99:
+                candidates.append((year, score + 2, uw_suffix[:240]))
+
         if not YEAR_RANGE_RE.search(uw_suffix):
             for m in YEAR_SINGLE_RE.finditer(uw_suffix):
                 year = int(m.group(1))
@@ -203,17 +216,29 @@ def main() -> None:
 
     rows: List[Dict[str, str]] = []
     for name in salary_names:
+        manual_override = MANUAL_START_YEAR_OVERRIDES.get(name)
         cv_path = choose_cv_for_salary_name(name, cv_entries)
         if cv_path is None:
+            year = ""
+            conf = "none"
+            note = "No unique matching CV filename found"
+            if manual_override is not None:
+                year = str(manual_override[0])
+                conf = "high"
+                note = manual_override[1]
+            first_disc = first_disclosure.get(name, "")
+            gap = ""
+            if year and first_disc.isdigit():
+                gap = str(int(first_disc) - int(year))
             rows.append(
                 {
                     "salary_name": name,
                     "cv_file": "",
-                    "cv_start_year": "",
-                    "cv_start_confidence": "none",
-                    "first_disclosure_year": first_disclosure.get(name, ""),
-                    "disclosure_minus_cv_years": "",
-                    "method_note": "No unique matching CV filename found",
+                    "cv_start_year": year,
+                    "cv_start_confidence": conf,
+                    "first_disclosure_year": first_disc,
+                    "disclosure_minus_cv_years": gap,
+                    "method_note": note,
                 }
             )
             continue
@@ -223,6 +248,11 @@ def main() -> None:
             year, conf, note = extract_cv_start_year(lines)
         except Exception as exc:
             year, conf, note = None, "none", f"CV parse error: {type(exc).__name__}"
+
+        if manual_override is not None:
+            year, override_note = manual_override
+            conf = "high"
+            note = override_note
 
         first_disc = first_disclosure.get(name, "")
         gap = ""
