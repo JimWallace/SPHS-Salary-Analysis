@@ -1,0 +1,4 @@
+test,estimand,observed_diff_pp,p_one_sided,p_two_sided,n_permutations,mhi_below_p50_pct,nonmhi_below_p50_pct
+Naive two-proportion z,Person-year weighted rate difference,38.86,0.000001,0.000002,,79.55,40.68
+Cluster permutation (weighted),Person-year weighted rate difference,38.86,0.041179,0.055339,50000,79.55,40.68
+Cluster permutation (faculty mean),Faculty-mean rate difference,38.87,0.018600,0.044659,50000,79.55,40.68

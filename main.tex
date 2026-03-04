@@ -305,6 +305,139 @@ A constructive next step would be a formal equity audit linking salary outcomes 
 \clearpage
 \section*{Robustness Checks}
 
+\IfFileExists{analysis_output/plot_hist_year_adj_median_mhi.csv}{
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.90\textwidth,
+        height=0.36\textwidth,
+        ybar=0pt,
+        bar width=6pt,
+        xlabel={Salary relative to the same-year median (\$CAD)},
+        ylabel={Person-years},
+        scaled x ticks=false,
+        scaled y ticks=false,
+        ymin=-14,
+        ytick={-10,0,10,20,30},
+        minor ytick={-5,5,15,25},
+        minor tick style={draw=black!60},
+        major tick length=3pt,
+        minor tick length=1.8pt,
+        grid=major,
+        axis x line*=bottom,
+        yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=0},
+        xlabel style={at={(axis description cs:0.5,-0.36)},anchor=north},
+        xticklabel style={/pgf/number format/fixed,/pgf/number format/precision=0,/pgf/number format/1000 sep={,},rotate=45,anchor=east,yshift=-10pt},
+        tick label style={font=\small},
+        label style={font=\small},
+        legend style={at={(0.98,0.98)},anchor=north east,draw=none,fill=none,font=\small}
+    ]
+        \addplot[black, semithick, domain=-70000:110000, samples=2, forget plot] {0};
+        \addplot+[bar shift=0pt, draw=none, fill=NonMHIColor!35] table[col sep=comma, x=bin_mid, y expr={\thisrow{count} > 0 ? \thisrow{count} : nan}] {analysis_output/plot_hist_year_adj_median_nonmhi.csv};
+        \addplot+[bar shift=0pt, draw=none, fill=MHIColor!35] table[col sep=comma, x=bin_mid, y expr={\thisrow{count} > 0 ? -\thisrow{count} : nan}] {analysis_output/plot_hist_year_adj_median_mhi.csv};
+        \legend{Non-MHI,MHI}
+    \end{axis}
+    \end{tikzpicture}
+    \caption{Population-pyramid view using same-year median centering: bars show person-years by salary band relative to the same-year median salary. Non-MHI is plotted above the axis; MHI is mirrored below the axis for direct distribution comparison. Values left of zero are below that year's median. In the current active-faculty sample, 36 of 44 MHI person-years are below the same-year median and 8 are above. This year adjustment reduces distortion from hire timing across calendar years, but remains descriptive and does not fully control for rank or promotion stage.}
+\end{figure}
+}{}
+
+\IfFileExists{analysis_output/plot_hist_year_adj_mean_mhi.csv}{
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.90\textwidth,
+        height=0.36\textwidth,
+        ybar=0pt,
+        bar width=6pt,
+        xlabel={Salary relative to the same-year average (\$CAD)},
+        ylabel={Person-years},
+        scaled x ticks=false,
+        scaled y ticks=false,
+        ymin=-14,
+        ytick={-10,0,10,20,30},
+        minor ytick={-5,5,15,25},
+        minor tick style={draw=black!60},
+        major tick length=3pt,
+        minor tick length=1.8pt,
+        grid=major,
+        axis x line*=bottom,
+        yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=0},
+        xlabel style={at={(axis description cs:0.5,-0.36)},anchor=north},
+        xticklabel style={/pgf/number format/fixed,/pgf/number format/precision=0,/pgf/number format/1000 sep={,},rotate=45,anchor=east,yshift=-10pt},
+        tick label style={font=\small},
+        label style={font=\small},
+        legend style={at={(0.98,0.98)},anchor=north east,draw=none,fill=none,font=\small}
+    ]
+        \addplot[black, semithick, domain=-70000:110000, samples=2, forget plot] {0};
+        \addplot+[bar shift=0pt, draw=none, fill=NonMHIColor!35] table[col sep=comma, x=bin_mid, y expr={\thisrow{count} > 0 ? \thisrow{count} : nan}] {analysis_output/plot_hist_year_adj_mean_nonmhi.csv};
+        \addplot+[bar shift=0pt, draw=none, fill=MHIColor!35] table[col sep=comma, x=bin_mid, y expr={\thisrow{count} > 0 ? -\thisrow{count} : nan}] {analysis_output/plot_hist_year_adj_mean_mhi.csv};
+        \legend{Non-MHI,MHI}
+    \end{axis}
+    \end{tikzpicture}
+    \caption{Appendix sensitivity figure using same-year mean centering: bars show person-years by salary band relative to the same-year average salary. In the current active-faculty sample, 43 of 44 MHI person-years are below the same-year average and 1 is above.}
+\end{figure}
+}{}
+
+\IfFileExists{analysis_output/plot_percentile_cdf_mhi.csv}{
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.90\textwidth,
+        height=0.36\textwidth,
+        xlabel={Salary percentile within year},
+        ylabel={Cumulative proportion of observations},
+        xmin=0,
+        xmax=100,
+        ymin=0,
+        ymax=1.02,
+        xtick={0,25,50,75,100},
+        ytick={0,0.2,0.4,0.6,0.8,1.0},
+        yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=1},
+        grid=major,
+        tick label style={font=\small},
+        label style={font=\small},
+        legend style={at={(0.98,0.02)},anchor=south east,draw=none,fill=none,font=\small}
+    ]
+        \addplot[black, dashed, semithick, forget plot] coordinates {(50,0) (50,1)};
+        \addplot+[const plot, no markers, thick, NonMHIColor] table[col sep=comma, x=salary_percentile, y=cum_prop] {analysis_output/plot_percentile_cdf_nonmhi.csv};
+        \addplot+[const plot, no markers, thick, MHIColor] table[col sep=comma, x=salary_percentile, y=cum_prop] {analysis_output/plot_percentile_cdf_mhi.csv};
+        \legend{Non-MHI,MHI}
+    \end{axis}
+    \end{tikzpicture}
+    \caption{Within-year salary-percentile cumulative distributions. For each year, faculty were ranked by salary and converted to percentile rank as rank/$n$ for that year. Curves show cumulative proportions across all person-years by group. The dashed vertical line marks the 50th percentile. In the current active-faculty sample, MHI has mean percentile 24.69 and median percentile 19.09, with 79.55\% (35/44) below the 50th percentile; non-MHI has mean percentile 56.90 and median percentile 57.58, with 40.68\% (107/263) below the 50th percentile.}
+\end{figure}
+}{}
+
+\IfFileExists{analysis_output/plot_percentile_binary_tests.csv}{
+\begin{table}[h]
+    \centering
+    \scriptsize
+    \setlength{\tabcolsep}{2.4pt}
+    \renewcommand{\arraystretch}{1.05}
+    \resizebox{\linewidth}{!}{
+    \pgfplotstabletypeset[
+        col sep=comma,
+        columns={test,estimand,observed_diff_pp,p_one_sided,p_two_sided,n_permutations,mhi_below_p50_pct,nonmhi_below_p50_pct},
+        columns/test/.style={column name=Test,string type},
+        columns/estimand/.style={column name=Estimand,string type},
+        columns/observed_diff_pp/.style={column name=Observed diff (pp)},
+        columns/p_one_sided/.style={column name=One-sided $p$},
+        columns/p_two_sided/.style={column name=Two-sided $p$},
+        columns/n_permutations/.style={column name=Permutations},
+        columns/mhi_below_p50_pct/.style={column name=MHI below 50\%},
+        columns/nonmhi_below_p50_pct/.style={column name=Non-MHI below 50\%},
+        every head row/.style={before row=\toprule,after row=\midrule},
+        every last row/.style={after row=\bottomrule}
+    ]{analysis_output/plot_percentile_binary_tests.csv}
+    }
+    \caption{Binary tests for the pooled percentile outcome of being below the 50th percentile within year. The first row is a naive person-year test; the latter rows are faculty-cluster permutation tests that preserve the number of MHI faculties when reassigning group labels.}
+\end{table}
+}{}
+
 \IfFileExists{analysis_output/appendix_skeptic_specification_grid.csv}{
 \begin{table}[h]
     \centering
