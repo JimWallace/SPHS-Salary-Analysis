@@ -112,58 +112,6 @@ Because public salary disclosures do not include APR ratings, promotion dates, o
 
 
 
-\IfFileExists{analysis_output/regression_summary.csv}{
-\begin{table}[h]
-    \centering
-    \small
-    \resizebox{0.92\textwidth}{!}{
-    \pgfplotstabletypeset[
-        col sep=comma,
-        columns={model,term,estimate,ci_lower,ci_upper,n_obs,n_clusters},
-        columns/model/.style={column name=Model,string type},
-        columns/term/.style={column name=Contrast,string type},
-        columns/estimate/.style={
-            column name=Estimate,
-            fixed, precision=0, 1000 sep={,},
-            postproc cell content/.append style={/pgfplots/table/@cell content/.add={\$}{}}
-        },
-        columns/ci_lower/.style={
-            column name=95\% CI Low,
-            fixed, precision=0, 1000 sep={,},
-            postproc cell content/.append style={/pgfplots/table/@cell content/.add={\$}{}}
-        },
-        columns/ci_upper/.style={
-            column name=95\% CI High,
-            fixed, precision=0, 1000 sep={,},
-            postproc cell content/.append style={/pgfplots/table/@cell content/.add={\$}{}}
-        },
-        columns/n_obs/.style={column name=N},
-        columns/n_clusters/.style={column name=Clusters},
-        % Keep exactly these contrasts from regression_summary.csv:
-        % row 0 = Pooled OLS | MHI - Non-MHI level (centered year)
-        % row 3 = Pooled OLS | MHI - Non-MHI annual slope
-        % row 7 = Person FE  | MHI - Non-MHI annual slope
-        row predicate/.code={
-            \ifnum\pgfplotstablerow=0\relax
-            \else
-                \ifnum\pgfplotstablerow=3\relax
-                \else
-                    \ifnum\pgfplotstablerow=7\relax
-                    \else
-                        \pgfplotstableuserowfalse
-                    \fi
-                \fi
-            \fi
-        },
-        every head row/.style={before row=\toprule,after row=\midrule},
-        every last row/.style={after row=\bottomrule}
-    ]{analysis_output/regression_summary.csv}
-    }
-    \caption{Primary salary contrasts for the core argument: the pooled level gap (MHI vs non-MHI at the centered year) and annual growth gaps from pooled and within-person models, showing that the level difference is large while growth inferences depend on specification. MHI faculty represented in this table are Butt, Chaurasia, Chen, Lee (Joon), Morita, Torres Espin, and Wallace. Key takeaway: on average, MHI-affiliated faculty appear to be paid less, and growth estimates are often less favorable for MHI faculty than for comparable non-MHI faculty.}
-    \label{tab:primary_level_growth}
-\end{table}
-}{}
-
 \IfFileExists{analysis_output/entry_cohort_growth_summary.csv}{
 \begin{table}[h]
     \centering
@@ -259,7 +207,7 @@ Because public salary disclosures do not include APR ratings, promotion dates, o
 
     \end{axis}
     \end{tikzpicture}
-    \caption{Observed annual salaries with pooled fitted trajectories and 95\% confidence bands by group (Non-MHI solid, MHI dashed), visualizing the persistent level separation that motivates the level-gap results in Table~\ref{tab:primary_level_growth}. Key takeaway: across the disclosure period, the MHI trajectory stays below the non-MHI trajectory, indicating a sustained salary gap.}
+    \caption{Observed annual salaries with pooled fitted trajectories and 95\% confidence bands by group (Non-MHI solid, MHI dashed), visualizing the persistent level separation against the faculty panel documented in Table~\ref{tab:faculty_verification_matrix}. Key takeaway: across the disclosure period, the MHI trajectory stays below the non-MHI trajectory, indicating a sustained salary gap.}
     \label{fig:salary_trajectories}
 \end{figure}
 }{}

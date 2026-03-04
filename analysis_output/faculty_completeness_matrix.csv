@@ -1,4 +1,5 @@
 faculty_name,first_disclosure_year,last_disclosure_year,disclosure_year_count,missing_internal_years,public_match_status,public_name,cv_match_status,cv_filename
+"AMSON, ASHLEY",,,0,,1,Ashley Amson,matched,"AMSON, Ashley CV 2025.pdf"
 "ANTHONY, KELLY K.",2014,2024,11,,1,Kelly Anthony,matched,"ANTHONY, Kelly CV Dec 2024.pdf"
 "AROCHA, JOSE",2011,2020,10,,0,,missing,
 "BARDWELL, GEOFFREY",2023,2024,2,,1,Geoff Bardwell,matched,"BARDWELL, Geoff CV 2025.pdf"
@@ -16,8 +17,13 @@ faculty_name,first_disclosure_year,last_disclosure_year,disclosure_year_count,mi
 "HAMMOND, DAVID",2011,2024,14,,1,David Hammond,matched,"HAMMOND, Dave CV Dec 2024.pdf"
 "HANNING, RHONA",2011,2023,13,,0,,missing,
 "HIRDES, JOHN",2011,2024,14,,1,John Hirdes,matched,"HIRDES, John CV Dec 2024.pdf"
+"HOFFMAN-GOETZ, LAURIE",2011,2015,5,,0,,missing,
 "HORTON, SUSAN E.",2011,2020,10,,0,,missing,
+"HUSTED, JANICE",2011,2013,2,2012,0,,missing,
 "JANDU, NARVEEN",2021,2024,4,,0,,missing,
+"JANES, CRAIG R.",2015,2023,9,,0,,missing,
+"JESSUP, LINDA LOUISE",2011,2017,7,,0,,missing,
+"KING, ALEXANDRA",,,0,,1,Alexandra King,missing,
 "KIRKPATRICK, SHARON",2015,2024,10,,1,Sharon Kirkpatrick,matched,"KIRKPATRICK, Sharon, CV Dec 2024.pdf"
 "LAIRD, BRIAN",2017,2024,8,,1,Brian Laird,matched,LAIRD Brian CV Dec 2024.pdf
 "LAW, JANE",2013,2024,11,2014,1,Jane Law,matched,"LAW, Jane CV Dec 2024 Environment.pdf"
@@ -31,11 +37,13 @@ faculty_name,first_disclosure_year,last_disclosure_year,disclosure_year_count,mi
 "MEYER, SAMANTHA",2020,2024,4,2022,1,Samantha Meyer,matched,"MEYER, Samantha CV Dec 2024.pdf"
 "MIELKE, JOHN G.",2015,2024,10,,1,John G. Mielke,matched,"MIELKE, John, CV Dec 2024.pdf"
 "MORITA, PLINIO",2017,2024,8,,1,Plinio Morita,matched,"MORITA, Plinio, CV Dec 2024.pdf"
+"MYERS, ANITA M.",2011,2015,5,,0,,missing,
 "NEITERMAN, ELENA",2018,2024,7,,1,Elena Neiterman,matched,"NEITERMAN, Elena CV Jan 2025.pdf"
 "OGA-OMENKA, CHARITY",2023,2024,2,,1,Charity Oga-Omenka,matched,"OGA-OMENKA, Charity CV 2025.pdf"
 "OREMUS, MARK",2015,2024,10,,1,Mark Oremus,matched,"OREMUS, Mark, CV Dec 2024.pdf"
 "PERLMAN, CHRISTOPHER",2016,2024,9,,1,Chris Perlman,matched,PERLMAN_Chris_CV_Dec_2024.pdf
 "SKINNER, KELLY",2018,2024,7,,1,Kelly Skinner,matched,"SKINNER, Kelly, CV Dec 2024.pdf"
+"STOLEE, PAUL",2011,2022,12,,0,,missing,
 "TAIT NEUFELD, HANNAH",2020,2024,5,,1,Hannah Neufeld,matched,"NEUFELD, Hannah, CV Dec 2024.pdf"
 "TORRES ESPIN, ABEL",2024,2024,1,,1,Abel Torres Espin,matched,"TORRES ESPIN, Abel CV 2025.pdf"
 "TYAS, SUZANNE L",2011,2024,14,,1,Suzanne Tyas,matched,TYAS Suzanne CV 2024.pdf

@@ -42,6 +42,11 @@ private let entryCohortBuckets: [(label: String, start: Int, end: Int)] = [
     ("2020-2022", 2020, 2022)
 ]
 
+// Disclosure data begin in 2011 in this project. A first observed disclosure
+// at that boundary is left-censored and should not be treated as a true entry
+// year unless a CV/manual override provides an earlier/later start.
+private let disclosureLeftCensorYear = 2011
+
 private func firstDisclosureYearByPerson(_ rows: [AnalysisRow]) -> [String: Int] {
     var map: [String: Int] = [:]
     for row in rows {
@@ -120,6 +125,24 @@ private func firstYearMapUsingCVOverrides(
     }
     print("Applied CV first-year overrides to \(overrideCount) person IDs (base: \(baseFirstYearMap.count), merged: \(merged.count)).")
     return merged
+}
+
+private func applyLeftCensorRule(
+    firstYearMap: [String: Int],
+    keepPersonIDs: Set<String>,
+    censorYear: Int
+) -> [String: Int] {
+    var filtered: [String: Int] = [:]
+    var dropped = 0
+    for (personID, year) in firstYearMap {
+        if year == censorYear && !keepPersonIDs.contains(personID) {
+            dropped += 1
+            continue
+        }
+        filtered[personID] = year
+    }
+    print("Applied left-censor rule at \(censorYear): dropped \(dropped) person IDs without override evidence.")
+    return filtered
 }
 
 private func cohortBucketLabel(for firstYear: Int) -> String? {
@@ -627,12 +650,31 @@ func runEntryCohortAnalysis(
                 baseFirstYearMap: disclosureFirstYearMap,
                 cvStartYearByCanonicalName: cvStartYearByCanonicalName
             )
+            let canonicalToPersonIDs = Dictionary(grouping: rows, by: { canonicalFacultyName($0.personID) })
+            let overridePersonIDs = Set(cvStartYearByCanonicalName.keys.flatMap { canonical in
+                (canonicalToPersonIDs[canonical] ?? []).map(\.personID)
+            })
+            let cvFirstYearMapCensored = applyLeftCensorRule(
+                firstYearMap: cvFirstYearMap,
+                keepPersonIDs: overridePersonIDs,
+                censorYear: disclosureLeftCensorYear
+            )
+            let disclosureFirstYearMapCensored = applyLeftCensorRule(
+                firstYearMap: disclosureFirstYearMap,
+                keepPersonIDs: [],
+                censorYear: disclosureLeftCensorYear
+            )
             // Main outputs use CV-derived starts with disclosure fallback.
-            runWithFirstYearMap(cvFirstYearMap, outputSuffix: nil)
+            runWithFirstYearMap(cvFirstYearMapCensored, outputSuffix: nil)
             // Keep disclosure-only outputs for traceability/sensitivity checks.
-            runWithFirstYearMap(disclosureFirstYearMap, outputSuffix: "disclosure_start")
+            runWithFirstYearMap(disclosureFirstYearMapCensored, outputSuffix: "disclosure_start")
             return
         }
     }
-    runWithFirstYearMap(disclosureFirstYearMap, outputSuffix: nil)
+    let disclosureFirstYearMapCensored = applyLeftCensorRule(
+        firstYearMap: disclosureFirstYearMap,
+        keepPersonIDs: [],
+        censorYear: disclosureLeftCensorYear
+    )
+    runWithFirstYearMap(disclosureFirstYearMapCensored, outputSuffix: nil)
 }
