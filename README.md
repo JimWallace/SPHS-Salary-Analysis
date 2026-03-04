@@ -33,3 +33,33 @@ Over ten years, this resulted in a cumulative difference of approximately \$15,3
 - University of Waterloo salary disclosures (2011–2024)  
 - FAUW salary structure publication  
 - University of Waterloo SPHS MHI-affiliated faculty listings  
+
+## Private CV-Based Covariate (Local Only)
+
+To add the terminal-degree domain factor from private CVs:
+
+1. Place CV PDFs in `Faculty CVs/` (this folder is gitignored).
+2. Run:
+
+```bash
+python3 scripts/build_terminal_degree_domains.py
+```
+
+This writes `data/private_terminal_degree_domain.csv` (also gitignored).  
+The Swift analysis automatically uses this file when present.
+
+## Public SPHS Group Tags
+
+To pull publicly available researcher-group tags from the SPHS faculty listing:
+
+```bash
+python3 scripts/scrape_public_sphs_groups.py
+```
+
+Outputs:
+
+- `data/public_sphs_scrape/faculty_group_membership.csv` (faculty-to-group rows, includes `cross_appointment` column)
+- `data/public_sphs_scrape/faculty_roster_with_groups.csv` (one row per faculty with `cross_appointment`)
+- `data/public_sphs_scrape/cross_appointments_reference.csv` (cross-appointments page names and listing-match status)
+- `analysis_output/public_sphs_group_summary.csv` (group counts)
+- `data/public_sphs_scrape/raw_html/` (local HTML cache, gitignored)

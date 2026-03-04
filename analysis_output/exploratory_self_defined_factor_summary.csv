@@ -1,0 +1,11 @@
+factor_key,factor_label,matched_faculty,matched_mhi,matched_non_mhi,coverage_total_pct,coverage_parsed_pct,main_effect_candidate,mhi_interaction_candidate,recommendation_note,keyword_hint
+health_services_policy,Health Services / Policy,11,2,9,25.0,32.4,yes,yes,Usable for control and interaction exploration.,"health services, policy, implementation, evaluation"
+mental_behavioral,Mental / Behavioral Health,8,1,7,18.2,23.5,yes,no,Reasonable as control; weak for MHI interaction.,"psychology, behavior, mental health"
+epidemiology_biostatistics,Epidemiology / Biostatistics,7,0,7,15.9,20.6,yes,no,Reasonable as control; weak for MHI interaction.,"epidemiology, biostatistics, population health"
+aging_gerontology,Aging / Gerontology,6,2,4,13.6,17.6,yes,no,Reasonable as control; weak for MHI interaction.,"aging, gerontology, dementia"
+rehabilitation_disability,Rehabilitation / Disability,4,2,2,9.1,11.8,no,no,Too sparse overall.,"rehabilitation, disability, therapy"
+substance_tobacco,Substance Use / Tobacco,2,0,2,4.5,5.9,no,no,Too sparse overall.,"tobacco, vaping, addiction, substance use"
+environmental_occupational,Environmental / Occupational Health,2,0,2,4.5,5.9,no,no,Too sparse overall.,environmental and occupational health
+nutrition_diet,Nutrition / Diet,2,1,1,4.5,5.9,no,no,Too sparse overall.,nutrition and diet
+health_informatics_data,Health Informatics / Data,1,1,0,2.3,2.9,no,no,Too sparse overall.,"informatics, digital health, data science, ML/AI"
+global_population_health,Global / International Health,1,0,1,2.3,2.9,no,no,Too sparse overall.,global/international health and development

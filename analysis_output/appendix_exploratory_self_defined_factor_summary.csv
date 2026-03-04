@@ -1,0 +1,11 @@
+factor_label,matched_faculty,matched_mhi,matched_non_mhi,main_effect_candidate,mhi_interaction_candidate,recommendation_note
+Health Services / Policy,11,2,9,yes,yes,Usable for control and interaction exploration.
+Mental / Behavioral Health,8,1,7,yes,no,Reasonable as control; weak for MHI interaction.
+Epidemiology / Biostatistics,7,0,7,yes,no,Reasonable as control; weak for MHI interaction.
+Aging / Gerontology,6,2,4,yes,no,Reasonable as control; weak for MHI interaction.
+Rehabilitation / Disability,4,2,2,no,no,Too sparse overall.
+Substance Use / Tobacco,2,0,2,no,no,Too sparse overall.
+Environmental / Occupational Health,2,0,2,no,no,Too sparse overall.
+Nutrition / Diet,2,1,1,no,no,Too sparse overall.
+Health Informatics / Data,1,1,0,no,no,Too sparse overall.
+Global / International Health,1,0,1,no,no,Too sparse overall.

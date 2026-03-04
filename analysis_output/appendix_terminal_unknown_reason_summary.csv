@@ -1,0 +1,5 @@
+unknown_reason,faculty_count
+No unique matching CV filename found,10
+Doctoral degree found but domain is ambiguous from available CV text,9
+Extracted doctoral line is not machine-readable enough to classify,4
+No doctoral degree line detected in parsed CV text,2

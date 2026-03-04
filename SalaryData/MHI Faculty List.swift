@@ -9,10 +9,11 @@
 // Includes Hao Luo ("LUO, HAO").
 
 let MHIFacultyNames: [String] = [
+    "BUTT, ZAHID",
     "CHAURASIA, ASHOK",
     "CHEN, HELEN H.",
     "HIRDES, JOHN",
-    "LIU, LILI",
+    "LEE, JOON H.",
     "LUO, HAO",
     "MORITA, PLINIO",
     "TORRES ESPIN, ABEL",

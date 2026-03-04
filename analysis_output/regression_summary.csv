@@ -1,7 +1,10 @@
 model,term,estimate,std_error,ci_lower,ci_upper,n_obs,n_clusters
-Pooled OLS (cluster-robust),Non-MHI annual slope,4404.586,1828.252,821.212,7987.959,315,40
-Pooled OLS (cluster-robust),MHI annual slope,3684.770,2374.465,-969.182,8338.722,315,40
-Pooled OLS (cluster-robust),MHI - Non-MHI annual slope,-719.815,2996.763,-6593.471,5153.840,315,40
-Person FE (cluster-robust),Non-MHI annual slope,7750.885,597.649,6579.493,8922.277,313,38
-Person FE (cluster-robust),MHI annual slope,6821.914,888.382,5080.686,8563.142,313,38
-Person FE (cluster-robust),MHI - Non-MHI annual slope,-928.971,1070.704,-3027.549,1169.608,313,38
+Pooled OLS,MHI - Non-MHI level (centered year),-34273.263,10697.227,-55239.828,-13306.699,371,42
+Pooled OLS,Non-MHI annual slope,3410.623,859.547,1725.911,5095.336,371,42
+Pooled OLS,MHI annual slope,3545.156,285.000,2986.557,4103.755,371,42
+Pooled OLS,MHI - Non-MHI annual slope,134.532,905.564,-1640.373,1909.438,371,42
+Pooled OLS (Terminal Degree Domain),Non-health - Health annual slope,720.468,868.843,-982.464,2423.399,178,18
+Person FE,Non-MHI annual slope,7045.430,395.809,6269.644,7821.215,370,41
+Person FE,MHI annual slope,5737.968,207.163,5331.929,6144.006,370,41
+Person FE,MHI - Non-MHI annual slope,-1307.462,446.745,-2183.082,-431.842,370,41
+Person FE (Terminal Degree Domain),Non-health - Health annual slope,-18.855,658.636,-1309.782,1272.072,178,18

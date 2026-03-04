@@ -1,9 +1,12 @@
 Regression summary (cluster-robust SE by person)
-Cohort definition: MHI (UW Health Informatics Researchers)
+Cohort definition: MHI (Post-2013 Core Cohort)
 
-Pooled OLS (cluster-robust) | Non-MHI annual slope: estimate=4404.586, SE=1828.252, 95% CI [821.212, 7987.959], N=315, clusters=40
-Pooled OLS (cluster-robust) | MHI annual slope: estimate=3684.770, SE=2374.465, 95% CI [-969.182, 8338.722], N=315, clusters=40
-Pooled OLS (cluster-robust) | MHI - Non-MHI annual slope: estimate=-719.815, SE=2996.763, 95% CI [-6593.471, 5153.840], N=315, clusters=40
-Person FE (cluster-robust) | Non-MHI annual slope: estimate=7750.885, SE=597.649, 95% CI [6579.493, 8922.277], N=313, clusters=38
-Person FE (cluster-robust) | MHI annual slope: estimate=6821.914, SE=888.382, 95% CI [5080.686, 8563.142], N=313, clusters=38
-Person FE (cluster-robust) | MHI - Non-MHI annual slope: estimate=-928.971, SE=1070.704, 95% CI [-3027.549, 1169.608], N=313, clusters=38
+Pooled OLS | MHI - Non-MHI level (centered year): estimate=-34273.263, SE=10697.227, 95% CI [-55239.828, -13306.699], N=371, clusters=42
+Pooled OLS | Non-MHI annual slope: estimate=3410.623, SE=859.547, 95% CI [1725.911, 5095.336], N=371, clusters=42
+Pooled OLS | MHI annual slope: estimate=3545.156, SE=285.000, 95% CI [2986.557, 4103.755], N=371, clusters=42
+Pooled OLS | MHI - Non-MHI annual slope: estimate=134.532, SE=905.564, 95% CI [-1640.373, 1909.438], N=371, clusters=42
+Pooled OLS (Terminal Degree Domain) | Non-health - Health annual slope: estimate=720.468, SE=868.843, 95% CI [-982.464, 2423.399], N=178, clusters=18
+Person FE | Non-MHI annual slope: estimate=7045.430, SE=395.809, 95% CI [6269.644, 7821.215], N=370, clusters=41
+Person FE | MHI annual slope: estimate=5737.968, SE=207.163, 95% CI [5331.929, 6144.006], N=370, clusters=41
+Person FE | MHI - Non-MHI annual slope: estimate=-1307.462, SE=446.745, 95% CI [-2183.082, -431.842], N=370, clusters=41
+Person FE (Terminal Degree Domain) | Non-health - Health annual slope: estimate=-18.855, SE=658.636, 95% CI [-1309.782, 1272.072], N=178, clusters=18
