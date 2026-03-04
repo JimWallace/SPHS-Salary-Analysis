@@ -6,6 +6,7 @@
 //
 
 let SPHSFacultyNames: [String] = [
+    "AMSON, ASHLEY",
     "ANTHONY, KELLY K.",
     "BARDWELL, GEOFFREY",
     "BIGELOW, PHILIP L.",
@@ -18,9 +19,14 @@ let SPHSFacultyNames: [String] = [
     "FERRO, MARK",
     "HALL, PETER A.",
     "HAMMOND, DAVID",
+    "HOFFMAN-GOETZ, LAURIE",
     "HIRDES, JOHN",
+    "HUSTED, JANICE",
     "JANDU, NARVEEN",
+    "JANES, CRAIG R.",
+    "JESSUP, LINDA LOUISE",
     "KIRKPATRICK, SHARON",
+    "KING, ALEXANDRA",
     "LAIRD, BRIAN",
     "LAW, JANE",
     "LEATHERDALE, SCOTT",
@@ -32,6 +38,7 @@ let SPHSFacultyNames: [String] = [
     "MEYER, SAMANTHA",
     "MIELKE, JOHN G.",
     "MORITA, PLINIO",
+    "MYERS, ANITA M.",
     "NEITERMAN, ELENA",
     "TAIT NEUFELD, HANNAH",
     "OGA-OMENKA, CHARITY",
@@ -40,6 +47,7 @@ let SPHSFacultyNames: [String] = [
     "SKINNER, KELLY",
     "TORRES ESPIN, ABEL",
     "TYAS, SUZANNE L",
+    "STOLEE, PAUL",
     "WALLACE, JAMES R.",
     "WILLIAMS, DIANE",
     "YESSIS, JENNIFER L",
