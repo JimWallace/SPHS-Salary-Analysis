@@ -9,6 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TABLE = ROOT / "analysis_output" / "disclosure_completeness_table.csv"
+PUBLIC_CROSSCHECK = ROOT / "analysis_output" / "disclosure_public_crosscheck.csv"
 SPHS_LIST = ROOT / "SalaryData" / "SPHS Faculty List.swift"
 COHORTS = ROOT / "SalaryData" / "CohortDefinitions.swift"
 OUT = ROOT / "data" / "sphs.csv"
@@ -38,6 +39,16 @@ def main() -> None:
     by_name = {canon(r["faculty_name"]): r for r in rows}
 
     faculty_order = parse_names(SPHS_LIST)
+    active_canon: set[str] = set()
+    if PUBLIC_CROSSCHECK.exists():
+        with PUBLIC_CROSSCHECK.open(encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                if (r.get("public_match_status") or "").strip() == "1":
+                    active_canon.add(canon(r.get("faculty_name", "")))
+
+    if active_canon:
+        faculty_order = [name for name in faculty_order if canon(name) in active_canon]
+
     primary_mhi = parse_primary_mhi(COHORTS)
 
     year_cols = [c for c in (rows[0].keys() if rows else []) if c and c.isdigit()]
@@ -57,6 +68,8 @@ def main() -> None:
             writer.writerow([surname, given, mhi] + salaries)
 
     print(f"Wrote rebuilt SPHS salary table: {OUT}")
+    if active_canon:
+        print(f"Applied active-faculty filter from public crosscheck: {len(faculty_order)} names retained.")
 
 
 if __name__ == "__main__":
