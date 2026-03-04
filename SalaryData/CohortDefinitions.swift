@@ -17,6 +17,7 @@ let BiasConcernFacultyNames: [String] = [
 // Primary analysis cohort: MHI core faculty hired in/after MHI launch era.
 // This intentionally excludes legacy HI-roster names (e.g., LIU, LILI; HIRDES, JOHN).
 let FocusedMHIFacultyNamesSince2013: [String] = [
+    "BUTT, ZAHID",
     "CHAURASIA, ASHOK",
     "CHEN, HELEN H.",
     "LEE, JOON",

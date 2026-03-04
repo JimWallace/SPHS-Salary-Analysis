@@ -140,6 +140,9 @@ def write_figures(panel_rows: list[dict[str, object]]) -> None:
         print("matplotlib not available; skipping descriptive figures.")
         return
 
+    mhi_color = "#D55E00"
+    non_mhi_color = "#0072B2"
+
     by_person: dict[str, list[dict[str, object]]] = defaultdict(list)
     by_year_group: dict[tuple[int, int], list[float]] = defaultdict(list)
     by_group_all: dict[int, list[float]] = defaultdict(list)
@@ -155,20 +158,23 @@ def write_figures(panel_rows: list[dict[str, object]]) -> None:
         years = [int(x["year"]) for x in person_rows]
         salaries = [float(x["salary"]) for x in person_rows]
         group_a = int(person_rows[0]["group_a"])
-        color = "#C44E52" if group_a == 1 else "#4C72B0"
+        color = mhi_color if group_a == 1 else non_mhi_color
         ax.plot(years, salaries, color=color, alpha=0.18, linewidth=0.8)
 
     years = sorted({int(r["year"]) for r in panel_rows})
-    for group_a, color, label in [(1, "#C44E52", "Group A"), (0, "#4C72B0", "Group B")]:
+    for group_a, color, label, linestyle in [
+        (1, mhi_color, "MHI", "--"),
+        (0, non_mhi_color, "Non-MHI", "-"),
+    ]:
         xs, ys = [], []
         for y in years:
             vals = by_year_group.get((y, group_a), [])
             if vals:
                 xs.append(y)
                 ys.append(mean(vals))
-        ax.plot(xs, ys, color=color, linewidth=3, label=f"{label} mean")
+        ax.plot(xs, ys, color=color, linewidth=3, linestyle=linestyle, label=f"{label} mean")
 
-    ax.set_title("Salary trajectories with group trends")
+    ax.set_title("Salary trajectories by MHI affiliation")
     ax.set_xlabel("Year")
     ax.set_ylabel("Salary (CAD)")
     ax.legend(frameon=False)
@@ -179,10 +185,10 @@ def write_figures(panel_rows: list[dict[str, object]]) -> None:
     fig, ax = plt.subplots(figsize=(8, 5))
     ax.boxplot(
         [by_group_all.get(1, []), by_group_all.get(0, [])],
-        labels=["Group A", "Group B"],
+        labels=["MHI", "Non-MHI"],
         showmeans=True,
     )
-    ax.set_title("Salary distribution by group (all person-years)")
+    ax.set_title("Salary distribution by MHI affiliation (all person-years)")
     ax.set_ylabel("Salary (CAD)")
     fig.tight_layout()
     fig.savefig(FIG_DIR / "salary_boxplot_by_group.png", dpi=220)

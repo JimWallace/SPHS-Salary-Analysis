@@ -9,6 +9,9 @@ INPUT = ROOT / "data" / "sphs.csv"
 OUT = ROOT / "analysis_output" / "appendix_analysis_verification_matrix.csv"
 SPHS_LIST = ROOT / "SalaryData" / "SPHS Faculty List.swift"
 CV_START_CROSSWALK = ROOT / "analysis_output" / "cv_start_year_crosswalk.csv"
+DISPLAY_NAME_OVERRIDES = {
+    "LEE JOON H.": "LEE JOON",
+}
 
 
 def parse_bool(value: str) -> bool:
@@ -74,6 +77,7 @@ def main() -> None:
             if not surname or not given:
                 continue
             faculty_name = f"{surname} {given}"
+            faculty_display = DISPLAY_NAME_OVERRIDES.get(faculty_name, faculty_name)
             faculty_key = " ".join(faculty_name.strip().upper().replace(",", " ").split())
             if faculty_key not in allowed:
                 continue
@@ -87,7 +91,7 @@ def main() -> None:
             start_year = cv_start_years.get(faculty_key, first_disclosure_year)
 
             out_row = {
-                "Faculty": faculty_name,
+                "Faculty": faculty_display,
                 "MHI Classification": mhi_class,
                 "Start Year": start_year,
             }

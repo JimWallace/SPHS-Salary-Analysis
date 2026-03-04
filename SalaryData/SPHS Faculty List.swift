@@ -24,6 +24,7 @@ let SPHSFacultyNames: [String] = [
     "LAIRD, BRIAN",
     "LAW, JANE",
     "LEATHERDALE, SCOTT",
+    "LEE, JOON H.",
     "LUO, HAO",
     "MACEACHEN (STOTHERS), ELLEN",
     "MAJOWICZ, SHANNON",

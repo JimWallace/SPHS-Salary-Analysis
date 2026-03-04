@@ -1,7 +1,7 @@
 faculty_name,first_disclosure_year,last_disclosure_year,disclosure_year_count,missing_internal_years,public_match_status,public_name,cv_match_status,cv_filename
 "ANTHONY, KELLY K.",2014,2024,11,,1,Kelly Anthony,matched,"ANTHONY, Kelly CV Dec 2024.pdf"
 "AROCHA, JOSE",2011,2020,10,,0,,missing,
-"BARDWELL, GEOFFREY",2023,2024,2,,0,,matched,"BARDWELL, Geoff CV 2025.pdf"
+"BARDWELL, GEOFFREY",2023,2024,2,,1,Geoff Bardwell,matched,"BARDWELL, Geoff CV 2025.pdf"
 "BIGELOW, PHILIP L.",2011,2024,14,,1,Philip Bigelow,matched,"BIGELOW, Philip CV_ Jan 2025.pdf"
 "BUTT, ZAHID",2020,2024,5,,1,Zahid A. Butt,matched,BUTT Zahid CV Dec 2024.pdf
 "CHAURASIA, ASHOK",2017,2024,8,,1,Ashok Chaurasia,matched,"CHAURASIA, Ashok, CV Dec 2024.pdf"
@@ -22,6 +22,7 @@ faculty_name,first_disclosure_year,last_disclosure_year,disclosure_year_count,mi
 "LAIRD, BRIAN",2017,2024,8,,1,Brian Laird,matched,LAIRD Brian CV Dec 2024.pdf
 "LAW, JANE",2013,2024,11,2014,1,Jane Law,matched,"LAW, Jane CV Dec 2024 Environment.pdf"
 "LEATHERDALE, SCOTT",2012,2024,13,,1,Scott Leatherdale,matched,"LEATHERDALE, Scott, CV Dec 2024.pdf"
+"LEE, JOON H.",2016,2017,2,,0,,missing,
 "LUO, HAO",,,0,,1,Hao Luo,matched,"LUO, Hao CV 2025.pdf"
 "MACEACHEN (STOTHERS), ELLEN",2015,2024,10,,1,Ellen MacEachen,missing,
 "MAJOWICZ, SHANNON",2015,2024,10,,1,Shannon E. Majowicz,matched,MAJOWICZ Shannon CV Dec 2024.pdf
@@ -33,7 +34,7 @@ faculty_name,first_disclosure_year,last_disclosure_year,disclosure_year_count,mi
 "NEITERMAN, ELENA",2018,2024,7,,1,Elena Neiterman,matched,"NEITERMAN, Elena CV Jan 2025.pdf"
 "OGA-OMENKA, CHARITY",2023,2024,2,,1,Charity Oga-Omenka,matched,"OGA-OMENKA, Charity CV 2025.pdf"
 "OREMUS, MARK",2015,2024,10,,1,Mark Oremus,matched,"OREMUS, Mark, CV Dec 2024.pdf"
-"PERLMAN, CHRISTOPHER",2016,2024,9,,0,,matched,PERLMAN_Chris_CV_Dec_2024.pdf
+"PERLMAN, CHRISTOPHER",2016,2024,9,,1,Chris Perlman,matched,PERLMAN_Chris_CV_Dec_2024.pdf
 "SKINNER, KELLY",2018,2024,7,,1,Kelly Skinner,matched,"SKINNER, Kelly, CV Dec 2024.pdf"
 "TAIT NEUFELD, HANNAH",2020,2024,5,,1,Hannah Neufeld,matched,"NEUFELD, Hannah, CV Dec 2024.pdf"
 "TORRES ESPIN, ABEL",2024,2024,1,,1,Abel Torres Espin,matched,"TORRES ESPIN, Abel CV 2025.pdf"

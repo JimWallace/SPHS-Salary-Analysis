@@ -281,22 +281,22 @@ private func writeSegmentedMarkerPlot(rows: [AnalysisRow], knot2Year: Int) {
     let years = Array(Set(rows.map(\.year))).sorted()
     guard !years.isEmpty else { return }
 
-    var meanA: [Int: Double] = [:]
-    var meanB: [Int: Double] = [:]
+    var meanMHI: [Int: Double] = [:]
+    var meanNonMHI: [Int: Double] = [:]
     for year in years {
         let yrRows = rows.filter { $0.year == year }
-        let a = yrRows.filter { $0.mhi == 1.0 }.map(\.salary)
-        let b = yrRows.filter { $0.mhi == 0.0 }.map(\.salary)
-        if !a.isEmpty { meanA[year] = a.reduce(0.0, +) / Double(a.count) }
-        if !b.isEmpty { meanB[year] = b.reduce(0.0, +) / Double(b.count) }
+        let mhiValues = yrRows.filter { $0.mhi == 1.0 }.map(\.salary)
+        let nonMHIValues = yrRows.filter { $0.mhi == 0.0 }.map(\.salary)
+        if !mhiValues.isEmpty { meanMHI[year] = mhiValues.reduce(0.0, +) / Double(mhiValues.count) }
+        if !nonMHIValues.isEmpty { meanNonMHI[year] = nonMHIValues.reduce(0.0, +) / Double(nonMHIValues.count) }
     }
-    let allY = Array(meanA.values) + Array(meanB.values)
+    let allY = Array(meanMHI.values) + Array(meanNonMHI.values)
     guard let minY = allY.min(), let maxY = allY.max(), maxY > minY else { return }
 
-    let width = 1100.0
+    let width = 1160.0
     let height = 650.0
     let left = 90.0
-    let right = 40.0
+    let right = 100.0
     let top = 40.0
     let bottom = 70.0
     let plotW = width - left - right
@@ -318,6 +318,12 @@ private func writeSegmentedMarkerPlot(rows: [AnalysisRow], knot2Year: Int) {
 
     let x2014 = x(2014)
     let xK2 = x(knot2Year)
+    let lastYear = years.max() ?? knot2Year
+    let mhiColor = "#D55E00"
+    let nonMHIColor = "#0072B2"
+    let mhiLastY = y(meanMHI[lastYear] ?? minY)
+    let nonMhiLastY = y(meanNonMHI[lastYear] ?? minY)
+    let labelX = left + plotW + 12
     let svg = """
     <svg xmlns="http://www.w3.org/2000/svg" width="\(Int(width))" height="\(Int(height))">
       <rect x="0" y="0" width="100%" height="100%" fill="white"/>
@@ -325,13 +331,15 @@ private func writeSegmentedMarkerPlot(rows: [AnalysisRow], knot2Year: Int) {
       <line x1="\(left)" y1="\(top)" x2="\(left)" y2="\(top + plotH)" stroke="#333" stroke-width="1.2"/>
       <line x1="\(x2014)" y1="\(top)" x2="\(x2014)" y2="\(top + plotH)" stroke="#666" stroke-dasharray="6,6" stroke-width="1.3"/>
       <line x1="\(xK2)" y1="\(top)" x2="\(xK2)" y2="\(top + plotH)" stroke="#111" stroke-dasharray="6,6" stroke-width="1.3"/>
-      <polyline fill="none" stroke="#C44E52" stroke-width="2.8" points="\(polyline(meanA))"/>
-      <polyline fill="none" stroke="#4C72B0" stroke-width="2.8" points="\(polyline(meanB))"/>
-      <text x="\(left)" y="24" font-size="16" font-family="Times New Roman">Mean Salary by Group with Regime Knots</text>
+      <polyline fill="none" stroke="\(mhiColor)" stroke-width="2.8" stroke-dasharray="8,6" points="\(polyline(meanMHI))"/>
+      <polyline fill="none" stroke="\(nonMHIColor)" stroke-width="2.8" points="\(polyline(meanNonMHI))"/>
+      <text x="\(left)" y="24" font-size="16" font-family="Times New Roman">Mean Salary by MHI Affiliation with Regime Knots</text>
       <text x="\(x2014 + 5)" y="\(top + 18)" font-size="12" font-family="Times New Roman">2014 knot</text>
       <text x="\(xK2 + 5)" y="\(top + 34)" font-size="12" font-family="Times New Roman">\(knot2Year) knot</text>
-      <text x="\(left + plotW - 170)" y="\(top + 22)" font-size="12" fill="#C44E52" font-family="Times New Roman">Group A</text>
-      <text x="\(left + plotW - 170)" y="\(top + 40)" font-size="12" fill="#4C72B0" font-family="Times New Roman">Group B</text>
+      <line x1="\(left + plotW)" y1="\(mhiLastY)" x2="\(labelX - 4)" y2="\(mhiLastY)" stroke="\(mhiColor)" stroke-width="2.8" stroke-dasharray="8,6"/>
+      <line x1="\(left + plotW)" y1="\(nonMhiLastY)" x2="\(labelX - 4)" y2="\(nonMhiLastY)" stroke="\(nonMHIColor)" stroke-width="2.8"/>
+      <text x="\(labelX)" y="\(mhiLastY + 4)" font-size="12" fill="#111" font-family="Times New Roman">MHI</text>
+      <text x="\(labelX)" y="\(nonMhiLastY + 4)" font-size="12" fill="#111" font-family="Times New Roman">Non-MHI</text>
     </svg>
     """
 
