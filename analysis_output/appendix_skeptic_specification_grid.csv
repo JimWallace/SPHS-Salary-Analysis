@@ -1,7 +1,7 @@
 model_check,cohort_bucket,start_year_rule,estimate,std_error,ci_low,ci_high,p_two_sided,n_permutations,n_obs,n_clusters,n_treated_clusters
-Matched FE (±1 year),Matched set,cv-or-disclosure,-2900.594,848.889,-4564.415,-1236.772,0.035,462,89,11,5
+Matched FE (±1 year),Matched set,cv-or-disclosure,-2725.884,922.983,-4534.931,-916.837,0.058,462,89,11,5
 Matched FE (±1 year),Matched set,disclosure-only,-2937.593,637.864,-4187.806,-1687.381,0.016,126,59,9,4
 Within-cohort FE,2017-2019,disclosure-only,-2945.218,539.922,-4003.465,-1886.971,0.008,120,74,10,3
-Pooled with entry-cohort FE,All cohorts,cv-or-disclosure,-1297.392,1268.496,-3783.645,1188.860,0.561,19604,176,21,6
+Pooled with entry-cohort FE,All cohorts,cv-or-disclosure,-2236.323,1344.843,-4872.214,399.569,0.337,19368,162,20,6
 Pooled with entry-cohort FE,All cohorts,disclosure-only,-1817.014,774.306,-3334.654,-299.373,0.338,19948,218,25,6
 Person FE (baseline),All years,not applicable,-1896.116,405.519,-2690.934,-1101.299,0.042,20000,306,33,5
