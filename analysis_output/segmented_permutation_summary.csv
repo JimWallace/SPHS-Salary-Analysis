@@ -1,5 +1,5 @@
 breakYear,model,term,observed,nullMean,nullStdDev,nullQ025,nullQ975,pTwoSided,nPermutations,inferenceMethod
-2021,Pooled OLS (Segmented),K2014XMHI,-2246.690,-1264.672,5315.237,-11631.553,9711.944,0.668,17948,monte-carlo
+2021,Pooled OLS (Segmented),K2014XMHI,-2246.690,-1264.900,5315.271,-11631.553,9711.944,0.668,17948,monte-carlo
 2021,Pooled OLS (Segmented),KK2XMHI,-594.120,-259.992,4005.380,-8892.434,6828.402,0.874,17974,monte-carlo
 2021,Person FE (Segmented),K2014XMHI,3440.571,-126.326,4184.517,-8443.451,9676.863,0.357,17145,monte-carlo
 2021,Person FE (Segmented),KK2XMHI,-1535.323,53.709,1755.284,-3508.768,3561.350,0.370,17200,monte-carlo

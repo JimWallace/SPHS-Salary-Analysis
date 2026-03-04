@@ -45,7 +45,7 @@ MANUAL_START_YEAR_OVERRIDES: Dict[str, Tuple[int, str]] = {
     # administrative role (Assistant Vice President, Leadership and Strategic initiatives).
     "COOKE, MARTIN J.": (2005, "Manual override from CV UW employment section; includes later AVP role from 2023."),
     "DUBIN, JOEL A.": (2005, "Manual override from CV experience section: University of Waterloo appointment begins 2005 (Associate Professor, tenure-track), preceding 2011 tenure and 2021 promotion."),
-    "CHEN, HELEN H.": (2013, "Manual override from CV employment history: University of Waterloo assistant professor appointment begins 2013, preceding Professor of Practice role starting in 2018."),
+    "CHEN, HELEN H.": (2009, "Manual override from CV employment history: University of Waterloo research professor appointment begins 2009, preceding assistant professor role in 2013 and Professor of Practice role in 2018."),
     "HALL, PETER A.": (2005, "Manual override from CV employment history: University of Waterloo appointment begins 2005 (Assistant Professor), with later promotion to Full Professor in 2018."),
     "HIRDES, JOHN": (1990, "Manual override from CV employment history: University of Waterloo faculty appointment begins 1990 (Assistant Professor); 1989 reflects adjunct status-only appointment."),
     "KIRKPATRICK, SHARON": (2013, "Manual override from CV employment history: University of Waterloo appointment begins 2013 (Assistant Professor), with promotion to Associate Professor in 2018."),
