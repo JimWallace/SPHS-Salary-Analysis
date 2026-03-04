@@ -1,0 +1,6 @@
+analysis,cohort_bucket,model,term,observed_estimate,null_mean,null_std_dev,null_q025,null_q975,p_two_sided,n_permutations,inference_method
+Pooled with entry-cohort FE,All cohorts,Pooled with entry-cohort FE,YearsSinceFirstXMHI,1723.060,362.415,2493.045,-4987.761,4980.918,0.492,19964,monte-carlo
+Within-cohort FE,2011-2013,Within-cohort FE,YearsSinceFirstXMHI,-521.190,330.017,1941.093,-2875.933,3900.651,0.824,136,exact
+Within-cohort FE,2014-2016,Within-cohort FE,YearsSinceFirstXMHI,-3466.908,-371.447,2996.877,-5785.094,3354.595,0.267,15,exact
+Within-cohort FE,2017-2019,Within-cohort FE,YearsSinceFirstXMHI,-1298.336,167.865,1697.743,-2230.950,1815.111,0.700,10,exact
+Matched FE (±1 year),Matched set,Matched FE,YearsSinceFirstXMHI,-1912.623,23.340,950.366,-1668.805,1697.357,0.012,1716,exact
