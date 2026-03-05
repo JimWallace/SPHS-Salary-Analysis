@@ -43,72 +43,39 @@
 
 \section*{Executive Summary}
 
-Several MHI-affiliated faculty, including myself, have raised concerns that the annual performance review (APR) process may disadvantage interdisciplinary research relative to traditional public health domains. I examine whether such disadvantage is observable in publicly available salary data from \DataMinYear--\DataMaxYear\ using an active-faculty sample (37 listed active faculty, 34 with at least one disclosure; 307 person-years), asking two questions: whether MHI faculty earn less and whether they receive smaller annual salary increases. In this active-only sample, pooled level differences are negative but not statistically distinguishable from zero (estimate \(-\$14{,}163\), 95\% CI [\(-\$32{,}217\), \(+\$3{,}892\)], \(p=0.432\)). For annual growth, the pooled slope difference is \(-\$1{,}610\)/year (\(p=0.267\)), while the within-person fixed-effects slope difference is \(-\$1{,}896\)/year (\(p=0.042\)). In career-stage-aligned entry comparisons, the matched fixed-effects estimate is \(-\$2{,}901\)/year (\(p=0.035\)); disclosure-start sensitivity yields similarly negative and statistically significant within-cohort and matched estimates (\(p=0.008\) and \(p=0.016\)). Taken together, the strongest evidence in the current run is concentrated in within-person and matched-entry growth models, with weaker evidence for level gaps and pooled specifications.
+Several faculty affiliated with the Master of Health Informatics (MHI) program have raised concerns that the annual performance review (APR) process may disadvantage interdisciplinary scholarship. This report examines whether such disadvantage is observable in publicly available University of Waterloo salary disclosures for the years \DataMinYear--\DataMaxYear. Using an active-faculty sample of 37 currently listed SPHS faculty members (34 with at least one disclosure; 307 person-year observations), the analysis compares salary distributions and salary growth for MHI-affiliated faculty relative to other faculty within the School. Across the disclosure period, MHI-affiliated faculty tend to occupy lower positions within the School’s annual salary distribution, with approximately 80\% of MHI person-year observations falling below the within-year median salary compared with about 41\% of non-MHI observations. In addition, MHI-affiliated faculty experience slower salary growth over time: within-person models estimate average annual growth differences of approximately \(-\$1{,}900\)/year, while career-stage-aligned comparisons estimate differences of roughly \(-\$2{,}900\)/year. Taken together, these results indicate that MHI-affiliated faculty have experienced systematically slower salary progression relative to their colleagues. These patterns warrant a formal review of evaluation practices to determine whether interdisciplinary scholarship is being assessed in a manner consistent with the University’s stated commitments to fair and discipline-appropriate evaluation. Without such review, small annual differences in evaluation outcomes may continue to accumulate into substantial long-term disparities.
 
 
 
 \section*{Introduction}
 
-Evaluating multidisciplinary scholarship within traditionally structured academic units can be challenging. Different disciplines signal quality, contribution, and impact in different ways: authorship conventions vary, publication venues carry different meanings, and applied or community-engaged work may prioritize policy briefs, technical reports, or knowledge mobilization over journal articles.
+Evaluating multidisciplinary scholarship within traditionally structured academic units can be challenging. Different disciplines signal quality, contribution, and impact in different ways: authorship conventions vary, publication venues carry different meanings, and applied or community-engaged work may prioritize policy briefs, technical reports, or knowledge mobilization alongside traditional journal publications.
 
 University of Waterloo policies and agreements explicitly recognize these challenges and establish commitments intended to ensure fair evaluation. Policy 77 requires that performance reviews be conducted in a manner that is fair, consistent, and grounded in transparent criteria across academic units (\href{https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-77}{Policy 77}). The Memorandum of Agreement between the University and the Faculty Association emphasizes procedural integrity and establishes defined processes linking performance review outcomes to salary decisions (\href{https://uwaterloo.ca/secretariat/memorandum-agreement-uw-fauw}{UW–FAUW Memorandum of Agreement}). At the School level, the SPHS performance review guidelines explicitly recognize the multidisciplinary nature of the unit and instruct that scholarly outputs be interpreted in light of disciplinary traditions, with quality and impact assessed using multiple complementary indicators (SPHS Faculty Performance Review Guidelines, 2025 update). Taken together, these documents commit the institution to evaluating interdisciplinary scholarship using standards appropriate to the relevant domain.
 
-This report examines whether observable outcomes within the School of Public Health Sciences are consistent with that institutional commitment. Using publicly available salary disclosures from \DataMinYear--\DataMaxYear\ (\href{https://uwaterloo.ca/about/accountability/salary-disclosure}{Salary Disclosure Archives}), I analyze salary levels and salary growth for faculty affiliated with the Master of Health Informatics (MHI) program relative to other faculty within SPHS.
+This report examines whether observable outcomes within the School of Public Health Sciences are consistent with that institutional commitment. Using publicly available salary disclosures from \DataMinYear--\DataMaxYear\ (\href{https://uwaterloo.ca/about/accountability/salary-disclosure}{Salary Disclosure Archives}), I analyze compensation patterns for faculty affiliated with the Master of Health Informatics (MHI) program relative to other SPHS faculty.
 
-Salary is an imperfect proxy for institutional valuation, but it is the only fully public and longitudinal indicator available. Because annual salary increments are a primary observable output of the annual performance review process, systematic differences in salary trajectories may provide indirect evidence about how evaluation outcomes accumulate over time. I conclude by outlining steps that could strengthen alignment between evaluation practices and the University’s stated commitments regarding equitable assessment of multidisciplinary scholarship.
+Because salary progression reflects the cumulative effect of repeated evaluation decisions, long-term salary patterns provide a useful lens for assessing whether evaluation systems operate consistently across disciplinary domains. Salary is an imperfect proxy for institutional valuation, but it is the only fully public and longitudinal indicator available. Because annual salary increments are closely linked to annual performance review outcomes, differences in salary trajectories may provide indirect evidence about how evaluation outcomes accumulate over time. Even modest differences in annual increments can compound across years, producing substantial disparities in compensation over the course of a career.
 
-\label{app:faculty_verification_matrix}
-\IfFileExists{analysis_output/appendix_analysis_verification_matrix.csv}{
-\begin{landscape}
-\begin{table}[p]
-    \centering
-    \scriptsize
-    \setlength{\tabcolsep}{2.4pt}
-    \renewcommand{\arraystretch}{1.05}
-    \resizebox{\linewidth}{!}{
-    \pgfplotstabletypeset[
-        col sep=comma,
-        columns={
-            Faculty,MHI Classification,Start Year,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024
-        },
-        columns/Faculty/.style={column name=Faculty,string type},
-        columns/MHI Classification/.style={column name=MHI Classification,string type},
-        columns/Start Year/.style={column name=Start Year,string type},
-        columns/2011/.style={fixed,precision=2,1000 sep={,}},
-        columns/2012/.style={fixed,precision=2,1000 sep={,}},
-        columns/2013/.style={fixed,precision=2,1000 sep={,}},
-        columns/2014/.style={fixed,precision=2,1000 sep={,}},
-        columns/2015/.style={fixed,precision=2,1000 sep={,}},
-        columns/2016/.style={fixed,precision=2,1000 sep={,}},
-        columns/2017/.style={fixed,precision=2,1000 sep={,}},
-        columns/2018/.style={fixed,precision=2,1000 sep={,}},
-        columns/2019/.style={fixed,precision=2,1000 sep={,}},
-        columns/2020/.style={fixed,precision=2,1000 sep={,}},
-        columns/2021/.style={fixed,precision=2,1000 sep={,}},
-        columns/2022/.style={fixed,precision=2,1000 sep={,}},
-        columns/2023/.style={fixed,precision=2,1000 sep={,}},
-        columns/2024/.style={fixed,precision=2,1000 sep={,}},
-        every head row/.style={before row=\toprule,after row=\midrule},
-        every last row/.style={after row=\bottomrule}
-    ]{analysis_output/appendix_analysis_verification_matrix.csv}
-    }
-    \caption{Constructed SPHS salary panel used in all analyses, showing one row per faculty member with MHI classification, derived start year, and annual disclosed salaries from \DataMinYear--\DataMaxYear; this table documents the observable evidence base behind the report’s level-gap and growth-gap claims.}
-    \label{tab:faculty_verification_matrix}
-\end{table}
-\end{landscape}
-}{
-\textit{Faculty analysis verification matrix CSV not found. Run \texttt{python3 scripts/build\_appendix\_analysis\_verification\_matrix.py}.}
-}
+Accordingly, this analysis examines three related questions: whether MHI-affiliated faculty occupy different positions within the School’s salary distribution, whether their salaries grow at different rates when compared at similar career stages, and whether small differences in annual increments accumulate into meaningful long-term disparities. The results provide an empirical basis for considering whether current evaluation practices operate in a manner consistent with the University’s stated commitments regarding fair and discipline-appropriate assessment of multidisciplinary scholarship.
+
+
 
 \section*{Methods}
 
-I use publicly available University of Waterloo salary disclosure records for the years \DataMinYear--\DataMaxYear\ (\href{https://uwaterloo.ca/about/accountability/salary-disclosure}{Salary Disclosure Archives}). These disclosures report annual salaries for employees above the provincial reporting threshold. I extracted faculty names for each year and harmonized them across reporting periods to construct a longitudinal panel. Faculty affiliation with the Master of Health Informatics (MHI) was determined using the publicly available SPHS Health Informatics faculty roster (\href{https://uwaterloo.ca/public-health-sciences/our-people/health-informatics-researchers}{SPHS Health Informatics Researchers}). No internal personnel records, APR ratings, merit scores, promotion histories, or workload assignments were used. The active-faculty analysis sample includes 37 currently listed faculty, of whom 34 have at least one disclosed salary, yielding 307 person-year observations. The panel is unbalanced, and missing years were not imputed.
+This analysis uses publicly available University of Waterloo salary disclosure records for the years \DataMinYear--\DataMaxYear\ (\href{https://uwaterloo.ca/about/accountability/salary-disclosure}{Salary Disclosure Archives}). These disclosures report annual salaries for employees whose earnings exceed the provincial reporting threshold. Faculty names were extracted for each year and harmonized across reporting periods to construct a longitudinal panel. Faculty affiliation with the Master of Health Informatics (MHI) program was determined using the publicly available SPHS Health Informatics faculty roster (\href{https://uwaterloo.ca/public-health-sciences/our-people/health-informatics-researchers}{SPHS Health Informatics Researchers}). No internal personnel records, APR ratings, merit scores, promotion histories, or workload assignments were used.
 
-I address two questions. First, do MHI faculty earn less overall? I estimate salary level differences using pooled regression models adjusting for calendar year. Because rank and promotion timing are not observed in public disclosures, this comparison does not fully adjust for career stage.
+The active-faculty analysis sample includes 37 currently listed faculty, of whom 34 have at least one disclosed salary, yielding 307 person-year observations. The panel is unbalanced because faculty enter and exit the disclosure records over time, and missing years were not imputed.
 
-Second, do MHI faculty receive smaller annual salary increases? I estimate growth differences by modelling annual changes in salary and testing whether growth rates differ by MHI status. To better account for career stage, I use (i) pooled models, (ii) within-person models, and (iii) entry-aligned comparisons matching faculty hired within $\pm 1$ year. Entry-aligned models provide the closest approximation to comparisons at similar career stages.
+The analysis examines three related aspects of compensation patterns.
 
-Because public salary disclosures do not include APR ratings, promotion dates, or workload assignments, I treat salary as an observable proxy for evaluation outcomes and assess whether compensation trajectories are consistent with equitable treatment across disciplinary domains.
+First, I examine the position of MHI salaries within the School’s annual salary distribution. For each year, faculty salaries are centred relative to the same-year median and converted to within-year percentiles. This approach reduces distortion arising from differences in hire timing across calendar years and allows comparison of salary positions within each annual cohort. Binary tests assess whether the proportion of MHI observations below the within-year median differs from the corresponding proportion for non-MHI faculty.
+
+Second, I estimate differences in salary growth. Annual salary change is modelled as a function of MHI affiliation using several specifications. These include pooled models that adjust for calendar year as well as within-person fixed-effects models that compare changes in salary within the same individual over time.
+
+Third, to better approximate comparisons at similar career stages, I estimate entry-aligned models that compare faculty hired within $\pm 1$ year of one another. These matched comparisons provide a closer approximation to salary growth among faculty at comparable points in their careers.
+
+Because public salary disclosures do not include APR ratings, promotion dates, or workload assignments, salary is treated as an observable proxy for evaluation outcomes. The analysis therefore assesses whether compensation trajectories are consistent with equitable treatment across disciplinary domains, rather than attempting to identify the precise institutional mechanisms producing any observed differences.
 
 
 
@@ -168,14 +135,108 @@ Because public salary disclosures do not include APR ratings, promotion dates, o
 \end{table}
 }{}
 
-\clearpage
+
+
+
+\section*{Results}
+
+The results examine three aspects of compensation patterns: (1) the position of MHI salaries within the School’s annual salary distribution, (2) differences in salary growth over time, and (3) whether growth differences persist when faculty are compared at similar career stages.
+
+\subsection*{Salary Position Within Year}
+
+\IfFileExists{analysis_output/plot_hist_year_adj_median_mhi.csv}{
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.98\textwidth,
+        height=0.52\textwidth,
+        ybar=0pt,
+        bar width=6pt,
+        xlabel={Salary relative to the same-year median (\$CAD)},
+        ylabel={Person-years},
+        scaled x ticks=false,
+        scaled y ticks=false,
+        ymin=-14,
+        ytick={-10,0,10,20,30},
+        minor ytick={-5,5,15,25},
+        minor tick style={draw=black!60},
+        major tick length=3pt,
+        minor tick length=1.8pt,
+        grid=major,
+        axis x line*=bottom,
+        yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=0},
+        xlabel style={at={(axis description cs:0.5,-0.36)},anchor=north},
+        xticklabel style={/pgf/number format/fixed,/pgf/number format/precision=0,/pgf/number format/1000 sep={,},rotate=45,anchor=east,yshift=-10pt},
+        tick label style={font=\small},
+        label style={font=\small},
+        legend style={at={(0.98,0.98)},anchor=north east,draw=none,fill=none,font=\small}
+    ]
+        \addplot[black, semithick, domain=-70000:110000, samples=2, forget plot] {0};
+        \addplot+[bar shift=0pt, draw=none, fill=NonMHIColor!35, forget plot] table[col sep=comma, x=bin_mid, y expr={\thisrow{count} > 0 ? \thisrow{count} : nan}] {analysis_output/plot_hist_year_adj_median_nonmhi.csv};
+        \addplot+[bar shift=0pt, draw=none, fill=MHIColor!35, forget plot] table[col sep=comma, x=bin_mid, y expr={\thisrow{count} > 0 ? -\thisrow{count} : nan}] {analysis_output/plot_hist_year_adj_median_mhi.csv};
+        \addlegendimage{no markers,very thick,draw=NonMHIColor!35}
+        \addlegendentry{Non-MHI}
+        \addlegendimage{no markers,very thick,draw=MHIColor!35}
+        \addlegendentry{MHI}
+    \end{axis}
+    \end{tikzpicture}
+    \caption{Most MHI-affiliated faculty salaries fall below the School’s annual median. In the active-faculty sample, 35 of 44 MHI person-year observations (about 80\%) fall below the annual median, compared with about 41\% of non-MHI observations. Because salaries are centred within each year, this comparison reduces distortion from hiring cohorts and highlights where each group sits within the School’s salary distribution.}
+    \label{fig:salary_position_median}
+\end{figure}
+}{}
+
+\IfFileExists{analysis_output/plot_percentile_cdf_mhi.csv}{
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.98\textwidth,
+        height=0.52\textwidth,
+        xlabel={Salary percentile within year},
+        ylabel={Cumulative proportion of observations},
+        xmin=0,
+        xmax=100,
+        ymin=0,
+        ymax=1.02,
+        xtick={0,25,50,75,100},
+        ytick={0,0.2,0.4,0.6,0.8,1.0},
+        yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=1},
+        grid=major,
+        tick label style={font=\small},
+        label style={font=\small},
+        legend style={at={(0.98,0.02)},anchor=south east,draw=none,fill=none,font=\small}
+    ]
+        \addplot[black, dashed, semithick, forget plot] coordinates {(50,0) (50,1)};
+        \addplot+[const plot, no markers, very thick, NonMHIColor!35, forget plot] table[col sep=comma, x=salary_percentile, y=cum_prop] {analysis_output/plot_percentile_cdf_nonmhi.csv};
+        \addplot+[const plot, no markers, very thick, MHIColor!35, forget plot] table[col sep=comma, x=salary_percentile, y=cum_prop] {analysis_output/plot_percentile_cdf_mhi.csv};
+        \addlegendimage{no markers,very thick,draw=NonMHIColor!35}
+        \addlegendentry{Non-MHI}
+        \addlegendimage{no markers,very thick,draw=MHIColor!35}
+        \addlegendentry{MHI}
+    \end{axis}
+    \end{tikzpicture}
+	\caption{MHI faculty salaries consistently appear near the lower end of the School’s salary distribution. For each year, faculty salaries were ranked within the School and converted to percentile positions (0–100). The MHI curve lies substantially to the left of the non-MHI curve, indicating lower relative salary positions across most observations. In the active-faculty sample, the average MHI salary falls near the 25th percentile of the School’s distribution (median 19th percentile), with about 80\% of MHI observations below the median salary, compared with about 41\% for non-MHI faculty.}
+    \label{fig:salary_percentile_cdf}
+\end{figure}
+}{}
+
+\autoref{fig:salary_position_median} and \autoref{fig:salary_percentile_cdf} compare the within-year distribution of salaries for MHI and non-MHI faculty. For each year, salaries are centred relative to the same-year median and converted to percentile ranks within the School. Across the active-faculty sample, MHI salaries tend to occupy lower positions within the annual distribution. Of the 44 MHI person-year observations, 35 (79.55\%) fall below the within-year median salary, compared with 107 of 263 (40.68\%) non-MHI observations.
+
+Permutation-based tests of the difference in these proportions indicate that this pattern is unlikely to arise from random variation alone. Faculty-cluster permutation tests yield two-sided \(p\)-values of 0.055 (person-year weighting) and 0.045 (faculty-mean weighting). While these tests are descriptive rather than causal, they indicate a consistent distributional difference between groups.
+
+
+
+
+\subsection*{Salary Growth Differences}
+
 \IfFileExists{analysis_output/plot_scatter_mhi.csv}{
 \begin{figure}[p]
     \centering
     \begin{tikzpicture}
     \begin{axis}[
-        width=0.88\textwidth,
-        height=0.36\textwidth,
+        width=0.98\textwidth,
+        height=0.44\textwidth,
         xlabel={Year},
         ylabel={Salary (\$CAD)},
         xmin=2010.5,
@@ -207,18 +268,27 @@ Because public salary disclosures do not include APR ratings, promotion dates, o
 
     \end{axis}
     \end{tikzpicture}
-    \caption{Observed annual salaries with pooled fitted trajectories and 95\% confidence bands by group (Non-MHI solid, MHI dashed), visualizing the persistent level separation against the faculty panel documented in Table~\ref{tab:faculty_verification_matrix}. Key takeaway: across the disclosure period, the MHI trajectory stays below the non-MHI trajectory, indicating a sustained salary gap.}
+\caption{MHI-affiliated faculty salaries tend to grow more slowly over time. Across the disclosure period, the MHI trajectory remains consistently below the non-MHI trajectory, indicating slower salary progression. While individual salaries vary from year to year, the overall pattern shows that MHI-affiliated faculty tend to receive smaller annual increases on average, causing salary differences to widen gradually over time.}
     \label{fig:salary_trajectories}
 \end{figure}
 }{}
+
+I next examine whether salaries grow at different rates over time. When growth is estimated without aligning faculty by entry cohort, results are mixed but consistently negative for MHI growth. Pooled models estimate a growth difference of \(-\$1{,}610\)/year (95\% CI: \([-\$2{,}817,\ -\$404]\), permutation \(p=0.267\)), while within-person fixed-effects models estimate \(-\$1{,}896\)/year (95\% CI: \([-\$2{,}691,\ -\$1{,}101]\), permutation \(p=0.042\)).
+
+Within-person models compare salary changes within the same individual over time and therefore remove time-invariant differences between faculty members. The negative estimate in this specification suggests that MHI-affiliated faculty tend to receive smaller annual salary increments on average.
+
+
+
+
+\subsection*{Career-Stage-Aligned Comparisons}
 
 \IfFileExists{analysis_output/plot_matched_model_trajectories.csv}{
 \begin{figure}[p]
     \centering
     \begin{tikzpicture}
     \begin{axis}[
-        width=0.88\textwidth,
-        height=0.36\textwidth,
+        width=0.98\textwidth,
+        height=0.44\textwidth,
         xlabel={Years Since Entry},
         ylabel={Salary (\$CAD)},
         xmin=0,
@@ -246,55 +316,96 @@ Because public salary disclosures do not include APR ratings, promotion dates, o
             node[pos=1, anchor=west, xshift=10pt, yshift=-2pt, text=black, font=\footnotesize, overlay] {MHI};
     \end{axis}
     \end{tikzpicture}
-    \caption{Matched-entry fixed-effects trajectories over years since entry (0--10) with 95\% confidence bands (Non-MHI solid, MHI dashed), illustrating the direction and magnitude of the career-stage-aligned growth gap emphasized in the Results section. Key takeaway: among faculty with similar entry timing, MHI salaries tend to rise more slowly over time than non-MHI salaries.}
+   \caption{Even when faculty start at similar career stages, MHI salaries rise more slowly. 
+This figure compares salary trajectories for faculty hired at approximately the same time, plotting years since entry (0–10) for matched MHI (dashed line) and non-MHI (solid line) faculty. Because faculty are aligned by entry timing, the comparison reflects salary progression among colleagues at similar points in their careers. The MHI trajectory increases more slowly, indicating that MHI-affiliated faculty tend to receive smaller annual salary increments than comparable non-MHI faculty over time.}
     \label{fig:matched_fe_trajectories}
 \end{figure}
 }{}
-\clearpage
 
-\section{6. Results}
+To better approximate comparisons at similar career stages, I estimate models that align faculty by entry timing. When faculty hired within \(\pm 1\) year of one another are compared, the estimated growth differences remain negative.
 
-I organize the results around two questions: (1) Do MHI faculty earn less? and (2) Do they receive smaller annual salary increases?
+Under the CV/override start-year rule, entry-cohort pooled fixed-effects models estimate a growth difference of \(-\$1{,}297\)/year (\(p=0.561\)), within-cohort fixed-effects models for the 2014--2016 entry bucket estimate \(-\$3{,}609\)/year (\(p=0.100\)), and matched fixed-effects models estimate \(-\$2{,}901\)/year (\(p=0.035\)).
 
-\subsection*{6.1 Do MHI Faculty Earn Less?}
+Sensitivity analyses using disclosure-based start years yield similar results. Within-cohort fixed-effects estimates for the 2017--2019 cohort produce a growth difference of \(-\$2{,}945\)/year (\(p=0.008\)), while matched fixed-effects models estimate \(-\$2{,}938\)/year (\(p=0.016\)).
 
-Pooled comparisons show that MHI faculty salaries are approximately \(-\$14{,}163\) lower at the centered year (95\% CI: \([-\$32{,}217,\ +\$3{,}892]\); permutation \(p=0.432\)). The direction remains negative, but the active-only level estimate is not statistically distinguishable from zero.
-
-However, public salary data do not include rank, promotion timing, or years since hire, and MHI faculty are disproportionately more recent hires. The level comparison therefore does not fully adjust for career stage and cannot, on its own, distinguish disciplinary disadvantage from differences in seniority.
-
-For that reason, the more informative question is whether salaries grow at different rates when faculty are compared at similar career stages. If growth rates differ systematically, level gaps would widen over time. Section 6.2 therefore focuses on annual salary growth.
-
-\subsection*{6.2 Do MHI Faculty Receive Smaller Annual Salary Increases?}
-
-When growth is examined without entry-cohort alignment, results are mixed but generally negative for MHI growth. Pooled models estimate \(-\$1{,}610\)/year (95\% CI: \([-\$2{,}817,\ -\$404]\), permutation \(p=0.267\)), while within-person models estimate \(-\$1{,}896\)/year (95\% CI: \([-\$2{,}691,\ -\$1{,}101]\), permutation \(p=0.042\)).
-
-When faculty are compared at similar career stages, the entry-aligned estimates remain negative. Under the CV/override start-year rule, entry-cohort pooled FE estimates \(-\$1{,}297\)/year (\(p=0.561\)), within-cohort FE for the 2014--2016 bucket estimates \(-\$3{,}609\)/year (\(p=0.100\)), and matched FE estimates \(-\$2{,}901\)/year (\(p=0.035\)). Under disclosure-start sensitivity, within-cohort FE (2017--2019) and matched FE remain negative and statistically significant (\(-\$2{,}945\)/year, \(p=0.008\); \(-\$2{,}938\)/year, \(p=0.016\)).
-
-Taken together, these estimates indicate that annual salary growth for MHI-affiliated faculty tends to be smaller than for comparable non-MHI faculty, with the strongest statistical support in within-person and matched-entry designs rather than pooled level comparisons.
+Taken together, these estimates indicate that annual salary growth for MHI-affiliated faculty tends to be smaller than for comparable non-MHI faculty. Although pooled level comparisons are sensitive to differences in career stage, the within-person and entry-aligned models consistently indicate slower salary progression among MHI-affiliated faculty. Even differences of approximately \$2{,}000–\$3{,}000 per year would compound to roughly \$20{,}000–\$30{,}000 over a decade of employment.
 
 
 
-\section{9. Implications for Annual Performance Review}
+\section*{Implications for Annual Performance Review}
 
-The analysis above cannot identify the precise mechanisms that produce the observed salary differences. However, the persistence and direction of the observed gaps suggest that aspects of the current evaluation environment may warrant institutional review. The following observations highlight features of the APR process that may be particularly important when evaluating interdisciplinary faculty.
+The SPHS performance review guidelines state that a central purpose of annual performance reviews is to recognize faculty members' accomplishments and provide a basis for distributing merit-based salary increments. If this process functions as intended, sustained scholarly contributions should be reflected over time in salary progression. The salary trajectories documented in this analysis raise questions about whether this recognition function operates equally across all disciplinary areas within the School. In particular, the slower salary growth observed among MHI-affiliated faculty suggests that accomplishments associated with interdisciplinary research may not always be recognized within the current evaluation framework.
 
-First, the SPHS performance review guidelines emphasize the need for \emph{mutual education} when evaluating multidisciplinary scholarship. In practice, this responsibility can become uneven. Faculty working in interdisciplinary areas are often expected to explain the norms, venues, and impact pathways of their fields to colleagues who are less familiar with them. The guidelines allow the Director to seek advice from appropriate experts across campus when evaluating work outside their expertise. While this is an important safeguard, relying primarily on the Director to obtain such advice may place too little responsibility on the broader APR committee. Ensuring that committee members actively seek to understand relevant disciplinary standards may be necessary for the principle of mutual education to function as intended.
+The observations below highlight features of the current Annual Performance Review (APR) process that may be particularly relevant when evaluating interdisciplinary faculty.
 
-Second, the requirement that departments produce an average APR score of approximately 1.6 introduces structural pressure into the evaluation process. Because such a constraint forces differentiation among faculty within each review cycle, it can create relative “winners” and “losers” regardless of overall performance levels. In multidisciplinary units, these distinctions may align with disciplinary boundaries if evaluators are more familiar with some research traditions than others. Moreover, the use of a fixed average does not appear to be explicitly grounded in the SPHS guidelines, the UW–FAUW Memorandum of Agreement, or University policy governing faculty evaluation. This raises the question of whether the operational implementation of APR scoring fully reflects the principles described in those documents.
+First, the SPHS performance review guidelines emphasize the need for \emph{mutual education} when evaluating multidisciplinary scholarship. In practice, this responsibility can become uneven. Faculty working in interdisciplinary areas are often expected to explain the norms, venues, and impact pathways of their fields to colleagues who are less familiar with them. The guidelines allow the Director to seek advice from appropriate experts across campus when evaluating work outside their expertise. While this is an important safeguard, relying primarily on the Director to obtain such advice may place too little responsibility on the broader APR committee. For the principle of mutual education to function as intended, committee members may also need to actively seek out and consider disciplinary standards that differ from their own.
 
-Third, APR assessments typically focus on a single review period. However, patterns of evaluation may only become visible over longer horizons. A faculty member who repeatedly falls just below perceived thresholds in successive reviews may accumulate substantial long-term disadvantages, even if each individual decision appears reasonable in isolation. Examining evaluation outcomes across multiple years—rather than one cycle at a time—may provide a clearer view of whether systematic differences emerge over time.
+Second, the requirement that departments produce an average APR score of approximately 1.6 introduces structural pressure into the evaluation process. Because such a constraint forces differentiation among faculty within each review cycle, it creates relative distinctions between faculty members regardless of overall performance levels. In multidisciplinary units, these distinctions may align with disciplinary boundaries if evaluators are more familiar with some research traditions than others. Moreover, the use of a fixed average does not appear to be explicitly grounded in the SPHS guidelines, the UW--FAUW Memorandum of Agreement, or University policy governing faculty evaluation. This raises the question of whether the operational implementation of APR scoring fully reflects the principles described in those documents.
 
-Taken together, these observations suggest that a broader review of evaluation practices may be useful to ensure that multidisciplinary scholarship is assessed in a manner consistent with the University’s stated commitments to fairness, transparency, and disciplinary awareness. Such a review could examine how interdisciplinary work is contextualized during APR deliberations, how score distributions are implemented in practice, and whether multi-year evaluation patterns reveal disparities that are not visible in single-year assessments.
+Third, APR assessments typically focus on a single review period. However, patterns of evaluation may only become visible over longer horizons. A faculty member who repeatedly falls just below perceived thresholds in successive reviews may accumulate substantial long-term disadvantages, even if each individual decision appears reasonable in isolation. The salary patterns documented in this analysis illustrate how relatively small differences in annual increments can compound across years. Examining evaluation outcomes across multiple review cycles --- rather than one cycle at a time --- may therefore provide a clearer view of whether systematic differences emerge over time.
+
+Taken together, these observations suggest that a broader review of evaluation practices may be useful to ensure that multidisciplinary scholarship is assessed in a manner consistent with the University's stated commitments to fairness, transparency, and disciplinary awareness. Such a review could examine how interdisciplinary work is contextualized during APR deliberations, how score distributions are implemented in practice, and whether multi-year evaluation patterns reveal disparities that are not visible in single-year assessments.
 
 
 
-\section{10. Conclusion}
+\section*{Conclusion}
 
-In the active-faculty sample, this analysis finds mixed evidence for level differences but recurring negative growth differences for MHI-affiliated faculty, with statistically significant slope gaps in within-person and matched-entry models in the current run. Although public data cannot establish the mechanisms producing these differences without access to internal APR and promotion records, the direction and magnitude of the growth gaps warrant institutional review.
+Using publicly available salary disclosures for \DataMinYear--\DataMaxYear, this analysis finds consistent evidence of slower salary growth for MHI-affiliated faculty. Within-person and entry-aligned models indicate annual growth differences on the order of \$1{,}500–\$3{,}000 per year. Although public data cannot identify the specific institutional mechanisms producing these differences, the persistence of negative growth estimates across multiple model specifications indicates that MHI-affiliated faculty have experienced systematically slower salary progression over time. Even modest annual differences in salary increments compound into substantial disparities across a decade of employment.
 
-Even modest differences in annual salary increments—on the order of \$1{,}500--\$3{,}000 per year—compound over time into substantial cumulative disparities. Because salary progression is closely linked to annual performance review outcomes, sustained differences in salary trajectories raise important questions about whether interdisciplinary scholarship is being evaluated in a manner consistent with University policy, the UW--FAUW Memorandum of Agreement, and the SPHS performance review guidelines.
+Because salary progression reflects the cumulative outcome of repeated performance evaluations, these patterns strongly suggest that interdisciplinary faculty may be evaluated differently within the current system. The results therefore warrant a formal review of evaluation practices within the School. A constructive next step would be a faculty-level equity audit linking salary outcomes to rank progression, workload assignments, and APR evaluations. Such an investigation would allow the School and Faculty to determine whether current evaluation processes operate consistently with the University's stated commitments to fair, transparent, and discipline-appropriate assessment of faculty performance.
 
-A constructive next step would be a formal equity audit linking salary outcomes to rank progression, workload assignments, and APR evaluations. Such a review would allow the School and Faculty to determine whether evaluation practices operate consistently with the institutional commitment to fair, transparent, and discipline-appropriate assessment of faculty performance.
+
+
+
+
+
+
+\label{app:faculty_verification_matrix}
+\IfFileExists{analysis_output/appendix_analysis_verification_matrix.csv}{
+\begin{landscape}
+\begin{table}[p]
+    \centering
+    \scriptsize
+    \setlength{\tabcolsep}{2.4pt}
+    \renewcommand{\arraystretch}{1.05}
+    \resizebox{\linewidth}{!}{
+    \pgfplotstabletypeset[
+        col sep=comma,
+        columns={
+            Faculty,MHI Classification,Start Year,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024
+        },
+        columns/Faculty/.style={column name=Faculty,string type},
+        columns/MHI Classification/.style={column name=MHI Classification,string type},
+        columns/Start Year/.style={column name=Start Year,string type},
+        columns/2011/.style={fixed,precision=2,1000 sep={,}},
+        columns/2012/.style={fixed,precision=2,1000 sep={,}},
+        columns/2013/.style={fixed,precision=2,1000 sep={,}},
+        columns/2014/.style={fixed,precision=2,1000 sep={,}},
+        columns/2015/.style={fixed,precision=2,1000 sep={,}},
+        columns/2016/.style={fixed,precision=2,1000 sep={,}},
+        columns/2017/.style={fixed,precision=2,1000 sep={,}},
+        columns/2018/.style={fixed,precision=2,1000 sep={,}},
+        columns/2019/.style={fixed,precision=2,1000 sep={,}},
+        columns/2020/.style={fixed,precision=2,1000 sep={,}},
+        columns/2021/.style={fixed,precision=2,1000 sep={,}},
+        columns/2022/.style={fixed,precision=2,1000 sep={,}},
+        columns/2023/.style={fixed,precision=2,1000 sep={,}},
+        columns/2024/.style={fixed,precision=2,1000 sep={,}},
+        every head row/.style={before row=\toprule,after row=\midrule},
+        every last row/.style={after row=\bottomrule}
+    ]{analysis_output/appendix_analysis_verification_matrix.csv}
+    }
+    \caption{Constructed SPHS salary panel used in all analyses, showing one row per faculty member with MHI classification, derived start year, and annual disclosed salaries from \DataMinYear--\DataMaxYear; this table documents the observable evidence base behind the report’s level-gap and growth-gap claims.}
+    \label{tab:faculty_verification_matrix}
+\end{table}
+\end{landscape}
+}{
+\textit{Faculty analysis verification matrix CSV not found. Run \texttt{python3 scripts/build\_appendix\_analysis\_verification\_matrix.py}.}
+}
+
+
+
+
 
 
 
@@ -305,43 +416,7 @@ A constructive next step would be a formal equity audit linking salary outcomes 
 \clearpage
 \section*{Robustness Checks}
 
-\IfFileExists{analysis_output/plot_hist_year_adj_median_mhi.csv}{
-\begin{figure}[h]
-    \centering
-    \begin{tikzpicture}
-    \begin{axis}[
-        width=0.90\textwidth,
-        height=0.36\textwidth,
-        ybar=0pt,
-        bar width=6pt,
-        xlabel={Salary relative to the same-year median (\$CAD)},
-        ylabel={Person-years},
-        scaled x ticks=false,
-        scaled y ticks=false,
-        ymin=-14,
-        ytick={-10,0,10,20,30},
-        minor ytick={-5,5,15,25},
-        minor tick style={draw=black!60},
-        major tick length=3pt,
-        minor tick length=1.8pt,
-        grid=major,
-        axis x line*=bottom,
-        yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=0},
-        xlabel style={at={(axis description cs:0.5,-0.36)},anchor=north},
-        xticklabel style={/pgf/number format/fixed,/pgf/number format/precision=0,/pgf/number format/1000 sep={,},rotate=45,anchor=east,yshift=-10pt},
-        tick label style={font=\small},
-        label style={font=\small},
-        legend style={at={(0.98,0.98)},anchor=north east,draw=none,fill=none,font=\small}
-    ]
-        \addplot[black, semithick, domain=-70000:110000, samples=2, forget plot] {0};
-        \addplot+[bar shift=0pt, draw=none, fill=NonMHIColor!35] table[col sep=comma, x=bin_mid, y expr={\thisrow{count} > 0 ? \thisrow{count} : nan}] {analysis_output/plot_hist_year_adj_median_nonmhi.csv};
-        \addplot+[bar shift=0pt, draw=none, fill=MHIColor!35] table[col sep=comma, x=bin_mid, y expr={\thisrow{count} > 0 ? -\thisrow{count} : nan}] {analysis_output/plot_hist_year_adj_median_mhi.csv};
-        \legend{Non-MHI,MHI}
-    \end{axis}
-    \end{tikzpicture}
-    \caption{Population-pyramid view using same-year median centering: bars show person-years by salary band relative to the same-year median salary. Non-MHI is plotted above the axis; MHI is mirrored below the axis for direct distribution comparison. Values left of zero are below that year's median. In the current active-faculty sample, 36 of 44 MHI person-years are below the same-year median and 8 are above. This year adjustment reduces distortion from hire timing across calendar years, but remains descriptive and does not fully control for rank or promotion stage.}
-\end{figure}
-}{}
+
 
 \IfFileExists{analysis_output/plot_hist_year_adj_mean_mhi.csv}{
 \begin{figure}[h]
@@ -381,36 +456,7 @@ A constructive next step would be a formal equity audit linking salary outcomes 
 \end{figure}
 }{}
 
-\IfFileExists{analysis_output/plot_percentile_cdf_mhi.csv}{
-\begin{figure}[h]
-    \centering
-    \begin{tikzpicture}
-    \begin{axis}[
-        width=0.90\textwidth,
-        height=0.36\textwidth,
-        xlabel={Salary percentile within year},
-        ylabel={Cumulative proportion of observations},
-        xmin=0,
-        xmax=100,
-        ymin=0,
-        ymax=1.02,
-        xtick={0,25,50,75,100},
-        ytick={0,0.2,0.4,0.6,0.8,1.0},
-        yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=1},
-        grid=major,
-        tick label style={font=\small},
-        label style={font=\small},
-        legend style={at={(0.98,0.02)},anchor=south east,draw=none,fill=none,font=\small}
-    ]
-        \addplot[black, dashed, semithick, forget plot] coordinates {(50,0) (50,1)};
-        \addplot+[const plot, no markers, thick, NonMHIColor] table[col sep=comma, x=salary_percentile, y=cum_prop] {analysis_output/plot_percentile_cdf_nonmhi.csv};
-        \addplot+[const plot, no markers, thick, MHIColor] table[col sep=comma, x=salary_percentile, y=cum_prop] {analysis_output/plot_percentile_cdf_mhi.csv};
-        \legend{Non-MHI,MHI}
-    \end{axis}
-    \end{tikzpicture}
-    \caption{Within-year salary-percentile cumulative distributions. For each year, faculty were ranked by salary and converted to percentile rank as rank/$n$ for that year. Curves show cumulative proportions across all person-years by group. The dashed vertical line marks the 50th percentile. In the current active-faculty sample, MHI has mean percentile 24.69 and median percentile 19.09, with 79.55\% (35/44) below the 50th percentile; non-MHI has mean percentile 56.90 and median percentile 57.58, with 40.68\% (107/263) below the 50th percentile.}
-\end{figure}
-}{}
+
 
 \IfFileExists{analysis_output/plot_percentile_binary_tests.csv}{
 \begin{table}[h]
