@@ -273,7 +273,7 @@ Permutation-based tests of the difference in these proportions indicate that thi
 \end{figure}
 }{}
 
-I examine whether salaries grow at different rates using a three-step unconditional growth model. Results are summarised in Tables~\ref{tab:lme4_growth} and~\ref{tab:lme4_lrt}.
+I examine whether salaries grow at different rates using a three-step unconditional growth model. Results are summarised in the tables below.
 
 \textbf{Step 1 --- Unconditional means model.} Fitting salary with random intercepts only, the model partitions variance into between-faculty (\(\hat{\tau}^2_{00} = 336{,}879{,}055\)) and within-faculty components (\(\hat{\sigma}^2 = 656{,}814{,}419\)), yielding an ICC of \(0.339\). This indicates that 33.9\% of total salary variance reflects persistent differences between faculty members, justifying a multilevel approach and establishing variance structure before any predictors are added.
 
@@ -318,13 +318,13 @@ I examine whether salaries grow at different rates using a three-step unconditio
         col sep=comma,
         columns={comparison,df_diff,AIC_reduced,AIC_full,logLik_reduced,logLik_full,chisq,p_value},
         columns/comparison/.style={column name=Comparison,string type},
-        columns/df_diff/.style={column name=$\Delta$df},
-        columns/AIC_reduced/.style={column name=AIC (reduced), fixed, precision=1},
-        columns/AIC_full/.style={column name=AIC (full), fixed, precision=1},
-        columns/logLik_reduced/.style={column name=logLik (reduced), fixed, precision=1},
-        columns/logLik_full/.style={column name=logLik (full), fixed, precision=1},
-        columns/chisq/.style={column name=$\chi^2$, fixed, precision=2},
-        columns/p_value/.style={column name=$p$, fixed, precision=4},
+        columns/df_diff/.style={column name=$\Delta$df,string type},
+        columns/AIC_reduced/.style={column name=AIC (reduced),string type},
+        columns/AIC_full/.style={column name=AIC (full),string type},
+        columns/logLik_reduced/.style={column name=logLik (reduced),string type},
+        columns/logLik_full/.style={column name=logLik (full),string type},
+        columns/chisq/.style={column name=$\chi^2$,string type},
+        columns/p_value/.style={column name=$p$,string type},
         every head row/.style={before row=\toprule,after row=\midrule},
         every last row/.style={after row=\bottomrule}
     ]{analysis_output/lme4_lrt_summary.csv}
