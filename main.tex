@@ -281,7 +281,7 @@ I examine whether salaries grow at different rates using a three-step unconditio
 
 \textbf{Step 3 --- Conditional growth model.} Adding MHI affiliation and its interaction with time further improves fit: LRT \(\chi^2(2) = 10.24\), \(p = 0.006\). The MHI main effect estimates a level gap of approximately \(-\$28{,}592\) at the mean year (\(p = 0.034\)), indicating that MHI-affiliated faculty have lower average salaries even before accounting for differences in growth. The primary growth-gap estimate --- the \texttt{time:mhi} interaction --- is \(-\$1{,}840\)/year (95\% CI: \([-\$3{,}303,\ -\$377]\), \(p = 0.019\)). Non-MHI faculty grow at approximately \(\$7{,}832\)/year, while MHI faculty grow at roughly \(\$5{,}992\)/year, a difference of approximately 23\% per year.
 
-\IfFileExists{analysis_output/lme4_growth_model_summary.csv}{
+\IfFileExists{analysis_output/lme4_growth_model_summary_latex.csv}{
 \begin{table}[h]
     \centering
     \small
@@ -289,10 +289,10 @@ I examine whether salaries grow at different rates using a three-step unconditio
     \renewcommand{\arraystretch}{1.08}
     \resizebox{\linewidth}{!}{
     \pgfplotstabletypeset[
-        col sep=comma,
+        col sep=semicolon,
         columns={model,term,estimate,std_error,ci_lower,ci_upper,p_value},
         columns/model/.style={column name=Model,string type},
-        columns/term/.style={column name=Term,string type},
+        columns/term/.style={column name=Term,string type,string replace*={_}{\_},string replace*={^}{\^{}}},
         columns/estimate/.style={column name=Estimate,string type},
         columns/std_error/.style={column name=SE,string type},
         columns/ci_lower/.style={column name=95\% CI Low,string type},
@@ -300,14 +300,14 @@ I examine whether salaries grow at different rates using a three-step unconditio
         columns/p_value/.style={column name=$p$,string type},
         every head row/.style={before row=\toprule,after row=\midrule},
         every last row/.style={after row=\bottomrule}
-    ]{analysis_output/lme4_growth_model_summary.csv}
+    ]{analysis_output/lme4_growth_model_summary_latex.csv}
     }
     \caption{Three-step unconditional growth model results (lme4/lmerTest). Model~1 reports variance components and the ICC (SE, CI, $p$ not applicable). Model~2 reports the average annual growth rate. Model~3 reports all fixed effects including the primary growth-gap estimate (\texttt{time:mhi}). Salary estimates in \$CAD; year centred at grand mean (\(\overline{\text{year}}=2017.5\)).}
     \label{tab:lme4_growth}
 \end{table}
 }{}
 
-\IfFileExists{analysis_output/lme4_lrt_summary.csv}{
+\IfFileExists{analysis_output/lme4_lrt_summary_latex.csv}{
 \begin{table}[h]
     \centering
     \small
@@ -315,7 +315,7 @@ I examine whether salaries grow at different rates using a three-step unconditio
     \renewcommand{\arraystretch}{1.08}
     \resizebox{\linewidth}{!}{
     \pgfplotstabletypeset[
-        col sep=comma,
+        col sep=semicolon,
         columns={comparison,df_diff,AIC_reduced,AIC_full,logLik_reduced,logLik_full,chisq,p_value},
         columns/comparison/.style={column name=Comparison,string type},
         columns/df_diff/.style={column name=$\Delta$df},
@@ -327,7 +327,7 @@ I examine whether salaries grow at different rates using a three-step unconditio
         columns/p_value/.style={column name=$p$, fixed, precision=4},
         every head row/.style={before row=\toprule,after row=\midrule},
         every last row/.style={after row=\bottomrule}
-    ]{analysis_output/lme4_lrt_summary.csv}
+    ]{analysis_output/lme4_lrt_summary_latex.csv}
     }
     \caption{Likelihood ratio tests (ML) comparing sequential growth models. Row~1 tests whether adding time (with random slopes) improves on the unconditional means model; Row~2 tests whether adding MHI affiliation and its interaction with time improves on the unconditional growth model. Both tests support the more complex model.}
     \label{tab:lme4_lrt}

@@ -224,6 +224,11 @@ summary_rows_out <- data.frame(
 write.csv(summary_rows_out,
           file.path(out_dir, "lme4_growth_model_summary.csv"),
           row.names = FALSE)
+write.table(summary_rows_out,
+            file.path(out_dir, "lme4_growth_model_summary_latex.csv"),
+            sep = ";",
+            row.names = FALSE,
+            quote = FALSE)
 
 # ── 7. Write lme4_lrt_summary.csv ─────────────────────────────────────────────
 lrt_df <- data.frame(
@@ -242,6 +247,11 @@ lrt_df <- data.frame(
 write.csv(lrt_df,
           file.path(out_dir, "lme4_lrt_summary.csv"),
           row.names = FALSE)
+write.table(lrt_df,
+            file.path(out_dir, "lme4_lrt_summary_latex.csv"),
+            sep = ";",
+            row.names = FALSE,
+            quote = FALSE)
 
 # ── 8. Write lme4_variance_components.csv ────────────────────────────────────
 # Variance components for each model
