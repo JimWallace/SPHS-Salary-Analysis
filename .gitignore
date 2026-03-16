@@ -16,14 +16,24 @@
 
 # Project output
 main.pdf
+main_build.pdf
+main_*.pdf
+*Draft.pdf
 
 # Xcode / SwiftPM user-specific files
 DerivedData/
 build/
+build2/
+build3/
+build4/
+build_bench_opt/
+build_release/
+build_*/
 *.xcuserstate
 *.xcscmblueprint
 *.xccheckout
 xcuserdata/
+*.xcactivitylog
 
 # Private local-only inputs/outputs for CV-based analysis
 Faculty CVs/
