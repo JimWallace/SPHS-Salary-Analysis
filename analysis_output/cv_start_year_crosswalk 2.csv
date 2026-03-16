@@ -1,0 +1,44 @@
+salary_name,cv_file,cv_start_year,cv_start_confidence,first_disclosure_year,disclosure_minus_cv_years,method_note
+"ANTHONY, KELLY K.","ANTHONY, Kelly CV Dec 2024.pdf",2005,high,2014,9,"Manual override from CV employment history: University of Waterloo appointment begins 2005 (Associate Professor, teaching); 2000-2005 refers to Wesleyan appointment."
+"BARDWELL, GEOFFREY","BARDWELL, Geoff CV 2025.pdf",,none,2023,,No UW appointment-like year pattern found in CV text
+"BIGELOW, PHILIP L.","BIGELOW, Philip CV_ Jan 2025.pdf",2005,high,2011,6,"Matched UW appointment context; score=5; snippet=University of Waterloo Waterloo, ON 2005 - 2016 Associate Professor (Status) Dalla Lana School of Public Health"
+"BUTT, ZAHID",BUTT Zahid CV Dec 2024.pdf,2019,high,2020,1,Manual override from CV employment history: University of Waterloo appointment begins July 2019 (Assistant Professor); 2015-2019 years correspond to UBC postdoctoral appointments.
+"CHAURASIA, ASHOK","CHAURASIA, Ashok, CV Dec 2024.pdf",2017,low,2017,0,"Matched UW appointment context; score=2; snippet=University of Waterloo. 2022 Applied Health Sciences Teaching Award Co-recipient, University of Waterloo. 2017-2018 Nominated for Applied Health Sciences Teaching Award, University of Waterloo."
+"CHEN, HELEN H.","CHEN, Helen CV Jan 2025.pdf",2013,high,2011,-2,"Manual override from CV employment history: University of Waterloo assistant professor appointment begins 2013, preceding Professor of Practice role starting in 2018."
+"COOKE, MARTIN J.","COOKE, Martin CV Dec 2024.pdf",2005,high,2014,9,Manual override from CV UW employment section; includes later AVP role from 2023.
+"DODD, WARREN","DODD, Warren, CV Dec 2024.pdf",2018,high,2019,1,"Matched UW appointment context; score=5; snippet=University of Waterloo 2018-23 Assistant Professor (tenure-stream) School of Public Health Sciences, University"
+"DUBIN, JOEL A.","DUBIN, Joel CV Dec 2024.pdf",2005,high,2011,6,"Manual override from CV experience section: University of Waterloo appointment begins 2005 (Associate Professor, tenure-track), preceding 2011 tenure and 2021 promotion."
+"FERRO, MARK","FERRO, Mark, CV Dec 2024.pdf",2016,high,2017,1,Matched UW appointment context; score=6; snippet=University of Waterloo 2016 – 2020 Assistant Professor
+"HALL, PETER A.",HALL Peter CV Dec 2024.pdf,2005,high,2012,7,"Manual override from CV employment history: University of Waterloo appointment begins 2005 (Assistant Professor), with later promotion to Full Professor in 2018."
+"HAMMOND, DAVID","HAMMOND, Dave CV Dec 2024.pdf",2005,high,2011,6,"Matched UW appointment context; score=5; snippet=University of Waterloo 2007 JANUARY Assistant Professor School of Public Health & Health Systems, University of Waterloo 2005 SEPTEMBER"
+"HIRDES, JOHN","HIRDES, John CV Dec 2024.pdf",1990,high,2011,21,Manual override from CV employment history: University of Waterloo faculty appointment begins 1990 (Assistant Professor); 1989 reflects adjunct status-only appointment.
+"JANDU, NARVEEN",,,none,2021,,No unique matching CV filename found
+"KIRKPATRICK, SHARON","KIRKPATRICK, Sharon, CV Dec 2024.pdf",2013,high,2015,2,"Manual override from CV employment history: University of Waterloo appointment begins 2013 (Assistant Professor), with promotion to Associate Professor in 2018."
+"LAIRD, BRIAN",LAIRD Brian CV Dec 2024.pdf,2013,high,2017,4,Matched UW appointment context; score=6; snippet=University of Waterloo 2019-Present Associate Professor University of Waterloo 2013-2019
+"LAW, JANE","LAW, Jane CV Dec 2024 Environment.pdf",2001,high,2013,12,"Matched UW appointment context; score=7; snippet=University of Waterloo, CA: (1) School of Planning; (2) School of Public Health Sciences. 2001 – 2007 Postdoctoral Research Associate"
+"LEATHERDALE, SCOTT","LEATHERDALE, Scott, CV Dec 2024.pdf",2011,high,2012,1,Matched UW appointment context; score=6; snippet=University of Waterloo 2016 - 2019 Associate Professor (Tenured) University of Waterloo 2011 - 2016
+"LEE, JOON H.",,2012,high,2016,4,Manual override per reconciliation: University of Waterloo start year set to 2012.
+"LUO, HAO","LUO, Hao CV 2025.pdf",,none,,,No UW appointment-like year pattern found in CV text
+"MACEACHEN (STOTHERS), ELLEN",,,none,2015,,No unique matching CV filename found
+"MAJOWICZ, SHANNON",MAJOWICZ Shannon CV Dec 2024.pdf,2012,high,2015,3,Matched UW appointment context; score=7; snippet=University of Waterloo 2012–2018 Assistant Professor School of Public Health and Health Systems
+"MCAINEY, CARRIE","MCAINEY, Carrie CV Dec 2024.pdf",2018,medium,2019,1,Matched UW appointment context; score=4; snippet=University of Waterloo July 2018–Present Schlegel Research Chair in Dementia
+"MEYER, SAMANTHA","MEYER, Samantha CV Dec 2024.pdf",2012,high,2020,8,"Matched UW appointment context; score=5; snippet=University of Waterloo, School of Public Health and Health Systems 2012-2013 Lecturer (40% research"
+"MIELKE, JOHN G.","MIELKE, John, CV Dec 2024.pdf",2008,high,2015,7,Matched UW appointment context; score=6; snippet=University of Waterloo 2008-2014 Assistant Professor
+"MORITA, PLINIO","MORITA, Plinio, CV Dec 2024.pdf",2016,high,2017,1,"Manual override from CV employment history: University of Waterloo faculty appointment begins 2016 (Assistant Professor, School of Public Health Sciences), with promotion to Associate Professor in 2021."
+"NEITERMAN, ELENA","NEITERMAN, Elena CV Jan 2025.pdf",2012,high,2018,6,Matched UW appointment context; score=6; snippet=University of Waterloo 2014 -2015 Assistant Professor McMaster University 2012-2014 SSHRC Postdoctoral Fellow
+"TAIT NEUFELD, HANNAH","NEUFELD, Hannah, CV Dec 2024.pdf",2017,high,2020,3,"Manual override per data reconciliation: treat observed salary history as pre-2020 appointment; 2022 reflects promotion timing, not initial start."
+"OGA-OMENKA, CHARITY","OGA-OMENKA, Charity CV 2025.pdf",,none,2023,,No UW appointment-like year pattern found in CV text
+"OREMUS, MARK","OREMUS, Mark, CV Dec 2024.pdf",2014,high,2015,1,Matched UW appointment context; score=7; snippet=University of Waterloo School of Public Health Sciences 2014-2023 Associate Professor
+"PERLMAN, CHRISTOPHER",PERLMAN_Chris_CV_Dec_2024.pdf,2011,high,2016,5,"Matched UW appointment context; score=7; snippet=University of Waterloo 2012 - 2019 Assistant Professor School of Public Health Sciences, University of Waterloo 2011 - 2012"
+"SKINNER, KELLY","SKINNER, Kelly, CV Dec 2024.pdf",2013,medium,2018,5,"Matched UW appointment context; score=4; snippet=University of Waterloo, SPHHS 2013-2015 Postdoctoral Fellow"
+"TORRES ESPIN, ABEL","TORRES ESPIN, Abel CV 2025.pdf",,none,2024,,No UW appointment-like year pattern found in CV text
+"TYAS, SUZANNE L",TYAS Suzanne CV 2024.pdf,2006,high,2011,5,Manual override from CV employment history: University of Waterloo appointment begins 2006 (Associate Professor); 2000-2005 assistant professor years are at University of Kentucky.
+"WALLACE, JAMES R.","WALLACE, Jim CV Jan 2026.pdf",2014,high,2017,3,Matched UW appointment context; score=6; snippet=University of Waterloo 2019 – 2025 Associate Professor University of Waterloo 2014 – 2019
+"WILLIAMS, DIANE","WILLIAMS, Diane CV Dec 2024.pdf",2013,high,2017,4,Matched UW appointment context; score=6; snippet=University of Waterloo 2016-present Continuing Lecturer University of Waterloo 2013 – 2016
+"YESSIS, JENNIFER L","YESSIS, Jennifer CV 2025.pdf",,none,2013,,No UW appointment-like year pattern found in CV text
+"MCKILLOP, IAN",,,none,2011,,No unique matching CV filename found
+"AROCHA, JOSE",,,none,2011,,No unique matching CV filename found
+"CORBET, KITTY",,,none,2015,,No unique matching CV filename found
+"GARCIA, JOHN M",,,none,2011,,No unique matching CV filename found
+"HANNING, RHONA",,,none,2011,,No unique matching CV filename found
+"HORTON, SUSAN E.",,,none,2011,,No unique matching CV filename found
