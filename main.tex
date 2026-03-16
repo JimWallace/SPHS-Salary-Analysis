@@ -550,6 +550,255 @@ Because salary progression reflects the cumulative outcome of repeated performan
 \end{figure}
 }{}
 
+\autoref{fig:salary_position_median} and \autoref{fig:salary_percentile_cdf} compare the within-year distribution of salaries for MHI and non-MHI faculty. For each year, salaries are centred relative to the same-year median and converted to percentile ranks within the School. Across the active-faculty sample, MHI salaries tend to occupy lower positions within the annual distribution. Of the 44 MHI person-year observations, 35 (79.55\%) fall below the within-year median salary, compared with 107 of 263 (40.68\%) non-MHI observations.
+
+Permutation-based tests of the difference in these proportions indicate that this pattern is unlikely to arise from random variation alone. Faculty-cluster permutation tests yield two-sided \(p\)-values of 0.055 (person-year weighting) and 0.045 (faculty-mean weighting). While these tests are descriptive rather than causal, they indicate a consistent distributional difference between groups.
+
+
+
+
+\subsection*{Salary Growth Differences}
+
+\IfFileExists{analysis_output/plot_scatter_mhi.csv}{
+\begin{figure}[p]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.98\textwidth,
+        height=0.44\textwidth,
+        xlabel={Year},
+        ylabel={Salary (\$CAD)},
+        xmin=2010.5,
+        xmax=2024.5,
+        xtick={2011,...,2024},
+        scaled x ticks=false,
+        scaled y ticks=false,
+        grid=major,
+        clip=false,
+        yticklabel={\$\pgfmathprintnumber[fixed,precision=0,1000 sep={,}]{\tick}},
+        xticklabel style={/pgf/number format/fixed,/pgf/number format/precision=0,/pgf/number format/1000 sep={}},
+        tick label style={font=\small},
+        label style={font=\small}
+    ]
+        \addplot[name path=nonmhi_upper, draw=none] table[col sep=comma, x=year, y=ci_high] {analysis_output/plot_trend_nonmhi.csv};
+        \addplot[name path=nonmhi_lower, draw=none] table[col sep=comma, x=year, y=ci_low] {analysis_output/plot_trend_nonmhi.csv};
+        \addplot[NonMHIColor!18, draw=none, opacity=0.35, forget plot] fill between[of=nonmhi_upper and nonmhi_lower];
+        \addplot[nonmhiLine] table[col sep=comma, x=year, y=fit] {analysis_output/plot_trend_nonmhi.csv}
+            node[pos=1, anchor=west, xshift=22pt, text=black, font=\footnotesize, overlay] {Non-MHI};
+
+        \addplot[name path=mhi_upper, draw=none] table[col sep=comma, x=year, y=ci_high] {analysis_output/plot_trend_mhi.csv};
+        \addplot[name path=mhi_lower, draw=none] table[col sep=comma, x=year, y=ci_low] {analysis_output/plot_trend_mhi.csv};
+        \addplot[MHIColor!18, draw=none, opacity=0.35, forget plot] fill between[of=mhi_upper and mhi_lower];
+        \addplot[mhiLine] table[col sep=comma, x=year, y=fit] {analysis_output/plot_trend_mhi.csv}
+            node[pos=1, anchor=west, xshift=22pt, yshift=-2pt, text=black, font=\footnotesize, overlay] {MHI};
+
+        \addplot[only marks, mark=o, mark size=1.2pt, draw=NonMHIColor, fill=white, opacity=0.35, forget plot] table[col sep=comma, x=year, y=salary] {analysis_output/plot_scatter_nonmhi.csv};
+        \addplot[only marks, mark=triangle*, mark size=1.5pt, draw=MHIColor, fill=MHIColor, opacity=0.35, forget plot] table[col sep=comma, x=year, y=salary] {analysis_output/plot_scatter_mhi.csv};
+
+    \end{axis}
+    \end{tikzpicture}
+\caption{MHI-affiliated faculty salaries tend to grow more slowly over time. Across the disclosure period, the MHI trajectory remains consistently below the non-MHI trajectory, indicating slower salary progression. While individual salaries vary from year to year, the overall pattern shows that MHI-affiliated faculty tend to receive smaller annual increases on average, causing salary differences to widen gradually over time.}
+    \label{fig:salary_trajectories}
+\end{figure}
+}{}
+
+I examine whether salaries grow at different rates using a three-step unconditional growth model. Results are summarised in the tables below.
+
+\textbf{Step 1 --- Unconditional means model.} Fitting salary with random intercepts only, the model partitions variance into between-faculty (\(\hat{\tau}^2_{00} = 336{,}879{,}055\)) and within-faculty components (\(\hat{\sigma}^2 = 656{,}814{,}419\)), yielding an ICC of \(0.339\). This indicates that 33.9\% of total salary variance reflects persistent differences between faculty members, justifying a multilevel approach and establishing variance structure before any predictors are added.
+
+\textbf{Step 2 --- Unconditional growth model.} Adding time as a fixed predictor with faculty-specific random slopes dramatically improves model fit: LRT \(\chi^2(3) = 865.9\), \(p < 0.001\). The estimated average annual salary increase across all faculty is \(\$7{,}498\)/year. Substantial between-faculty variation in slopes (\(\hat{\tau}^2_{\text{slope}} = 2{,}241{,}574\)) confirms that individual growth trajectories differ considerably, which must be modelled before attributing group differences.
+
+\textbf{Step 3 --- Conditional growth model.} Adding MHI affiliation and its interaction with time further improves fit: LRT \(\chi^2(2) = 10.24\), \(p = 0.006\). The MHI main effect estimates a level gap of approximately \(-\$28{,}592\) at the mean year (\(p = 0.034\)), indicating that MHI-affiliated faculty have lower average salaries even before accounting for differences in growth. The primary growth-gap estimate --- the \texttt{time:mhi} interaction --- is \(-\$1{,}840\)/year (95\% CI: \([-\$3{,}303,\ -\$377]\), \(p = 0.019\)). Non-MHI faculty grow at approximately \(\$7{,}832\)/year, while MHI faculty grow at roughly \(\$5{,}992\)/year, a difference of approximately 23\% per year.
+
+\IfFileExists{analysis_output/lme4_growth_model_summary.csv}{
+\begin{table}[h]
+    \centering
+    \small
+    \setlength{\tabcolsep}{3pt}
+    \renewcommand{\arraystretch}{1.08}
+    \resizebox{\linewidth}{!}{
+    \pgfplotstabletypeset[
+        col sep=comma,
+        columns={model,term,estimate,std_error,ci_lower,ci_upper,p_value},
+        columns/model/.style={column name=Model,string type},
+        columns/term/.style={column name=Term,string type},
+        columns/estimate/.style={column name=Estimate,string type},
+        columns/std_error/.style={column name=SE,string type},
+        columns/ci_lower/.style={column name=95\% CI Low,string type},
+        columns/ci_upper/.style={column name=95\% CI High,string type},
+        columns/p_value/.style={column name=$p$,string type},
+        every head row/.style={before row=\toprule,after row=\midrule},
+        every last row/.style={after row=\bottomrule}
+    ]{analysis_output/lme4_growth_model_summary.csv}
+    }
+    \caption{Three-step unconditional growth model results (lme4/lmerTest). Model~1 reports variance components and the ICC (SE, CI, $p$ not applicable). Model~2 reports the average annual growth rate. Model~3 reports all fixed effects including the primary growth-gap estimate (\texttt{time:mhi}). Salary estimates in \$CAD; year centred at grand mean (\(\overline{\text{year}}=2017.5\)).}
+    \label{tab:lme4_growth}
+\end{table}
+}{}
+
+\IfFileExists{analysis_output/lme4_lrt_summary.csv}{
+\begin{table}[h]
+    \centering
+    \small
+    \setlength{\tabcolsep}{3pt}
+    \renewcommand{\arraystretch}{1.08}
+    \resizebox{\linewidth}{!}{
+    \pgfplotstabletypeset[
+        col sep=comma,
+        columns={comparison,df_diff,AIC_reduced,AIC_full,logLik_reduced,logLik_full,chisq,p_value},
+        columns/comparison/.style={column name=Comparison,string type},
+        columns/df_diff/.style={column name=$\Delta$df,string type},
+        columns/AIC_reduced/.style={column name=AIC (reduced),string type},
+        columns/AIC_full/.style={column name=AIC (full),string type},
+        columns/logLik_reduced/.style={column name=logLik (reduced),string type},
+        columns/logLik_full/.style={column name=logLik (full),string type},
+        columns/chisq/.style={column name=$\chi^2$,string type},
+        columns/p_value/.style={column name=$p$,string type},
+        every head row/.style={before row=\toprule,after row=\midrule},
+        every last row/.style={after row=\bottomrule}
+    ]{analysis_output/lme4_lrt_summary.csv}
+    }
+    \caption{Likelihood ratio tests (ML) comparing sequential growth models. Row~1 tests whether adding time (with random slopes) improves on the unconditional means model; Row~2 tests whether adding MHI affiliation and its interaction with time improves on the unconditional growth model. Both tests support the more complex model.}
+    \label{tab:lme4_lrt}
+\end{table}
+}{}
+
+
+
+
+\subsection*{Career-Stage-Aligned Comparisons}
+
+\IfFileExists{analysis_output/plot_matched_model_trajectories.csv}{
+\begin{figure}[p]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.98\textwidth,
+        height=0.44\textwidth,
+        xlabel={Years Since Entry},
+        ylabel={Salary (\$CAD)},
+        xmin=0,
+        xmax=10,
+        xtick={0,1,2,3,4,5,6,7,8,9,10},
+        scaled y ticks=false,
+        grid=major,
+        clip=false,
+        yticklabel={\$\pgfmathprintnumber[fixed,precision=0,1000 sep={,}]{\tick}},
+        tick label style={font=\small},
+        label style={font=\small}
+    ]
+        \addplot[name path=mnon_upper, draw=none] table[col sep=comma, x=years_since_entry, y=nonmhi_ci_high] {analysis_output/plot_matched_model_trajectories.csv};
+        \addplot[name path=mnon_lower, draw=none] table[col sep=comma, x=years_since_entry, y=nonmhi_ci_low] {analysis_output/plot_matched_model_trajectories.csv};
+        \addplot[NonMHIColor!18, draw=none, opacity=0.35, forget plot] fill between[of=mnon_upper and mnon_lower];
+        \addplot[only marks, mark=o, mark size=1.2pt, draw=NonMHIColor, fill=white, opacity=0.30, forget plot] table[col sep=comma, x=years_since_entry, y=salary] {analysis_output/plot_matched_scatter_nonmhi.csv};
+        \addplot[nonmhiLine] table[col sep=comma, x=years_since_entry, y=nonmhi_fit] {analysis_output/plot_matched_model_trajectories.csv}
+            node[pos=1, anchor=west, xshift=10pt, text=black, font=\footnotesize, overlay] {Non-MHI};
+
+        \addplot[name path=mmhi_upper, draw=none] table[col sep=comma, x=years_since_entry, y=mhi_ci_high] {analysis_output/plot_matched_model_trajectories.csv};
+        \addplot[name path=mmhi_lower, draw=none] table[col sep=comma, x=years_since_entry, y=mhi_ci_low] {analysis_output/plot_matched_model_trajectories.csv};
+        \addplot[MHIColor!18, draw=none, opacity=0.35, forget plot] fill between[of=mmhi_upper and mmhi_lower];
+        \addplot[only marks, mark=triangle*, mark size=1.5pt, draw=MHIColor, fill=MHIColor, opacity=0.30, forget plot] table[col sep=comma, x=years_since_entry, y=salary] {analysis_output/plot_matched_scatter_mhi.csv};
+        \addplot[mhiLine] table[col sep=comma, x=years_since_entry, y=mhi_fit] {analysis_output/plot_matched_model_trajectories.csv}
+            node[pos=1, anchor=west, xshift=10pt, yshift=-2pt, text=black, font=\footnotesize, overlay] {MHI};
+    \end{axis}
+    \end{tikzpicture}
+   \caption{Even when faculty start at similar career stages, MHI salaries rise more slowly. 
+This figure compares salary trajectories for faculty hired at approximately the same time, plotting years since entry (0–10) for matched MHI (dashed line) and non-MHI (solid line) faculty. Because faculty are aligned by entry timing, the comparison reflects salary progression among colleagues at similar points in their careers. The MHI trajectory increases more slowly, indicating that MHI-affiliated faculty tend to receive smaller annual salary increments than comparable non-MHI faculty over time.}
+    \label{fig:matched_fe_trajectories}
+\end{figure}
+}{}
+
+To better approximate comparisons at similar career stages, I estimate models that align faculty by entry timing. When faculty hired within \(\pm 1\) year of one another are compared, the estimated growth differences remain negative.
+
+Under the CV/override start-year rule, entry-cohort pooled fixed-effects models estimate a growth difference of \(-\$1{,}297\)/year (\(p=0.561\)), within-cohort fixed-effects models for the 2014--2016 entry bucket estimate \(-\$3{,}609\)/year (\(p=0.100\)), and matched fixed-effects models estimate \(-\$2{,}901\)/year (\(p=0.035\)).
+
+Sensitivity analyses using disclosure-based start years yield similar results. Within-cohort fixed-effects estimates for the 2017--2019 cohort produce a growth difference of \(-\$2{,}945\)/year (\(p=0.008\)), while matched fixed-effects models estimate \(-\$2{,}938\)/year (\(p=0.016\)).
+
+Taken together, these estimates indicate that annual salary growth for MHI-affiliated faculty tends to be smaller than for comparable non-MHI faculty. Although pooled level comparisons are sensitive to differences in career stage, the within-person and entry-aligned models consistently indicate slower salary progression among MHI-affiliated faculty. Even differences of approximately \$2{,}000–\$3{,}000 per year would compound to roughly \$20{,}000–\$30{,}000 over a decade of employment.
+
+
+
+\section*{Implications for Annual Performance Review}
+
+The SPHS performance review guidelines state that a central purpose of annual performance reviews is to recognize faculty members' accomplishments and provide a basis for distributing merit-based salary increments. If this process functions as intended, sustained scholarly contributions should be reflected over time in salary progression. The salary trajectories documented in this analysis raise questions about whether this recognition function operates equally across all disciplinary areas within the School. In particular, the slower salary growth observed among MHI-affiliated faculty suggests that accomplishments associated with interdisciplinary research may not always be recognized within the current evaluation framework.
+
+The observations below highlight features of the current Annual Performance Review (APR) process that may be particularly relevant when evaluating interdisciplinary faculty.
+
+First, the SPHS performance review guidelines emphasize the need for \emph{mutual education} when evaluating multidisciplinary scholarship. In practice, this responsibility can become uneven. Faculty working in interdisciplinary areas are often expected to explain the norms, venues, and impact pathways of their fields to colleagues who are less familiar with them. The guidelines allow the Director to seek advice from appropriate experts across campus when evaluating work outside their expertise. While this is an important safeguard, relying primarily on the Director to obtain such advice may place too little responsibility on the broader APR committee. For the principle of mutual education to function as intended, committee members may also need to actively seek out and consider disciplinary standards that differ from their own.
+
+Second, the requirement that departments produce an average APR score of approximately 1.6 introduces structural pressure into the evaluation process. Because such a constraint forces differentiation among faculty within each review cycle, it creates relative distinctions between faculty members regardless of overall performance levels. In multidisciplinary units, these distinctions may align with disciplinary boundaries if evaluators are more familiar with some research traditions than others. Moreover, the use of a fixed average does not appear to be explicitly grounded in the SPHS guidelines, the UW--FAUW Memorandum of Agreement, or University policy governing faculty evaluation. This raises the question of whether the operational implementation of APR scoring fully reflects the principles described in those documents.
+
+Third, APR assessments typically focus on a single review period. However, patterns of evaluation may only become visible over longer horizons. A faculty member who repeatedly falls just below perceived thresholds in successive reviews may accumulate substantial long-term disadvantages, even if each individual decision appears reasonable in isolation. The salary patterns documented in this analysis illustrate how relatively small differences in annual increments can compound across years. Examining evaluation outcomes across multiple review cycles --- rather than one cycle at a time --- may therefore provide a clearer view of whether systematic differences emerge over time.
+
+Taken together, these observations suggest that a broader review of evaluation practices may be useful to ensure that multidisciplinary scholarship is assessed in a manner consistent with the University's stated commitments to fairness, transparency, and disciplinary awareness. Such a review could examine how interdisciplinary work is contextualized during APR deliberations, how score distributions are implemented in practice, and whether multi-year evaluation patterns reveal disparities that are not visible in single-year assessments.
+
+
+
+\section*{Conclusion}
+
+Using publicly available salary disclosures for \DataMinYear--\DataMaxYear, this analysis finds consistent evidence of slower salary growth for MHI-affiliated faculty. A three-step unconditional growth model (lme4) establishes the variance structure explicitly: an ICC of 0.339 confirms that multilevel modelling is warranted, sequential likelihood ratio tests confirm that both time and MHI group differences significantly improve model fit, and the primary growth-gap estimate is \(-\$1{,}840\)/year (95\% CI: \([-\$3{,}303,\ -\$377]\), \(p = 0.019\)). Career-stage-aligned comparisons indicate annual growth differences on the order of \$2{,}900–\$3{,}000 per year. Although public data cannot identify the specific institutional mechanisms producing these differences, the persistence of negative growth estimates across multiple model specifications indicates that MHI-affiliated faculty have experienced systematically slower salary progression over time. Even modest annual differences in salary increments compound into substantial disparities across a decade of employment.
+
+Because salary progression reflects the cumulative outcome of repeated performance evaluations, these patterns strongly suggest that interdisciplinary faculty may be evaluated differently within the current system. The results therefore warrant a formal review of evaluation practices within the School. A constructive next step would be a faculty-level equity audit linking salary outcomes to rank progression, workload assignments, and APR evaluations. Such an investigation would allow the School and Faculty to determine whether current evaluation processes operate consistently with the University's stated commitments to fair, transparent, and discipline-appropriate assessment of faculty performance.
+
+
+
+
+
+
+
+\label{app:faculty_verification_matrix}
+\IfFileExists{analysis_output/appendix_analysis_verification_matrix.csv}{
+\begin{landscape}
+\begin{table}[p]
+    \centering
+    \scriptsize
+    \setlength{\tabcolsep}{2.4pt}
+    \renewcommand{\arraystretch}{1.05}
+    \resizebox{\linewidth}{!}{
+    \pgfplotstabletypeset[
+        col sep=comma,
+        columns={
+            Faculty,MHI Classification,Start Year,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024
+        },
+        columns/Faculty/.style={column name=Faculty,string type},
+        columns/MHI Classification/.style={column name=MHI Classification,string type},
+        columns/Start Year/.style={column name=Start Year,string type},
+        columns/2011/.style={fixed,precision=2,1000 sep={,}},
+        columns/2012/.style={fixed,precision=2,1000 sep={,}},
+        columns/2013/.style={fixed,precision=2,1000 sep={,}},
+        columns/2014/.style={fixed,precision=2,1000 sep={,}},
+        columns/2015/.style={fixed,precision=2,1000 sep={,}},
+        columns/2016/.style={fixed,precision=2,1000 sep={,}},
+        columns/2017/.style={fixed,precision=2,1000 sep={,}},
+        columns/2018/.style={fixed,precision=2,1000 sep={,}},
+        columns/2019/.style={fixed,precision=2,1000 sep={,}},
+        columns/2020/.style={fixed,precision=2,1000 sep={,}},
+        columns/2021/.style={fixed,precision=2,1000 sep={,}},
+        columns/2022/.style={fixed,precision=2,1000 sep={,}},
+        columns/2023/.style={fixed,precision=2,1000 sep={,}},
+        columns/2024/.style={fixed,precision=2,1000 sep={,}},
+        every head row/.style={before row=\toprule,after row=\midrule},
+        every last row/.style={after row=\bottomrule}
+    ]{analysis_output/appendix_analysis_verification_matrix.csv}
+    }
+    \caption{Constructed SPHS salary panel used in all analyses, showing one row per faculty member with MHI classification, derived start year, and annual disclosed salaries from \DataMinYear--\DataMaxYear; this table documents the observable evidence base behind the report’s level-gap and growth-gap claims.}
+    \label{tab:faculty_verification_matrix}
+\end{table}
+\end{landscape}
+}{
+\textit{Faculty analysis verification matrix CSV not found. Run \texttt{python3 scripts/build\_appendix\_analysis\_verification\_matrix.py}.}
+}
+
+
+
+
+
+
+
+
+
+
+
 \clearpage
 \refstepcounter{section}
 \phantomsection
