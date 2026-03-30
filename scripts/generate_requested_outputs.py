@@ -139,6 +139,7 @@ for p in by_person:
     by_person[p].sort(key=lambda x: x["year"])
 
 start_salary = {p: rs[0]["salary"] for p, rs in by_person.items()}
+first_year = {p: rs[0]["year"] for p, rs in by_person.items()}
 
 mhi_people = [r["mhi_person"] for r in pair_rows]
 non_people = [r["non_mhi_person"] for r in pair_rows]
