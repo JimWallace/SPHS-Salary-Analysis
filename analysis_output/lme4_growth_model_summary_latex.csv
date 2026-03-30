@@ -1,9 +1,9 @@
 model;term;estimate;std_error;ci_lower;ci_upper;p_value;n_obs;n_clusters
-Unconditional means (M1);ICC;0.34;;;;;307;34
-Unconditional means (M1);Var between-faculty (tau^2_00);336,879,055.28;;;;;307;34
-Unconditional means (M1);Var within-faculty (sigma^2);656,814,419.16;;;;;307;34
-Unconditional growth (M2);Annual growth (year_c);7,497.75;289.52;6,930.31;8,065.20;<0.001;307;34
-Conditional growth (M3);Intercept (non-MHI at mean year);143,195.23;5,382.33;132,646.05;153,744.40;<0.001;307;34
-Conditional growth (M3);Annual growth non-MHI (year_c);7,831.77;289.76;7,263.85;8,399.70;<0.001;307;34
-Conditional growth (M3);MHI level gap (mhi);-28,591.83;12,878.71;-53,833.64;-3,350.01;0.0337;307;34
-Conditional growth (M3);MHI growth gap (year_c:mhi) [PRIMARY];-1,840.26;746.33;-3,303.03;-377.48;0.0192;307;34
+Unconditional means (M1);ICC;0.30;;;;;342;35
+Unconditional means (M1);Var between-faculty (tau^2_00);340,980,617.34;;;;;342;35
+Unconditional means (M1);Var within-faculty (sigma^2);791,036,685.00;;;;;342;35
+Unconditional growth (M2);Annual growth (year_c);7,763.10;296.81;7,181.35;8,344.84;<0.001;342;35
+Conditional growth (M3);Intercept (non-MHI at mean year);147,884.09;5,460.46;137,181.79;158,586.40;<0.001;342;35
+Conditional growth (M3);Annual growth non-MHI (year_c);8,077.04;306.21;7,476.88;8,677.21;<0.001;342;35
+Conditional growth (M3);MHI level gap (mhi);-34,477.49;12,351.05;-58,685.11;-10,269.88;0.0086;342;35
+Conditional growth (M3);MHI growth gap (year_c:mhi) [PRIMARY];-1,594.83;778.54;-3,120.73;-68.93;0.0487;342;35

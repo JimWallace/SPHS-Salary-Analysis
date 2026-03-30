@@ -27,6 +27,7 @@ OUT_SUMMARY = ROOT / "analysis_output" / "disclosure_completeness_summary.csv"
 OUT_PUBLIC = ROOT / "analysis_output" / "disclosure_public_crosscheck.csv"
 
 DISCLOSURE_BASE = "https://uwaterloo.ca/about/accountability/salary-disclosure-{}"
+DISCLOSURE_BASE_ALT = "https://uwaterloo.ca/about/accountability-reports/salary-disclosure-{}"
 
 
 @dataclass
@@ -192,7 +193,7 @@ def fetch(url: str) -> Optional[str]:
 
 
 def parse_salary_amount(raw: str) -> str:
-    cleaned = raw.replace("$", "").replace(",", "").strip()
+    cleaned = raw.replace("$", "").replace(",", "").replace("\xa0", "").strip()
     if not cleaned:
         return ""
     try:
@@ -236,6 +237,8 @@ def main() -> None:
     # Include all currently expected disclosure years (typically current year - 1).
     for year in range(2011, current_year):
         html_doc = fetch(DISCLOSURE_BASE.format(year))
+        if html_doc is None:
+            html_doc = fetch(DISCLOSURE_BASE_ALT.format(year))
         if html_doc is None:
             continue
         years.append(year)
