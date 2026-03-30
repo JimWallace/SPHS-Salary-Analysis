@@ -43,7 +43,7 @@
 
 \section*{Executive Summary}
 
-Several faculty affiliated with the Master of Health Informatics (MHI) program have raised concerns that the annual performance review (APR) process may disadvantage interdisciplinary scholarship. This report examines whether such disadvantage is observable in publicly available University of Waterloo salary disclosures for the years \DataMinYear--\DataMaxYear. Using an active-faculty sample of 37 currently listed SPHS faculty members (34 with at least one disclosure; 307 person-year observations), the analysis compares salary distributions and salary growth for MHI-affiliated faculty relative to other faculty within the School. Across the disclosure period, MHI-affiliated faculty tend to occupy lower positions within the School’s annual salary distribution, with approximately 80\% of MHI person-year observations falling below the within-year median salary compared with about 41\% of non-MHI observations. In addition, MHI-affiliated faculty experience slower salary growth over time: a three-step unconditional growth model (lme4) estimates the MHI annual growth gap at approximately \(-\$1{,}840\)/year (95\% CI: \([-\$3{,}303,\ -\$377]\), \(p = 0.019\)), and career-stage-aligned comparisons estimate differences of roughly \(-\$2{,}900\)/year. Taken together, these results indicate that MHI-affiliated faculty have experienced systematically slower salary progression relative to their colleagues. These patterns warrant a formal review of evaluation practices to determine whether interdisciplinary scholarship is being assessed in a manner consistent with the University’s stated commitments to fair and discipline-appropriate evaluation. Without such review, small annual differences in evaluation outcomes may continue to accumulate into substantial long-term disparities.
+Several faculty affiliated with the Master of Health Informatics (MHI) program have raised concerns that the annual performance review (APR) process may disadvantage interdisciplinary scholarship. This report examines whether such disadvantage is observable in publicly available University of Waterloo salary disclosures for the years \DataMinYear--\DataMaxYear. Using an active-faculty sample of 37 currently listed SPHS faculty members (35 with at least one disclosure; 342 person-year observations), the analysis compares salary distributions and salary growth for MHI-affiliated faculty relative to other faculty within the School. Across the disclosure period, MHI-affiliated faculty tend to occupy lower positions within the School’s annual salary distribution, with approximately 80\% of MHI person-year observations falling below the within-year median salary compared with about 41\% of non-MHI observations. In addition, MHI-affiliated faculty experience slower salary growth over time: a three-step unconditional growth model (lme4) estimates the MHI annual growth gap at approximately \(-\$1{,}595\)/year (95\% CI: \([-\$3{,}121,\ -\$69]\), \(p = 0.049\)), and career-stage-aligned comparisons estimate differences of roughly \(-\$2{,}900\)/year. Taken together, these results indicate that MHI-affiliated faculty have experienced systematically slower salary progression relative to their colleagues. These patterns warrant a formal review of evaluation practices to determine whether interdisciplinary scholarship is being assessed in a manner consistent with the University’s stated commitments to fair and discipline-appropriate evaluation. Without such review, small annual differences in evaluation outcomes may continue to accumulate into substantial long-term disparities.
 
 
 
@@ -65,7 +65,7 @@ Accordingly, this analysis examines three related questions: whether MHI-affilia
 
 This analysis uses publicly available University of Waterloo salary disclosure records for the years \DataMinYear--\DataMaxYear\ (\href{https://uwaterloo.ca/about/accountability/salary-disclosure}{Salary Disclosure Archives}). These disclosures report annual salaries for employees whose earnings exceed the provincial reporting threshold. Faculty names were extracted for each year and harmonized across reporting periods to construct a longitudinal panel. Faculty affiliation with the Master of Health Informatics (MHI) program was determined using the publicly available SPHS Health Informatics faculty roster (\href{https://uwaterloo.ca/public-health-sciences/our-people/health-informatics-researchers}{SPHS Health Informatics Researchers}). No internal personnel records, APR ratings, merit scores, promotion histories, or workload assignments were used.
 
-The active-faculty analysis sample includes 37 currently listed faculty, of whom 34 have at least one disclosed salary, yielding 307 person-year observations. The panel is unbalanced because faculty enter and exit the disclosure records over time, and missing years were not imputed.
+The active-faculty analysis sample includes 37 currently listed faculty, of whom 35 have at least one disclosed salary, yielding 342 person-year observations. The panel is unbalanced because faculty enter and exit the disclosure records over time, and missing years were not imputed.
 
 The analysis examines three related aspects of compensation patterns.
 
@@ -118,7 +118,7 @@ Because public salary disclosures do not include APR ratings, promotion dates, o
         \addlegendentry{\tikz\fill[MHIColor!35] (0,0) circle (4pt);\hspace{0.4em}MHI}
     \end{axis}
     \end{tikzpicture}
-    \caption{Most MHI-affiliated faculty salaries fall below the School’s annual median. In the active-faculty sample, 35 of 44 MHI person-year observations (about 80\%) fall below the annual median, compared with about 41\% of non-MHI observations. Because salaries are centred within each year, this comparison reduces distortion from hiring cohorts and highlights where each group sits within the School’s salary distribution.}
+    \caption{Most MHI-affiliated faculty salaries fall below the School’s annual median. In the active-faculty sample, 41 of 51 MHI person-year observations (about 80\%) fall below the annual median, compared with about 41\% of non-MHI observations. Because salaries are centred within each year, this comparison reduces distortion from hiring cohorts and highlights where each group sits within the School’s salary distribution.}
     \label{fig:salary_position_median}
 \end{figure}
 }{}
@@ -133,8 +133,8 @@ Because public salary disclosures do not include APR ratings, promotion dates, o
         xlabel={Year},
         ylabel={Salary (\$CAD)},
         xmin=2010.5,
-        xmax=2024.5,
-        xtick={2011,...,2024},
+        xmax=2025.5,
+        xtick={2011,...,2025},
         scaled x ticks=false,
         scaled y ticks=false,
         grid=major,
@@ -167,20 +167,20 @@ Because public salary disclosures do not include APR ratings, promotion dates, o
 }{}
 
 \clearpage
-To see where salaries sit each year, we centered each person’s salary against the School’s same‑year median and then looked at who falls below or above that benchmark. This puts everyone on the same annual scale and makes the comparison intuitive. In the active‑faculty sample, 35 of 44 MHI person‑year observations (79.55\%) fall below the within‑year median, compared with 107 of 263 (40.68\%) non‑MHI observations.
+To see where salaries sit each year, we centered each person’s salary against the School’s same‑year median and then looked at who falls below or above that benchmark. This puts everyone on the same annual scale and makes the comparison intuitive. In the active‑faculty sample, 41 of 51 MHI person‑year observations (80.39\%) fall below the within‑year median, compared with 118 of 291 (40.55\%) non‑MHI observations.
 
-Permutation-based tests of the difference in these proportions indicate that this pattern is unlikely to arise from random variation alone. Faculty-cluster permutation tests yield two-sided \(p\)-values of 0.055 (person-year weighting) and 0.045 (faculty-mean weighting). While these tests are descriptive rather than causal, they indicate a consistent distributional difference between groups. Based on these findings, we decided to examine whether the gap reflects different growth trajectories over time.
+Permutation-based tests of the difference in these proportions indicate that this pattern is unlikely to arise from random variation alone. Faculty-cluster permutation tests yield two-sided \(p\)-values of 0.034 (person-year weighting) and 0.022 (faculty-mean weighting). While these tests are descriptive rather than causal, they indicate a consistent distributional difference between groups. Based on these findings, we decided to examine whether the gap reflects different growth trajectories over time.
 
 
 
 
 \section*{Whether Growth Differs Over Time}
 
-To see whether growth differs over time, we first asked how much of the salary variation is about stable differences between people versus year‑to‑year noise. The unconditional means model shows a sizable between‑person share (ICC \(= 0.339\)), which tells us a multilevel growth approach is appropriate (Appendix~\ref{app:unconditional_means}).
+To see whether growth differs over time, we first asked how much of the salary variation is about stable differences between people versus year‑to‑year noise. The unconditional means model shows a sizable between‑person share (ICC \(= 0.301\)), which tells us a multilevel growth approach is appropriate (Appendix~\ref{app:unconditional_means}).
 
 Next, to describe the typical trajectory, we added time. The unconditional growth model shows a strong overall upward trend and clear differences in individual slopes, meaning faculty do not all progress at the same rate (Appendix~\ref{app:unconditional_growth}; Tables~\ref{tab:lme4_growth} and~\ref{tab:lme4_lrt}).
 
-Finally, with that baseline in place, we tested whether MHI affiliation predicts a different growth path. Adding MHI terms improves fit (LRT \(\chi^2(2) = 10.24\), \(p = 0.006\)); the level gap at the mean year is \(-\$28{,}592\) (\(p = 0.034\)) and the growth‑gap estimate is \(-\$1{,}840\)/year (95\% CI: \([-\$3{,}303,\ -\$377]\), \(p = 0.019\)). This implies growth of about \(\$7{,}832\)/year for non‑MHI faculty versus \(\$5{,}992\)/year for MHI faculty, roughly 23\% lower per year.
+Finally, with that baseline in place, we tested whether MHI affiliation predicts a different growth path. Adding MHI terms improves fit (LRT \(\chi^2(2) = 11.88\), \(p = 0.003\)); the level gap at the mean year is \(-\$34{,}477\) (\(p = 0.009\)) and the growth‑gap estimate is \(-\$1{,}595\)/year (95\% CI: \([-\$3{,}121,\ -\$69]\), \(p = 0.049\)). This implies growth of about \(\$8{,}077\)/year for non‑MHI faculty versus \(\$6{,}482\)/year for MHI faculty, roughly 20\% lower per year.
 
 
 
@@ -251,7 +251,7 @@ Taken together, these observations suggest that a broader review of evaluation p
 
 \section*{Conclusion}
 
-Using publicly available salary disclosures for \DataMinYear--\DataMaxYear, this analysis finds consistent evidence of slower salary growth for MHI-affiliated faculty. A three-step unconditional growth model (lme4) establishes the variance structure explicitly: an ICC of 0.339 confirms that multilevel modelling is warranted, sequential likelihood ratio tests confirm that both time and MHI group differences significantly improve model fit, and the primary growth-gap estimate is \(-\$1{,}840\)/year (95\% CI: \([-\$3{,}303,\ -\$377]\), \(p = 0.019\)). Career-stage-aligned comparisons indicate annual growth differences on the order of \$2{,}900–\$3{,}000 per year. Although public data cannot identify the specific institutional mechanisms producing these differences, the persistence of negative growth estimates across multiple model specifications indicates that MHI-affiliated faculty have experienced systematically slower salary progression over time. Even modest annual differences in salary increments compound into substantial disparities across a decade of employment.
+Using publicly available salary disclosures for \DataMinYear--\DataMaxYear, this analysis finds consistent evidence of slower salary growth for MHI-affiliated faculty. A three-step unconditional growth model (lme4) establishes the variance structure explicitly: an ICC of 0.301 confirms that multilevel modelling is warranted, sequential likelihood ratio tests confirm that both time and MHI group differences significantly improve model fit, and the primary growth-gap estimate is \(-\$1{,}595\)/year (95\% CI: \([-\$3{,}121,\ -\$69]\), \(p = 0.049\)). Career-stage-aligned comparisons indicate annual growth differences on the order of \$2{,}700–\$3{,}000 per year. Although public data cannot identify the specific institutional mechanisms producing these differences, the persistence of negative growth estimates across multiple model specifications indicates that MHI-affiliated faculty have experienced systematically slower salary progression over time. Even modest annual differences in salary increments compound into substantial disparities across a decade of employment.
 
 Because salary progression reflects the cumulative outcome of repeated performance evaluations, these patterns strongly suggest that interdisciplinary faculty may be evaluated differently within the current system. The results therefore warrant a formal review of evaluation practices within the School. A constructive next step would be a faculty-level equity audit linking salary outcomes to rank progression, workload assignments, and APR evaluations. Such an investigation would allow the School and Faculty to determine whether current evaluation processes operate consistently with the University's stated commitments to fair, transparent, and discipline-appropriate assessment of faculty performance.
 
@@ -271,9 +271,9 @@ Because salary progression reflects the cumulative outcome of repeated performan
 
 \textbf{Methods.} The unconditional means model estimates salary with a random intercept for each faculty member (\texttt{salary \textasciitilde{} 1 + (1 | faculty)}), using REML to obtain variance components. This step establishes the baseline variance structure before time or group predictors are added.
 
-\textbf{Key findings.} The model partitions variance into between-faculty (\(\hat{\tau}^2_{00} = 336{,}879{,}055\)) and within-faculty components (\(\hat{\sigma}^2 = 656{,}814{,}419\)), yielding an intraclass correlation of \(0.339\). Roughly 33.9\% of salary variance reflects persistent differences between faculty, supporting the use of multilevel growth models.
+\textbf{Key findings.} The model partitions variance into between-faculty (\(\hat{\tau}^2_{00} = 340{,}980{,}617\)) and within-faculty components (\(\hat{\sigma}^2 = 791{,}036{,}685\)), yielding an intraclass correlation of \(0.301\). Roughly 30.1\% of salary variance reflects persistent differences between faculty, supporting the use of multilevel growth models.
 
-\textbf{Interpretation.} This model is intentionally simple: it does not include time, group membership, or any covariates. Its purpose is to establish the variance structure that later models must respect. An ICC of 0.339 indicates that a meaningful share of salary variation is attributable to stable differences across individuals rather than year-to-year noise within individuals. In other words, faculty salaries are clustered by person, which violates the independence assumptions of a single-level model.
+\textbf{Interpretation.} This model is intentionally simple: it does not include time, group membership, or any covariates. Its purpose is to establish the variance structure that later models must respect. An ICC of 0.301 indicates that a meaningful share of salary variation is attributable to stable differences across individuals rather than year-to-year noise within individuals. In other words, faculty salaries are clustered by person, which violates the independence assumptions of a single-level model.
 
 \textbf{Implications for subsequent models.} Because salaries are not independent across repeated observations of the same person, any growth analysis must account for this clustering. The unconditional means model therefore justifies random intercepts (and later random slopes) in the growth models. It also provides the baseline against which improvements in fit are assessed when adding time and MHI group terms.
 
@@ -305,7 +305,7 @@ Because salary progression reflects the cumulative outcome of repeated performan
 
 \textbf{Methods.} The unconditional growth model adds time as a fixed effect with faculty-specific random slopes (\texttt{salary \textasciitilde{} time + (time | faculty)}), with year centred at the grand mean (\(\overline{\text{year}}=2017.5\)). REML is used for parameter estimates, and a likelihood ratio test (ML) compares this model against the unconditional means model.
 
-\textbf{Key findings.} Adding time improves fit substantially (LRT \(\chi^2(3) = 865.9\), \(p < 0.001\)) and yields an average annual increase of \(\$7{,}498\)/year across all faculty. The random-slope variance (\(\hat{\tau}^2_{\text{slope}} = 2{,}241{,}574\)) indicates meaningful heterogeneity in individual growth trajectories, motivating the subsequent conditional model that tests MHI-specific growth differences.
+\textbf{Key findings.} Adding time improves fit substantially (LRT \(\chi^2(3) = 962.85\), \(p < 0.001\)) and yields an average annual increase of \(\$7{,}763\)/year across all faculty. The random-slope variance (\(\hat{\tau}^2_{\text{slope}} = 2{,}448{,}000\)) indicates meaningful heterogeneity in individual growth trajectories, motivating the subsequent conditional model that tests MHI-specific growth differences.
 
 \begin{figure}[h]
     \centering
@@ -395,7 +395,7 @@ Because salary progression reflects the cumulative outcome of repeated performan
 
 \textbf{Methods.} The conditional growth model adds MHI affiliation and its interaction with time (\texttt{salary \textasciitilde{} time * mhi + (time | faculty)}), with year centred at the grand mean. Model comparison uses ML to test improvement over the unconditional growth model.
 
-\textbf{Key findings.} Adding MHI terms improves fit (LRT \(\chi^2(2) = 10.24\), \(p = 0.006\)). The MHI main effect indicates a level gap of \(-\$28{,}592\) at the mean year (\(p = 0.034\)), and the growth-gap estimate is \(-\$1{,}840\)/year (95\% CI: \([-\$3{,}303,\ -\$377]\), \(p = 0.019\)). The implied annual growth rates are \(\$7{,}832\)/year for non-MHI faculty and \(\$5{,}992\)/year for MHI faculty (about 23\% lower).
+\textbf{Key findings.} Adding MHI terms improves fit (LRT \(\chi^2(2) = 11.88\), \(p = 0.003\)). The MHI main effect indicates a level gap of \(-\$34{,}477\) at the mean year (\(p = 0.009\)), and the growth-gap estimate is \(-\$1{,}595\)/year (95\% CI: \([-\$3{,}121,\ -\$69]\), \(p = 0.049\)). The implied annual growth rates are \(\$8{,}077\)/year for non-MHI faculty and \(\$6{,}482\)/year for MHI faculty (about 20\% lower).
 
 \begin{figure}[h]
     \centering
@@ -545,14 +545,14 @@ Because salary progression reflects the cumulative outcome of repeated performan
         \addlegendentry{\tikz\fill[MHIColor!35] (0,0) circle (4pt);\hspace{0.4em}MHI}
     \end{axis}
     \end{tikzpicture}
-	\caption{MHI faculty salaries consistently appear near the lower end of the School’s salary distribution. For each year, faculty salaries were ranked within the School and converted to percentile positions (0–100). The MHI curve lies substantially to the left of the non-MHI curve, indicating lower relative salary positions across most observations. In the active-faculty sample, the average MHI salary falls near the 25th percentile of the School’s distribution (median 19th percentile), with about 80\% of MHI observations below the median salary, compared with about 41\% for non-MHI faculty.}
+	\caption{MHI faculty salaries consistently appear near the lower end of the School’s salary distribution. For each year, faculty salaries were ranked within the School and converted to percentile positions (0–100). The MHI curve lies substantially to the left of the non-MHI curve, indicating lower relative salary positions across most observations. In the active-faculty sample, the average MHI salary falls near the 24th percentile of the School’s distribution (median 18th percentile), with about 80\% of MHI observations below the median salary, compared with about 41\% for non-MHI faculty.}
     \label{fig:salary_percentile_cdf}
 \end{figure}
 }{}
 
-\autoref{fig:salary_position_median} and \autoref{fig:salary_percentile_cdf} compare the within-year distribution of salaries for MHI and non-MHI faculty. For each year, salaries are centred relative to the same-year median and converted to percentile ranks within the School. Across the active-faculty sample, MHI salaries tend to occupy lower positions within the annual distribution. Of the 44 MHI person-year observations, 35 (79.55\%) fall below the within-year median salary, compared with 107 of 263 (40.68\%) non-MHI observations.
+\autoref{fig:salary_position_median} and \autoref{fig:salary_percentile_cdf} compare the within-year distribution of salaries for MHI and non-MHI faculty. For each year, salaries are centred relative to the same-year median and converted to percentile ranks within the School. Across the active-faculty sample, MHI salaries tend to occupy lower positions within the annual distribution. Of the 51 MHI person-year observations, 41 (80.39\%) fall below the within-year median salary, compared with 118 of 291 (40.55\%) non-MHI observations.
 
-Permutation-based tests of the difference in these proportions indicate that this pattern is unlikely to arise from random variation alone. Faculty-cluster permutation tests yield two-sided \(p\)-values of 0.055 (person-year weighting) and 0.045 (faculty-mean weighting). While these tests are descriptive rather than causal, they indicate a consistent distributional difference between groups.
+Permutation-based tests of the difference in these proportions indicate that this pattern is unlikely to arise from random variation alone. Faculty-cluster permutation tests yield two-sided \(p\)-values of 0.034 (person-year weighting) and 0.022 (faculty-mean weighting). While these tests are descriptive rather than causal, they indicate a consistent distributional difference between groups.
 
 
 
@@ -569,8 +569,8 @@ Permutation-based tests of the difference in these proportions indicate that thi
         xlabel={Year},
         ylabel={Salary (\$CAD)},
         xmin=2010.5,
-        xmax=2024.5,
-        xtick={2011,...,2024},
+        xmax=2025.5,
+        xtick={2011,...,2025},
         scaled x ticks=false,
         scaled y ticks=false,
         grid=major,
@@ -604,11 +604,11 @@ Permutation-based tests of the difference in these proportions indicate that thi
 
 I examine whether salaries grow at different rates using a three-step unconditional growth model. Results are summarised in the tables below.
 
-\textbf{Step 1 --- Unconditional means model.} Fitting salary with random intercepts only, the model partitions variance into between-faculty (\(\hat{\tau}^2_{00} = 336{,}879{,}055\)) and within-faculty components (\(\hat{\sigma}^2 = 656{,}814{,}419\)), yielding an ICC of \(0.339\). This indicates that 33.9\% of total salary variance reflects persistent differences between faculty members, justifying a multilevel approach and establishing variance structure before any predictors are added.
+\textbf{Step 1 --- Unconditional means model.} Fitting salary with random intercepts only, the model partitions variance into between-faculty (\(\hat{\tau}^2_{00} = 340{,}980{,}617\)) and within-faculty components (\(\hat{\sigma}^2 = 791{,}036{,}685\)), yielding an ICC of \(0.301\). This indicates that 30.1\% of total salary variance reflects persistent differences between faculty members, justifying a multilevel approach and establishing variance structure before any predictors are added.
 
-\textbf{Step 2 --- Unconditional growth model.} Adding time as a fixed predictor with faculty-specific random slopes dramatically improves model fit: LRT \(\chi^2(3) = 865.9\), \(p < 0.001\). The estimated average annual salary increase across all faculty is \(\$7{,}498\)/year. Substantial between-faculty variation in slopes (\(\hat{\tau}^2_{\text{slope}} = 2{,}241{,}574\)) confirms that individual growth trajectories differ considerably, which must be modelled before attributing group differences.
+\textbf{Step 2 --- Unconditional growth model.} Adding time as a fixed predictor with faculty-specific random slopes dramatically improves model fit: LRT \(\chi^2(3) = 962.85\), \(p < 0.001\). The estimated average annual salary increase across all faculty is \(\$7{,}763\)/year. Substantial between-faculty variation in slopes (\(\hat{\tau}^2_{\text{slope}} = 2{,}448{,}000\)) confirms that individual growth trajectories differ considerably, which must be modelled before attributing group differences.
 
-\textbf{Step 3 --- Conditional growth model.} Adding MHI affiliation and its interaction with time further improves fit: LRT \(\chi^2(2) = 10.24\), \(p = 0.006\). The MHI main effect estimates a level gap of approximately \(-\$28{,}592\) at the mean year (\(p = 0.034\)), indicating that MHI-affiliated faculty have lower average salaries even before accounting for differences in growth. The primary growth-gap estimate --- the \texttt{time:mhi} interaction --- is \(-\$1{,}840\)/year (95\% CI: \([-\$3{,}303,\ -\$377]\), \(p = 0.019\)). Non-MHI faculty grow at approximately \(\$7{,}832\)/year, while MHI faculty grow at roughly \(\$5{,}992\)/year, a difference of approximately 23\% per year.
+\textbf{Step 3 --- Conditional growth model.} Adding MHI affiliation and its interaction with time further improves fit: LRT \(\chi^2(2) = 11.88\), \(p = 0.003\). The MHI main effect estimates a level gap of approximately \(-\$34{,}477\) at the mean year (\(p = 0.009\)), indicating that MHI-affiliated faculty have lower average salaries even before accounting for differences in growth. The primary growth-gap estimate --- the \texttt{time:mhi} interaction --- is \(-\$1{,}595\)/year (95\% CI: \([-\$3{,}121,\ -\$69]\), \(p = 0.049\)). Non-MHI faculty grow at approximately \(\$8{,}077\)/year, while MHI faculty grow at roughly \(\$6{,}482\)/year, a difference of approximately 20\% per year.
 
 \IfFileExists{analysis_output/lme4_growth_model_summary_latex.csv}{
 \begin{table}[h]
@@ -736,7 +736,7 @@ Taken together, these observations suggest that a broader review of evaluation p
 
 \section*{Conclusion}
 
-Using publicly available salary disclosures for \DataMinYear--\DataMaxYear, this analysis finds consistent evidence of slower salary growth for MHI-affiliated faculty. A three-step unconditional growth model (lme4) establishes the variance structure explicitly: an ICC of 0.339 confirms that multilevel modelling is warranted, sequential likelihood ratio tests confirm that both time and MHI group differences significantly improve model fit, and the primary growth-gap estimate is \(-\$1{,}840\)/year (95\% CI: \([-\$3{,}303,\ -\$377]\), \(p = 0.019\)). Career-stage-aligned comparisons indicate annual growth differences on the order of \$2{,}900–\$3{,}000 per year. Although public data cannot identify the specific institutional mechanisms producing these differences, the persistence of negative growth estimates across multiple model specifications indicates that MHI-affiliated faculty have experienced systematically slower salary progression over time. Even modest annual differences in salary increments compound into substantial disparities across a decade of employment.
+Using publicly available salary disclosures for \DataMinYear--\DataMaxYear, this analysis finds consistent evidence of slower salary growth for MHI-affiliated faculty. A three-step unconditional growth model (lme4) establishes the variance structure explicitly: an ICC of 0.301 confirms that multilevel modelling is warranted, sequential likelihood ratio tests confirm that both time and MHI group differences significantly improve model fit, and the primary growth-gap estimate is \(-\$1{,}595\)/year (95\% CI: \([-\$3{,}121,\ -\$69]\), \(p = 0.049\)). Career-stage-aligned comparisons indicate annual growth differences on the order of \$2{,}700–\$3{,}000 per year. Although public data cannot identify the specific institutional mechanisms producing these differences, the persistence of negative growth estimates across multiple model specifications indicates that MHI-affiliated faculty have experienced systematically slower salary progression over time. Even modest annual differences in salary increments compound into substantial disparities across a decade of employment.
 
 Because salary progression reflects the cumulative outcome of repeated performance evaluations, these patterns strongly suggest that interdisciplinary faculty may be evaluated differently within the current system. The results therefore warrant a formal review of evaluation practices within the School. A constructive next step would be a faculty-level equity audit linking salary outcomes to rank progression, workload assignments, and APR evaluations. Such an investigation would allow the School and Faculty to determine whether current evaluation processes operate consistently with the University's stated commitments to fair, transparent, and discipline-appropriate assessment of faculty performance.
 
@@ -843,7 +843,7 @@ Because salary progression reflects the cumulative outcome of repeated performan
         \legend{Non-MHI,MHI}
     \end{axis}
     \end{tikzpicture}
-    \caption{Appendix sensitivity figure using same-year mean centering: bars show person-years by salary band relative to the same-year average salary. In the current active-faculty sample, 43 of 44 MHI person-years are below the same-year average and 1 is above.}
+    \caption{Appendix sensitivity figure using same-year mean centering: bars show person-years by salary band relative to the same-year average salary. In the current active-faculty sample, 49 of 51 MHI person-years are below the same-year average and 2 are above.}
 \end{figure}
 }{}
 
@@ -907,7 +907,7 @@ Because salary progression reflects the cumulative outcome of repeated performan
         \legend{Non-MHI,MHI}
     \end{axis}
     \end{tikzpicture}
-    \caption{Population-pyramid view using same-year median centering: bars show person-years by salary band relative to the same-year median salary. Non-MHI is plotted above the axis; MHI is mirrored below the axis for direct distribution comparison. Values left of zero are below that year's median. In the current active-faculty sample, 36 of 44 MHI person-years are below the same-year median and 8 are above. This year adjustment reduces distortion from hire timing across calendar years, but remains descriptive and does not fully control for rank or promotion stage.}
+    \caption{Population-pyramid view using same-year median centering: bars show person-years by salary band relative to the same-year median salary. Non-MHI is plotted above the axis; MHI is mirrored below the axis for direct distribution comparison. Values left of zero are below that year's median. In the current active-faculty sample, 42 of 51 MHI person-years are below the same-year median and 9 are above. This year adjustment reduces distortion from hire timing across calendar years, but remains descriptive and does not fully control for rank or promotion stage.}
 \end{figure}
 }{}
 
@@ -945,7 +945,7 @@ Because salary progression reflects the cumulative outcome of repeated performan
         \legend{Non-MHI,MHI}
     \end{axis}
     \end{tikzpicture}
-    \caption{Appendix sensitivity figure using same-year mean centering: bars show person-years by salary band relative to the same-year average salary. In the current active-faculty sample, 43 of 44 MHI person-years are below the same-year average and 1 is above.}
+    \caption{Appendix sensitivity figure using same-year mean centering: bars show person-years by salary band relative to the same-year average salary. In the current active-faculty sample, 49 of 51 MHI person-years are below the same-year average and 2 are above.}
 \end{figure}
 }{}
 
@@ -976,7 +976,7 @@ Because salary progression reflects the cumulative outcome of repeated performan
         \legend{Non-MHI,MHI}
     \end{axis}
     \end{tikzpicture}
-    \caption{Within-year salary-percentile cumulative distributions. For each year, faculty were ranked by salary and converted to percentile rank as rank/$n$ for that year. Curves show cumulative proportions across all person-years by group. The dashed vertical line marks the 50th percentile. In the current active-faculty sample, MHI has mean percentile 24.69 and median percentile 19.09, with 79.55\% (35/44) below the 50th percentile; non-MHI has mean percentile 56.90 and median percentile 57.58, with 40.68\% (107/263) below the 50th percentile.}
+    \caption{Within-year salary-percentile cumulative distributions. For each year, faculty were ranked by salary and converted to percentile rank as rank/$n$ for that year. Curves show cumulative proportions across all person-years by group. The dashed vertical line marks the 50th percentile. In the current active-faculty sample, MHI has mean percentile 24.22 and median percentile 18.18, with 80.39\% (41/51) below the 50th percentile; non-MHI has mean percentile 57.10 and median percentile 57.58, with 40.55\% (118/291) below the 50th percentile.}
 \end{figure}
 }{}
 
@@ -1117,7 +1117,7 @@ Because salary progression reflects the cumulative outcome of repeated performan
         xlabel={Year},
         ylabel={Salary (\$CAD)},
         xmin=\JWPeerXMin,
-        xmax=2024.5,
+        xmax=2025.5,
         xtick distance=1,
         scaled x ticks=false,
         scaled y ticks=false,

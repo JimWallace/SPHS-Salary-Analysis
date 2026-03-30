@@ -1,11 +1,11 @@
 "model","group","component","variance","std_dev"
-"M1: Unconditional means","faculty_id","(Intercept)",336879055.282835,18354.2653158015
-"M1: Unconditional means","Residual",NA,656814419.158098,25628.3908811712
-"M2: Unconditional growth","faculty_id","(Intercept)",899988173.339266,29999.8028883402
-"M2: Unconditional growth","faculty_id","year_c",2241573.82536534,1497.18864054111
-"M2: Unconditional growth","faculty_id","(Intercept):year_c",9711839.07569087,0.216225322218079
-"M2: Unconditional growth","Residual",NA,19686646.55802,4436.96366426636
-"M3: Conditional growth","faculty_id","(Intercept)",804691562.096887,28367.0858936354
-"M3: Conditional growth","faculty_id","year_c",1833239.46866801,1353.97173850417
-"M3: Conditional growth","faculty_id","(Intercept):year_c",1612656.69388407,0.0419872663895657
-"M3: Conditional growth","Residual",NA,19686271.529547,4436.92140222779
+"M1: Unconditional means","faculty_id","(Intercept)",340980617.337365,18465.6604901467
+"M1: Unconditional means","Residual",NA,791036684.99978,28125.3743975041
+"M2: Unconditional growth","faculty_id","(Intercept)",1004976628.617,31701.366352525
+"M2: Unconditional growth","faculty_id","year_c",2447806.55301158,1564.54675641592
+"M2: Unconditional growth","faculty_id","(Intercept):year_c",8019548.74557411,0.161690090432881
+"M2: Unconditional growth","Residual",NA,24790136.8880871,4978.96946044933
+"M3: Conditional growth","faculty_id","(Intercept)",828485636.126866,28783.4264139429
+"M3: Conditional growth","faculty_id","year_c",2144907.36994141,1464.55022786568
+"M3: Conditional growth","faculty_id","(Intercept):year_c",-557502.995161448,-0.0132251450085621
+"M3: Conditional growth","Residual",NA,24803915.1394524,4980.35291314305
