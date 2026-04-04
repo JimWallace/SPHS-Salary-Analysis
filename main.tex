@@ -1240,10 +1240,10 @@ Both projections assume linear growth differences over time and hold all other f
     \renewcommand{\arraystretch}{1.15}
     \pgfplotstabletypeset[
         col sep=comma,
-        columns={Faculty,{FP Since},{FP Since Source},{Salary 2025},{Gap from Wallace}},
+        columns={Faculty,{FP Since},Source,{Salary 2025},{Gap from Wallace}},
         columns/Faculty/.style={column name=Faculty, string type, column type=l},
         columns/{FP Since}/.style={column name={Full Prof.\ Since}, string type, column type=c},
-        columns/{FP Since Source}/.style={column name={Source}, string type, column type=l},
+        columns/Source/.style={column name={Source}, string type, column type=l},
         columns/{Salary 2025}/.style={column name={2025 Salary (\$CAD)}, fixed, precision=2, 1000 sep={,}, column type=r},
         columns/{Gap from Wallace}/.style={column name={Gap Above Wallace (\$)}, fixed, precision=2, 1000 sep={,}, column type=r},
         every head row/.style={before row=\toprule, after row=\midrule},
