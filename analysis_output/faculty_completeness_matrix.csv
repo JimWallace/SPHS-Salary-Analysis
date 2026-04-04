@@ -1,52 +1,52 @@
 faculty_name,first_disclosure_year,last_disclosure_year,disclosure_year_count,missing_internal_years,public_match_status,public_name,cv_match_status,cv_filename
-"AMSON, ASHLEY",,,0,,1,Ashley Amson,matched,"AMSON, Ashley CV 2025.pdf"
-"ANTHONY, KELLY K.",2014,2025,12,,1,Kelly Anthony,matched,"ANTHONY, Kelly CV Dec 2024.pdf"
-"AROCHA, JOSE",2012,2020,9,,0,,missing,
-"BARDWELL, GEOFFREY",2023,2025,3,,1,Geoff Bardwell,matched,"BARDWELL, Geoff CV 2025.pdf"
-"BIGELOW, PHILIP L.",2012,2025,14,,1,Philip Bigelow,matched,"BIGELOW, Philip CV_ Jan 2025.pdf"
-"BUTT, ZAHID",2020,2025,6,,1,Zahid A. Butt,matched,BUTT Zahid CV Dec 2024.pdf
-"CHAURASIA, ASHOK",2017,2025,9,,1,Ashok Chaurasia,matched,"CHAURASIA, Ashok, CV Dec 2024.pdf"
-"CHEN, HELEN H.",2012,2025,14,,1,Helen Chen,matched,"CHEN, Helen CV Jan 2025.pdf"
-"COOKE, MARTIN J.",2014,2025,12,,1,Martin Cooke,matched,"COOKE, Martin CV Dec 2024.pdf"
+"AMSON, ASHLEY",,,0,,1,Ashley Amson,missing,
+"ANTHONY, KELLY K.",2014,2025,12,,1,Kelly Anthony,missing,
+"AROCHA, JOSE",2011,2020,10,,0,,missing,
+"BARDWELL, GEOFFREY",2023,2025,3,,1,Geoff Bardwell,missing,
+"BIGELOW, PHILIP L.",2011,2025,15,,1,Philip Bigelow,missing,
+"BUTT, ZAHID",2020,2025,6,,1,Zahid A. Butt,missing,
+"CHAURASIA, ASHOK",2017,2025,9,,1,Ashok Chaurasia,missing,
+"CHEN, HELEN H.",2011,2025,15,,1,Helen Chen,missing,
+"COOKE, MARTIN J.",2014,2025,12,,1,Martin Cooke,missing,
 "CORBET, KITTY",2015,2018,4,,0,,missing,
-"DODD, WARREN",2019,2025,7,,1,Warren Dodd,matched,"DODD, Warren, CV Dec 2024.pdf"
-"DUBIN, JOEL A.",2012,2025,14,,1,Joel Dubin,matched,"DUBIN, Joel CV Dec 2024.pdf"
-"FERRO, MARK",2017,2025,9,,1,Mark Ferro,matched,"FERRO, Mark, CV Dec 2024.pdf"
-"GARCIA, JOHN M",2012,2019,8,,0,,missing,
-"HALL, PETER A.",2012,2025,14,,1,Peter A. Hall,matched,HALL Peter CV Dec 2024.pdf
-"HAMMOND, DAVID",2012,2025,14,,1,David Hammond,matched,"HAMMOND, Dave CV Dec 2024.pdf"
-"HANNING, RHONA",2012,2023,12,,0,,missing,
-"HIRDES, JOHN",2012,2025,14,,1,John Hirdes,matched,"HIRDES, John CV Dec 2024.pdf"
-"HOFFMAN-GOETZ, LAURIE",2012,2015,4,,0,,missing,
-"HORTON, SUSAN E.",2012,2020,9,,0,,missing,
-"HUSTED, JANICE",2013,2013,1,,0,,missing,
+"DODD, WARREN",2019,2025,7,,1,Warren Dodd,missing,
+"DUBIN, JOEL A.",2011,2025,15,,1,Joel Dubin,missing,
+"FERRO, MARK",2017,2025,9,,1,Mark Ferro,missing,
+"GARCIA, JOHN M",2011,2019,9,,0,,missing,
+"HALL, PETER A.",2012,2025,14,,1,Peter A. Hall,missing,
+"HAMMOND, DAVID",2011,2025,15,,1,David Hammond,missing,
+"HANNING, RHONA",2011,2023,13,,0,,missing,
+"HIRDES, JOHN",2011,2025,15,,1,John Hirdes,missing,
+"HOFFMAN-GOETZ, LAURIE",2011,2015,5,,0,,missing,
+"HORTON, SUSAN E.",2011,2020,10,,0,,missing,
+"HUSTED, JANICE",2011,2013,2,2012,0,,missing,
 "JANDU, NARVEEN",2021,2025,5,,0,,missing,
 "JANES, CRAIG R.",2015,2023,9,,0,,missing,
-"JESSUP, LINDA LOUISE",2012,2017,6,,0,,missing,
+"JESSUP, LINDA LOUISE",2011,2017,7,,0,,missing,
 "KING, ALEXANDRA",,,0,,1,Alexandra King,missing,
-"KIRKPATRICK, SHARON",2015,2025,11,,1,Sharon Kirkpatrick,matched,"KIRKPATRICK, Sharon, CV Dec 2024.pdf"
-"LAIRD, BRIAN",2017,2025,9,,1,Brian Laird,matched,LAIRD Brian CV Dec 2024.pdf
-"LAW, JANE",2013,2025,12,2014,1,Jane Law,matched,"LAW, Jane CV Dec 2024 Environment.pdf"
-"LEATHERDALE, SCOTT",2012,2025,14,,1,Scott Leatherdale,matched,"LEATHERDALE, Scott, CV Dec 2024.pdf"
+"KIRKPATRICK, SHARON",2015,2025,11,,1,Sharon Kirkpatrick,missing,
+"LAIRD, BRIAN",2017,2025,9,,1,Brian Laird,missing,
+"LAW, JANE",2013,2025,12,2014,1,Jane Law,missing,
+"LEATHERDALE, SCOTT",2012,2025,14,,1,Scott Leatherdale,missing,
 "LEE, JOON H.",2016,2017,2,,0,,missing,
-"LUO, HAO",2025,2025,1,,1,Hao Luo,matched,"LUO, Hao CV 2025.pdf"
+"LUO, HAO",2025,2025,1,,1,Hao Luo,missing,
 "MACEACHEN (STOTHERS), ELLEN",2015,2025,11,,1,Ellen MacEachen,missing,
-"MAJOWICZ, SHANNON",2015,2025,11,,1,Shannon E. Majowicz,matched,MAJOWICZ Shannon CV Dec 2024.pdf
-"MCAINEY, CARRIE",2019,2025,7,,1,Carrie McAiney,matched,"MCAINEY, Carrie CV Dec 2024.pdf"
-"MCKILLOP, IAN",2012,2022,11,,0,,missing,
-"MEYER, SAMANTHA",2020,2025,5,2022,1,Samantha Meyer,matched,"MEYER, Samantha CV Dec 2024.pdf"
-"MIELKE, JOHN G.",2015,2025,11,,1,John G. Mielke,matched,"MIELKE, John, CV Dec 2024.pdf"
-"MORITA, PLINIO",2017,2025,9,,1,Plinio Morita,matched,"MORITA, Plinio, CV Dec 2024.pdf"
-"MYERS, ANITA M.",2012,2015,4,,0,,missing,
-"NEITERMAN, ELENA",2018,2025,8,,1,Elena Neiterman,matched,"NEITERMAN, Elena CV Jan 2025.pdf"
-"OGA-OMENKA, CHARITY",2023,2025,3,,1,Charity Oga-Omenka,matched,"OGA-OMENKA, Charity CV 2025.pdf"
-"OREMUS, MARK",2015,2025,11,,1,Mark Oremus,matched,"OREMUS, Mark, CV Dec 2024.pdf"
-"PERLMAN, CHRISTOPHER",2016,2025,10,,1,Chris Perlman,matched,PERLMAN_Chris_CV_Dec_2024.pdf
-"SKINNER, KELLY",2018,2025,8,,1,Kelly Skinner,matched,"SKINNER, Kelly, CV Dec 2024.pdf"
-"STOLEE, PAUL",2012,2022,11,,0,,missing,
-"TAIT NEUFELD, HANNAH",2020,2025,6,,1,Hannah Neufeld,matched,"NEUFELD, Hannah, CV Dec 2024.pdf"
-"TORRES ESPIN, ABEL",2024,2025,2,,1,Abel Torres Espin,matched,"TORRES ESPIN, Abel CV 2025.pdf"
-"TYAS, SUZANNE L",2012,2025,14,,1,Suzanne Tyas,matched,TYAS Suzanne CV 2024.pdf
-"WALLACE, JAMES R.",2017,2025,9,,1,James Wallace,matched,"WALLACE, Jim CV Jan 2026.pdf"
-"WILLIAMS, DIANE",2017,2025,9,,1,Diane Williams,matched,"WILLIAMS, Diane CV Dec 2024.pdf"
-"YESSIS, JENNIFER L",2013,2025,13,,1,Jennifer Yessis,matched,"YESSIS, Jennifer CV 2025.pdf"
+"MAJOWICZ, SHANNON",2015,2025,11,,1,Shannon E. Majowicz,missing,
+"MCAINEY, CARRIE",2019,2025,7,,1,Carrie McAiney,missing,
+"MCKILLOP, IAN",2011,2022,12,,0,,missing,
+"MEYER, SAMANTHA",2020,2025,5,2022,1,Samantha Meyer,missing,
+"MIELKE, JOHN G.",2015,2025,11,,1,John G. Mielke,missing,
+"MORITA, PLINIO",2017,2025,9,,1,Plinio Morita,missing,
+"MYERS, ANITA M.",2011,2015,5,,0,,missing,
+"NEITERMAN, ELENA",2018,2025,8,,1,Elena Neiterman,missing,
+"OGA-OMENKA, CHARITY",2023,2025,3,,1,Charity Oga-Omenka,missing,
+"OREMUS, MARK",2015,2025,11,,1,Mark Oremus,missing,
+"PERLMAN, CHRISTOPHER",2016,2025,10,,1,Chris Perlman,missing,
+"SKINNER, KELLY",2018,2025,8,,1,Kelly Skinner,missing,
+"STOLEE, PAUL",2011,2022,12,,0,,missing,
+"TAIT NEUFELD, HANNAH",2020,2025,6,,1,Hannah Neufeld,missing,
+"TORRES ESPIN, ABEL",2024,2025,2,,1,Abel Torres Espin,missing,
+"TYAS, SUZANNE L",2011,2025,15,,1,Suzanne Tyas,missing,
+"WALLACE, JAMES R.",2017,2025,9,,1,James Wallace,missing,
+"WILLIAMS, DIANE",2017,2025,9,,1,Diane Williams,missing,
+"YESSIS, JENNIFER L",2013,2025,13,,1,Jennifer Yessis,missing,
