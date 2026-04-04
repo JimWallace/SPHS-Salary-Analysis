@@ -1222,6 +1222,40 @@ Both projections assume linear growth differences over time and hold all other f
 \textit{Faculty analysis verification matrix CSV not found. Run \texttt{python3 scripts/build\_appendix\_analysis\_verification\_matrix.py}.}
 }
 
+\clearpage
+\refstepcounter{section}
+\phantomsection
+\section*{Appendix \thesection: Full Professor Salary Comparison}
+\label{app:fp_salary_comparison}
+
+\textbf{Purpose.} James Wallace was promoted to Full Professor effective July~1, 2025. This appendix documents where his salary sits relative to all other SPHS faculty who hold (or are estimated to hold) the rank of Full Professor as of the 2025 disclosure year, based on disclosed salaries from the Ontario Sunshine List.
+
+\textbf{Note on rank sources.} Promotion dates marked ``User-confirmed'' are based on information provided directly by the subject. Dates marked ``CV crosswalk'' are derived from employment history parsed from publicly available faculty CVs (see Appendix~\ref{app:faculty_verification_matrix}). Dates marked ``Tenure/appointment'' are estimated from appointment year and typical UWaterloo promotion timelines; exact promotion dates for those faculty were not available. Faculty with ``--'' in the source column were long-tenured at the time of analysis and are expected to hold Full Professor rank, but no specific promotion date was identified.
+
+\IfFileExists{analysis_output/full_professor_salary_comparison.csv}{
+\begin{table}[h]
+    \centering
+    \small
+    \setlength{\tabcolsep}{5pt}
+    \renewcommand{\arraystretch}{1.15}
+    \pgfplotstabletypeset[
+        col sep=comma,
+        columns={Faculty,{FP Since},{FP Since Source},{Salary 2025},{Gap from Wallace}},
+        columns/Faculty/.style={column name=Faculty, string type, column type=l},
+        columns/{FP Since}/.style={column name={Full Prof.\ Since}, string type, column type=c},
+        columns/{FP Since Source}/.style={column name={Source}, string type, column type=l},
+        columns/{Salary 2025}/.style={column name={2025 Salary (\$CAD)}, fixed, precision=2, 1000 sep={,}, column type=r},
+        columns/{Gap from Wallace}/.style={column name={Gap Above Wallace (\$)}, fixed, precision=2, 1000 sep={,}, column type=r},
+        every head row/.style={before row=\toprule, after row=\midrule},
+        every last row/.style={after row=\bottomrule}
+    ]{analysis_output/full_professor_salary_comparison.csv}
+    \caption{2025 disclosed salaries for SPHS faculty at the rank of Full Professor, sorted by salary ascending. ``Gap Above Wallace'' is the difference between each faculty member's 2025 salary and Wallace's (\$143,600.04). Wallace's row is first; all other Full Professors earned more. Salary data: University of Waterloo Ontario Sunshine List, 2025.}
+    \label{tab:fp_salary_comparison}
+\end{table}
+}{
+\textit{Full professor salary comparison CSV not found at \texttt{analysis\_output/full\_professor\_salary\_comparison.csv}.}
+}
+
 \newpage
 \printbibliography
 
