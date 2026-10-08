@@ -11,6 +11,7 @@
 \definecolor{MHIColor}{HTML}{D55E00}
 \colorlet{AssociateBand}{NonMHIColor!30}
 \colorlet{ProfessorBand}{NonMHIColor!60}
+\definecolor{RequestColor}{HTML}{009E73}
 
 % Numbers below come from: python3 scripts/build_promotion_pool.py --year 2025
 \input{analysis_output/promotion_pool_2025.tex}
@@ -71,6 +72,22 @@ Difference from lower quartile & $-$\GapQOne \\
 \end{tabular}
 \caption{Distribution of \PoolYear\ salaries in the comparison group. Quartiles use the inclusive method; each is interpolated between two people, so no figure is the salary of one person.}
 \label{tab:pool}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Benchmark (University comparison group, $n = \PoolN$) & \PoolYear\ salary & Adjustment to reach & \% of my base \\
+\midrule
+Lower quartile & \PoolQOne & \GapQOne & \GapQOnePct \\
+Median & \PoolMedian & \GapMedian & \GapMedianPctOfBase \\
+Requested adjustment & \RequestTarget & \RequestAdj & \RequestPct \\
+\bottomrule
+\end{tabular}
+\caption{Adjustment to my annualized base salary (\SubjectBase) needed to reach each benchmark, and the adjustment I request.}
+\label{tab:benchmarks}
 \end{table}
 
 \begin{figure}[H]
@@ -134,7 +151,7 @@ A common explanation for a low position in a University-wide group is that other
 
 The University promoted me to Professor in \PoolYear. This means that my record meets the University's standard for this rank. A salary at the \SubjectPercentile\textsuperscript{nd} percentile of recent promotions to this rank is therefore difficult to explain by differences in performance.
 
-Within SPHS, \SphsNProf\ other faculty held the title Professor in \PoolYear. All \SphsNProfAbove\ were paid more than my annualized base salary, so my salary is the lowest of the \the\numexpr\SphsNProf+1\relax\ SPHS Professors. In addition, \SphsNAssocAbove\ of the \SphsNAssoc\ SPHS Associate Professors were paid more in \PoolYear\ than my annualized base salary as a Professor. Figure~\ref{fig:sphs} shows this result. These colleagues differ in rank and length of service, so this is context rather than a like-for-like comparison.
+Within SPHS, \SphsNProf\ other faculty held the title Professor in \PoolYear. All \SphsNProfAbove\ were paid more than my annualized base salary, so my salary is the lowest of the \the\numexpr\SphsNProf+1\relax\ SPHS Professors. In addition, \SphsNAssocAbove\ of the \SphsNAssoc\ SPHS Associate Professors were paid more in \PoolYear\ than my annualized base salary as a Professor. Figure~\ref{fig:sphs} shows this result. \SphsRequestSentence\ These colleagues differ in rank and length of service, so this is context rather than a like-for-like comparison.
 
 % Bands are the inclusive-method Q1 to Q3 of each group. scripts/build_promotion_pool.py stops
 % if a band edge equals one person's salary. No individual salary, median, minimum or maximum is shown.
@@ -162,7 +179,9 @@ Within SPHS, \SphsNProf\ other faculty held the title Professor in \PoolYear. Al
     ]
         \fill[AssociateBand] (axis cs:0.72,\SphsAssocQOneRaw) rectangle (axis cs:1.28,\SphsAssocQThreeRaw);
         \fill[ProfessorBand] (axis cs:1.72,\SphsProfQOneRaw) rectangle (axis cs:2.28,\SphsProfQThreeRaw);
-        \addplot[MHIColor, dashed, thick, domain=0.4:2.6, samples=2] {\SubjectBaseRaw};
+        \addplot[draw=MHIColor, dashed, very thick, domain=0.4:2.6, samples=2] {\SubjectBaseRaw};
+        \addplot[draw=RequestColor, dashed, very thick, domain=0.4:2.6, samples=2] {\RequestTargetRaw};
+        \node[anchor=south west, font=\footnotesize, text=RequestColor] at (axis cs:0.4,\RequestTargetRaw) {Requested salary (\RequestTarget)};
         \addplot[only marks, mark=diamond*, mark size=5pt, draw=black, fill=MHIColor] coordinates {(2,\SubjectBaseRaw)};
         \node[anchor=north, font=\footnotesize, text=MHIColor, align=center] at (axis cs:2,\SubjectBaseRaw-2500) {Wallace, Professor\\(\PoolYear\ annualized base)};
     \end{axis}
@@ -170,25 +189,9 @@ Within SPHS, \SphsNProf\ other faculty held the title Professor in \PoolYear. Al
     \caption{\PoolYear\ salaries of SPHS Associate Professors and Professors. Each band shows the middle 50\% of the group. Individual salaries are not shown. My \PoolYear\ annualized base is shown as a Professor. These groups differ in length of service, so this figure is context, not a like-for-like comparison.}
     \label{fig:sphs}
 \end{figure}
-\else
-\section*{Benchmarks}
 \fi
 
-\begin{table}[H]
-\centering
-\small
-\begin{tabular}{lrrr}
-\toprule
-Benchmark (University comparison group, $n = \PoolN$) & \PoolYear\ salary & Adjustment to reach & \% of my base \\
-\midrule
-Lower quartile & \PoolQOne & \GapQOne & \GapQOnePct \\
-Median & \PoolMedian & \GapMedian & \GapMedianPctOfBase \\
-Requested adjustment & \RequestTarget & \RequestAdj & \RequestPct \\
-\bottomrule
-\end{tabular}
-\caption{Adjustment to my annualized base salary (\SubjectBase) needed to reach each benchmark, and the adjustment I request.}
-\label{tab:benchmarks}
-\end{table}
+
 
 \section*{Interpretation and Limitations}
 
