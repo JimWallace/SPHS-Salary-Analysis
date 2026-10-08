@@ -111,10 +111,10 @@ def classify_title(title: str) -> TitleClass:
 # ---------------------------------------------------------------------------
 
 def normalize_name_part(text: str) -> str:
-    """Upper case, remove accents and punctuation; hyphens and spaces become single spaces."""
+    """Upper case, remove accents and punctuation; hyphens, periods and spaces become single spaces."""
     decomposed = unicodedata.normalize("NFKD", text)
     no_accents = "".join(ch for ch in decomposed if not unicodedata.combining(ch))
-    upper = no_accents.upper().replace("-", " ")
+    upper = no_accents.upper().replace("-", " ").replace(".", " ")
     letters = re.sub(r"[^A-Z ]", "", upper)
     return " ".join(letters.split())
 

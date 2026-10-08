@@ -16,6 +16,7 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import urllib.error
 import urllib.request
 from datetime import date
 from pathlib import Path
@@ -24,7 +25,11 @@ ROOT = Path(__file__).resolve().parents[1]
 RAW_DIR = ROOT / "data" / "raw"
 MANIFEST = RAW_DIR / "manifest.csv"
 MANIFEST_FIELDS = ["year", "url", "file", "retrieved", "sha256", "bytes"]
-DISCLOSURE_URL = "https://uwaterloo.ca/about/accountability-reports/salary-disclosure-{}"
+# Newer lists use the first pattern; older lists (2023 and before) use the second.
+DISCLOSURE_URLS = [
+    "https://uwaterloo.ca/about/accountability-reports/salary-disclosure-{}",
+    "https://uwaterloo.ca/about/accountability/salary-disclosure-{}",
+]
 
 
 def read_manifest() -> list[dict[str, str]]:
@@ -43,16 +48,24 @@ def write_manifest(rows: list[dict[str, str]]) -> None:
         writer.writerows(rows)
 
 
-def download(url: str) -> bytes:
-    request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(request, timeout=120) as response:
-        return response.read()
+def download(year: int) -> tuple[str, bytes]:
+    for pattern in DISCLOSURE_URLS:
+        url = pattern.format(year)
+        request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        try:
+            with urllib.request.urlopen(request, timeout=120) as response:
+                return url, response.read()
+        except urllib.error.HTTPError as error:
+            if error.code != 404:
+                raise
+    raise SystemExit(f"No disclosure page found for {year}.")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("year", type=int)
     parser.add_argument("--html", type=Path, help="archive this already-downloaded copy instead of downloading")
+    parser.add_argument("--url", help="source URL of the --html copy (default: first URL pattern)")
     parser.add_argument("--retrieved", default=date.today().isoformat(), help="retrieval date (ISO), default today")
     args = parser.parse_args()
 
@@ -62,8 +75,10 @@ def main() -> None:
         print(f"{args.year} is already in {MANIFEST.relative_to(ROOT)} ({existing[0]['file']}); nothing to do.")
         return
 
-    url = DISCLOSURE_URL.format(args.year)
-    content = args.html.read_bytes() if args.html else download(url)
+    if args.html:
+        url, content = args.url or DISCLOSURE_URLS[0].format(args.year), args.html.read_bytes()
+    else:
+        url, content = download(args.year)
     if b"<table" not in content:
         raise SystemExit(f"No <table> found in the {args.year} page; not archived.")
 
