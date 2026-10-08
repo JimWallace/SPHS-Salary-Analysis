@@ -35,6 +35,8 @@ OUT_DIR = pc.ROOT / "analysis_output"
 PRIVATE_DIR = pc.ROOT / "data" / "private"
 SPHS_LIST = pc.ROOT / "data" / "sphs.csv"
 HEALTH_ROSTER = PRIVATE_DIR / "health_roster.csv"
+# Base salary adjustment that the report requests, by year.
+REQUESTED_ADJUSTMENT = {2025: 30_000.0}
 UNIT_MANIFEST = pc.ROOT / "data" / "raw" / "unit_manifest.csv"
 HEALTH_REVIEW = pc.ROOT / "data" / "review" / "health_matches.csv"
 
@@ -118,6 +120,17 @@ def health_macros(pool: list[tuple[float, str, bool, pc.Record]], base: float) -
     }
 
 
+def request_macros(base: float, adjustment: float, q1: float, median: float) -> dict[str, str]:
+    target = base + adjustment
+    print(f"Request: ${base:,.2f} + ${adjustment:,.0f} = ${target:,.2f} ({100 * adjustment / base:.1f}% of base); "
+          f"between lower quartile and median: {q1 < target < median}")
+    return {
+        "RequestAdj": money(adjustment),
+        "RequestTarget": money(target),
+        "RequestPct": f"{100 * adjustment / base:.0f}",
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--year", type=int, required=True)
@@ -192,6 +205,8 @@ def main() -> None:
         "GapQOnePct": f"{100 * (q1 - base) / base:.0f}",
         "GapMedianPctOfBase": f"{100 * (median - base) / base:.0f}",
     }
+    if year in REQUESTED_ADJUSTMENT:
+        macros |= request_macros(base, REQUESTED_ADJUSTMENT[year], q1, median)
     write_macros(OUT_DIR / f"promotion_pool_{year}.tex", macros, year)
     write_macros(PRIVATE_DIR / f"sphs_comparison_{year}.tex", sphs_macros(y2, base) | health_macros(pool, base), year)
 
