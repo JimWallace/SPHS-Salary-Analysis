@@ -63,3 +63,33 @@ Outputs:
 - `data/public_sphs_scrape/cross_appointments_reference.csv` (cross-appointments page names and listing-match status)
 - `analysis_output/public_sphs_group_summary.csv` (group counts)
 - `data/public_sphs_scrape/raw_html/` (local HTML cache, gitignored)
+
+## University-Wide Promotion Cohort
+
+This compares faculty whose disclosed title changed from "Associate Professor" to "Professor" between two consecutive years. It uses the full UW disclosure lists.
+
+1. Archive each disclosure page once. The script saves the raw HTML and records the retrieval date and SHA-256 hash in `data/raw/manifest.csv`:
+
+   ```bash
+   python3 scripts/fetch_salary_disclosure.py 2026
+   ```
+
+2. Build the cohort (the year is the promotion year; it is compared with the year before):
+
+   ```bash
+   python3 scripts/promotion_cohort.py --year 2026
+   ```
+
+3. Run the tests:
+
+   ```bash
+   python3 -m unittest discover -s tests
+   ```
+
+Outputs:
+
+- `output/cohort_summary.md` (no names except Wallace)
+- `data/private/cohort_named.csv` (gitignored; has an empty `faculty` column for manual coding)
+- `data/review/matches_to_check.csv` (gitignored; name matches and admin titles to check by hand)
+
+Optional: `data/private/required_names.csv` (columns `year,surname,given`) lists people who must be in the cohort. If one is missing, the script stops. The raw HTML files are gitignored because they contain names.
