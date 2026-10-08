@@ -1,0 +1,71 @@
+\documentclass{article}
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{pgfplotstable}
+\usepackage{float}
+\pgfplotsset{compat=1.18}
+\input{format}
+\definecolor{NonMHIColor}{HTML}{0072B2}
+\definecolor{MHIColor}{HTML}{D55E00}
+\definecolor{AssociateColor}{HTML}{CC79A7}
+\definecolor{AssistantColor}{HTML}{999999}
+\definecolor{TeachingColor}{HTML}{009E73}
+
+% Draft figure: SPHS salaries by rank. Each point is one colleague's salary.
+% Numbers come from: python3 scripts/build_sphs_rank_plot.py --year 2025
+\input{data/private/sphs_rank_2025.tex}
+\newcommand{\SphsData}{data/private/sphs_rank_2025.csv}
+
+\begin{document}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.98\textwidth,
+        height=0.50\textwidth,
+        xlabel={SPHS faculty member, ordered from lowest to highest \SphsPlotYear\ salary},
+        ylabel={\SphsPlotYear\ salary (\$CAD)},
+        xmin=0, xmax=\the\numexpr\SphsPlotN+2\relax,
+        ymin=100000, ymax=280000,
+        xtick=\empty,
+        scaled y ticks=false,
+        yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=0,/pgf/number format/1000 sep={{,}}},
+        ytick={100000,140000,180000,220000,260000},
+        grid=major,
+        major grid style={draw=black!12},
+        axis x line*=bottom,
+        axis y line*=left,
+        tick label style={font=\small},
+        label style={font=\small},
+        unbounded coords=discard,
+        legend style={at={(0.02,0.98)},anchor=north west,draw=none,fill=white,fill opacity=0.85,text opacity=1,font=\small,cells={anchor=west}},
+        clip=false
+    ]
+        % My annualized base
+        \addplot[MHIColor, dashed, thick, domain=0:\SphsPlotN+2, samples=2, forget plot] {\SphsPlotBaseRaw};
+        \node[anchor=north east, font=\footnotesize, text=MHIColor, align=right] at (axis cs:\SphsPlotN+2,\SphsPlotBaseRaw) {My annualized base (\SphsPlotBase)\\\SphsPlotAbove\ of \SphsPlotN\ colleagues are paid more};
+
+        \addplot[only marks, mark=*, mark size=2.8pt, draw=NonMHIColor, fill=NonMHIColor]
+            table[col sep=comma, x=rank_ascending, y expr={(\thisrow{group_code}==1 && \thisrow{subject}==0) ? \thisrow{salary} : nan}] {\SphsData};
+        \addlegendentry{Professor (n = \SphsCountProfessor)}
+        \addplot[only marks, mark=*, mark size=2.8pt, draw=AssociateColor, fill=AssociateColor!45]
+            table[col sep=comma, x=rank_ascending, y expr={(\thisrow{group_code}==2 && \thisrow{subject}==0) ? \thisrow{salary} : nan}] {\SphsData};
+        \addlegendentry{Associate Professor (n = \SphsCountAssociate)}
+        \addplot[only marks, mark=*, mark size=2.8pt, draw=black!60, fill=AssistantColor]
+            table[col sep=comma, x=rank_ascending, y expr={(\thisrow{group_code}==3 && \thisrow{subject}==0) ? \thisrow{salary} : nan}] {\SphsData};
+        \addlegendentry{Assistant Professor (n = \SphsCountAssistant)}
+        \addplot[only marks, mark=*, mark size=2.8pt, draw=TeachingColor, fill=TeachingColor!40]
+            table[col sep=comma, x=rank_ascending, y expr={(\thisrow{group_code}==4 && \thisrow{subject}==0) ? \thisrow{salary} : nan}] {\SphsData};
+        \addlegendentry{Teaching stream, all ranks (n = \SphsCountTeaching)}
+        \addplot[only marks, mark=diamond*, mark size=5pt, draw=black, fill=MHIColor]
+            table[col sep=comma, x=rank_ascending, y expr={\thisrow{subject}==1 ? \thisrow{salary} : nan}] {\SphsData};
+        \addlegendentry{Wallace, Professor (annualized base)}
+    \end{axis}
+    \end{tikzpicture}
+    \caption{\SphsPlotYear\ salaries of SPHS faculty by \SphsPlotYear\ title. Each point is one person. Colleagues are shown at their disclosed salary paid, which can include sabbatical reductions or stipends; I am shown at my annualized base. \SphsPlotNotListed\ people on the SPHS faculty list are not in the \SphsPlotYear\ disclosure and are not shown.}
+\end{figure}
+
+\end{document}

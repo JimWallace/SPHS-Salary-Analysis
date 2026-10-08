@@ -53,3 +53,4 @@ data/raw/*.html
 
 # Personal salary request (build locally with pdflatex promotion_report.tex)
 promotion_report.pdf
+sphs_rank_figure.pdf
