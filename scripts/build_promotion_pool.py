@@ -61,10 +61,46 @@ def write_macros(path, macros: dict[str, str], year: int, script: str = "build_p
             f.write(f"\\newcommand{{\\{name}}}{{{value}}}\n")
 
 
+def group_paid(records: list[pc.Record], rank: str, stream: str) -> list[float]:
+    return [r.paid for r in records if r.cls.rank == rank and r.cls.stream == stream and pc.is_main_campus_regular(r.cls)]
+
+
 def count_paid_more(records: list[pc.Record], rank: str, stream: str, base: float) -> tuple[int, int]:
     """Number of main-campus records with this rank and stream, and how many were paid more than base."""
-    group = [r.paid for r in records if r.cls.rank == rank and r.cls.stream == stream and pc.is_main_campus_regular(r.cls)]
+    group = group_paid(records, rank, stream)
     return len(group), sum(paid > base for paid in group)
+
+
+def quartile_check(values: list[float]) -> dict[str, tuple[float, float, bool]]:
+    """Inclusive-method Q1, median and Q3 with a disclosure check.
+
+    For each statistic: (1-based position in the sorted data, value, shown). A statistic is
+    shown only if it falls between two different salaries, so it is no one person's salary.
+    """
+    ordered = sorted(values)
+    result = {}
+    for name, p in (("Q1", 0.25), ("median", 0.5), ("Q3", 0.75)):
+        h = (len(ordered) - 1) * p
+        low = int(h)
+        frac = h - low
+        if frac == 0:
+            result[name] = (h + 1, ordered[low], False)
+        else:
+            value = ordered[low] + frac * (ordered[low + 1] - ordered[low])
+            result[name] = (h + 1, value, ordered[low] != ordered[low + 1])
+    return result
+
+
+def band_macros(prefix: str, values: list[float]) -> dict[str, str]:
+    """Q1 and Q3 band edges for a figure. Stops if either edge is one person's salary."""
+    check = quartile_check(values)
+    for name, (position, _, shown) in check.items():
+        print(f"{prefix} (n = {len(values)}): {name} at position {position:g}: "
+              f"{'shown (between two different salaries)' if shown else 'NOT shown (one person or equal neighbours)'}")
+    for name in ("Q1", "Q3"):
+        if not check[name][2]:
+            raise SystemExit(f"{prefix} {name} equals one person's salary; the band cannot be drawn.")
+    return {f"{prefix}QOneRaw": f"{check['Q1'][1]:.0f}", f"{prefix}QThreeRaw": f"{check['Q3'][1]:.0f}"}
 
 
 def sphs_macros(curr_year: list[pc.Record], base: float) -> dict[str, str]:
@@ -82,7 +118,8 @@ def sphs_macros(curr_year: list[pc.Record], base: float) -> dict[str, str]:
         "SphsNProfAbove": str(n_prof_above),
         "SphsNAssoc": str(n_assoc),
         "SphsNAssocAbove": str(n_assoc_above),
-    }
+    } | band_macros("SphsAssoc", group_paid(records, "Associate", "research")) \
+      | band_macros("SphsProf", group_paid(records, "Professor", "research"))
 
 
 def roster_match(record: pc.Record, roster: list[list[str]]) -> str:
