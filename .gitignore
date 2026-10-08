@@ -54,3 +54,6 @@ data/raw/*.html
 # Personal salary request (build locally with pdflatex promotion_report.tex)
 promotion_report.pdf
 sphs_rank_figure.pdf
+
+# Confirmatory cohorts: manual review file has names
+confirmatory_cohorts/review/

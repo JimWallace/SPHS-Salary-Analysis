@@ -1,0 +1,9 @@
+my_name_normalized: "WALLACE JAMES"
+annualized_base_2025: 162629
+disclosed_2024: 141651
+disclosed_2025: 143600
+scale_increases:   # fill in from salary settlements; leave empty until confirmed
+  "2023": null
+  "2024": null
+  "2025": null
+lump_sum_flag_threshold: 0.15
