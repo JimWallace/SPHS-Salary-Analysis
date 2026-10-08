@@ -1,0 +1,10 @@
+group,cohorts,analysis,n,my_rank,status
+a,2024-2025,A,6,6,ok
+a,2024-2025,B-unadjusted,6,6,ok
+a,2024-2025,B-adjusted,,,pending
+b,2023-2024-2025,A,7,7,ok
+b,2023-2024-2025,B-unadjusted,7,7,ok
+b,2023-2024-2025,B-adjusted,,,pending
+c,2022-2023-2024-2025,A,9,9,ok
+c,2022-2023-2024-2025,B-unadjusted,9,9,ok
+c,2022-2023-2024-2025,B-adjusted,,,pending

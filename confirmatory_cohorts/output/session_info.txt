@@ -1,0 +1,13 @@
+python: 3.13.16
+platform: Linux-6.18.44-fc-v80-x86_64-with-glibc2.39
+pyyaml: 6.0.1
+git commit: 3dadbc423f5bffdab2a8bddd2cf2c269c36a52e9
+sha256[:16] confirm.py: af81586a2ef2a49a
+sha256[:16] run.py: 2bb8e8d767d2d94c
+sha256[:16] promotion_cohort.py: 1d783f058cb47ed0
+sha256[:16] build_promotion_pool.py: 5600d3aa2349d697
+disclosure 2021: 77696204ff7e54a17b11802a7bafd9cd956c9ee09c1d7f0d250acdb66491fff0
+disclosure 2022: abbea20ff490ce3563d1b104a1adea88bc6dce6c440acc2224c4c9a6d624f380
+disclosure 2023: b78034e1588ccd4260332fd6ec5991d09c05f32962b3292d84a567aaa705f490
+disclosure 2024: f8a66bedbda1c0a87c07178236d105f7cbaff752a8951257c7ce36aa37f7c5a8
+disclosure 2025: edb27afc5c798d0b5e16712904814b467e78a31e625281264ff3bdc5064e4080
