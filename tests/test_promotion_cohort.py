@@ -6,7 +6,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
-from promotion_cohort import classify_title, name_key, normalize_given, normalize_name_part  # noqa: E402
+from promotion_cohort import (  # noqa: E402
+    Record,
+    build_cohorts,
+    classify_title,
+    name_key,
+    normalize_given,
+    normalize_name_part,
+)
 
 
 class ClassifyTitleTests(unittest.TestCase):
@@ -86,6 +93,27 @@ class NameNormalizationTests(unittest.TestCase):
     def test_name_key(self):
         self.assertEqual(name_key("WALLACE", "JAMES R."), ("WALLACE", "JAMES"))
         self.assertEqual(name_key("Wallace", "James"), ("WALLACE", "JAMES"))
+
+
+
+def record(surname, given, title, paid=100_000.0):
+    return Record(surname, given, title, paid, classify_title(title))
+
+
+class MiddleInitialMatchTests(unittest.TestCase):
+    def test_non_unique_name_matched_by_middle_initial(self):
+        prev = [record("ALPHA", "BETA W.", "Associate Professor")]
+        curr = [record("ALPHA", "BETA S.", "Professor"), record("ALPHA", "BETA W.", "Professor", 120_000.0)]
+        result = build_cohorts(prev, curr)
+        self.assertEqual([(a.given, b.given) for a, b in result.cohorts["research"]], [("BETA W.", "BETA W.")])
+        self.assertEqual([r["reason"] for r in result.review], ["name not unique; matched by middle initial"])
+
+    def test_non_unique_name_without_initial_match_goes_to_review(self):
+        prev = [record("ALPHA", "BETA W.", "Associate Professor")]
+        curr = [record("ALPHA", "BETA S.", "Professor"), record("ALPHA", "BETA T.", "Professor")]
+        result = build_cohorts(prev, curr)
+        self.assertEqual(result.cohorts["research"], [])
+        self.assertEqual({r["reason"] for r in result.review}, {"ambiguous exact name (not unique in a year)"})
 
 
 if __name__ == "__main__":

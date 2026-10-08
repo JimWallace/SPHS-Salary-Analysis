@@ -23,46 +23,45 @@ Cohort: research-stream faculty on the main campus whose title was "Associate Pr
 | excluded: rank not Associate in prev year | 1590 |
 | [research] Associate pool, main campus | 404 |
 | [teaching] Associate pool, main campus | 159 |
-| [research] excluded: curr rank not Professor | 378 |
-| [research] excluded: name not unique in a year | 2 |
+| [research] excluded: curr rank not Professor | 379 |
 | [research] excluded: no exact name match in curr year | 3 |
-| [research] cohort size | 21 |
+| [research] cohort size | 22 |
 | [teaching] excluded: curr rank not Professor | 156 |
 | [teaching] excluded: no exact name match in curr year | 3 |
 | [teaching] cohort size | 0 |
 
-## Research-stream cohort (n = 21)
+## Research-stream cohort (n = 22)
 
 | Statistic | 2024 paid | 2025 paid | Change (2025 - 2024) |
 |---|---|---|---|
 | Minimum | $141,651 | $143,600 | -$15,183 |
-| Lower quartile | $175,432 | $185,253 | $9,522 |
-| Median | $186,803 | $199,973 | $11,825 |
-| Upper quartile | $208,589 | $223,678 | $17,306 |
+| Lower quartile | $175,856 | $185,436 | $9,678 |
+| Median | $187,444 | $200,958 | $11,909 |
+| Upper quartile | $207,208 | $222,442 | $18,103 |
 | Maximum | $219,324 | $236,864 | $28,891 |
 
 ### Wallace's position
 
 | Measure | Wallace | Rank (1 = highest) | Percentile |
 |---|---|---|---|
-| 2024 paid | $141,651 | 21 of 21 | 0 |
-| 2025 paid | $143,600 | 21 of 21 | 0 |
-| Change (2025 - 2024) | $1,949 | 20 of 21 | 5 |
+| 2024 paid | $141,651 | 22 of 22 | 0 |
+| 2025 paid | $143,600 | 22 of 22 | 0 |
+| Change (2025 - 2024) | $1,949 | 21 of 22 | 5 |
 
 ### 2025 figures with Wallace's annualized base ($162,628.83) in place of his paid figure
 
 | Statistic | 2025 paid | Change (2025 - 2024) |
 |---|---|---|
 | Minimum | $158,772 | -$15,183 |
-| Lower quartile | $185,253 | $10,145 |
-| Median | $199,973 | $11,992 |
-| Upper quartile | $223,678 | $18,369 |
+| Lower quartile | $185,436 | $10,324 |
+| Median | $200,958 | $12,953 |
+| Upper quartile | $222,442 | $19,963 |
 | Maximum | $236,864 | $28,891 |
 
 | Measure | Wallace | Rank (1 = highest) | Percentile |
 |---|---|---|---|
-| 2025 paid | $162,629 | 20 of 21 | 5 |
-| Change (2025 - 2024) | $20,978 | 5 of 21 | 80 |
+| 2025 paid | $162,629 | 21 of 22 | 5 |
+| Change (2025 - 2024) | $20,978 | 5 of 22 | 81 |
 
 ## Teaching-stream cohort (n = 0)
 
