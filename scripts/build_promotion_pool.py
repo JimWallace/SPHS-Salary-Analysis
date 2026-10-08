@@ -61,6 +61,12 @@ def write_macros(path, macros: dict[str, str], year: int, script: str = "build_p
             f.write(f"\\newcommand{{\\{name}}}{{{value}}}\n")
 
 
+def count_paid_more(records: list[pc.Record], rank: str, stream: str, base: float) -> tuple[int, int]:
+    """Number of main-campus records with this rank and stream, and how many were paid more than base."""
+    group = [r.paid for r in records if r.cls.rank == rank and r.cls.stream == stream and pc.is_main_campus_regular(r.cls)]
+    return len(group), sum(paid > base for paid in group)
+
+
 def sphs_macros(curr_year: list[pc.Record], base: float) -> dict[str, str]:
     """Only counts, so that no SPHS colleague can be identified."""
     with SPHS_LIST.open(encoding="utf-8") as f:
@@ -68,14 +74,14 @@ def sphs_macros(curr_year: list[pc.Record], base: float) -> dict[str, str]:
     sphs_keys.discard(pc.SUBJECT)
 
     index = pc.index_by_key(curr_year)
-    professors = []
-    for key in sphs_keys:
-        matches = index.get(key, [])
-        if len(matches) == 1 and matches[0].cls.rank == "Professor" and pc.is_main_campus_regular(matches[0].cls):
-            professors.append(matches[0].paid)
+    records = [index[k][0] for k in sphs_keys if len(index.get(k, [])) == 1]
+    n_prof, n_prof_above = count_paid_more(records, "Professor", "research", base)
+    n_assoc, n_assoc_above = count_paid_more(records, "Associate", "research", base)
     return {
-        "SphsNProf": str(len(professors)),
-        "SphsNProfAbove": str(sum(p > base for p in professors)),
+        "SphsNProf": str(n_prof),
+        "SphsNProfAbove": str(n_prof_above),
+        "SphsNAssoc": str(n_assoc),
+        "SphsNAssocAbove": str(n_assoc_above),
     }
 
 
