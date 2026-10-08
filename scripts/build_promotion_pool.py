@@ -103,7 +103,21 @@ def band_macros(prefix: str, values: list[float]) -> dict[str, str]:
     return {f"{prefix}QOneRaw": f"{check['Q1'][1]:.0f}", f"{prefix}QThreeRaw": f"{check['Q3'][1]:.0f}"}
 
 
-def sphs_macros(curr_year: list[pc.Record], base: float) -> dict[str, str]:
+REQUEST_SENTENCES = {
+    "near": "The salary that I request is near the lower edge of the middle 50\\% of SPHS Professors.",
+    "below": "The salary that I request is below the middle 50\\% of SPHS Professors.",
+    "above": "",
+}
+
+
+def request_position(target: float, q1: float, margin: float = 5_000.0) -> str:
+    """'near' if target is within margin of q1, else 'below' or 'above'."""
+    if abs(target - q1) <= margin:
+        return "near"
+    return "below" if target < q1 else "above"
+
+
+def sphs_macros(curr_year: list[pc.Record], base: float, target: float | None = None) -> dict[str, str]:
     """Only counts, so that no SPHS colleague can be identified."""
     with SPHS_LIST.open(encoding="utf-8") as f:
         sphs_keys = {pc.name_key(r["Surname"], r["Given name"]) for r in csv.DictReader(f)}
@@ -119,7 +133,17 @@ def sphs_macros(curr_year: list[pc.Record], base: float) -> dict[str, str]:
         "SphsNAssoc": str(n_assoc),
         "SphsNAssocAbove": str(n_assoc_above),
     } | band_macros("SphsAssoc", group_paid(records, "Associate", "research")) \
-      | band_macros("SphsProf", group_paid(records, "Professor", "research"))
+      | band_macros("SphsProf", group_paid(records, "Professor", "research")) \
+      | sphs_request_macros(group_paid(records, "Professor", "research"), target)
+
+
+def sphs_request_macros(professors: list[float], target: float | None) -> dict[str, str]:
+    if target is None:
+        return {}
+    q1 = quartile_check(professors)["Q1"][1]
+    position = request_position(target, q1)
+    print(f"Requested salary vs SPHS Professor Q1: {target - q1:+,.0f} ({position})")
+    return {"SphsRequestSentence": REQUEST_SENTENCES[position]}
 
 
 def roster_match(record: pc.Record, roster: list[list[str]]) -> str:
@@ -170,6 +194,7 @@ def request_macros(base: float, adjustment: float, q1: float, median: float) -> 
     return {
         "RequestAdj": money(adjustment),
         "RequestTarget": money(target),
+        "RequestTargetRaw": f"{target:.0f}",
         "RequestPct": f"{100 * adjustment / base:.0f}",
     }
 
@@ -251,7 +276,9 @@ def main() -> None:
     if year in REQUESTED_ADJUSTMENT:
         macros |= request_macros(base, REQUESTED_ADJUSTMENT[year], q1, median)
     write_macros(OUT_DIR / f"promotion_pool_{year}.tex", macros, year)
-    write_macros(PRIVATE_DIR / f"sphs_comparison_{year}.tex", sphs_macros(y2, base) | health_macros(pool, base), year)
+    target = base + REQUESTED_ADJUSTMENT[year] if year in REQUESTED_ADJUSTMENT else None
+    write_macros(PRIVATE_DIR / f"sphs_comparison_{year}.tex",
+                 sphs_macros(y2, base, target) | health_macros(pool, base), year)
 
     print(f"Pool n = {len(salaries)} ({len(current)} promoted {year}, {earlier_kept} of {len(earlier)} promoted {year - 1})")
     print(f"Wallace annualized base ${base:,.2f}: rank {rank} of {len(salaries)} (1 = highest), percentile {pct:.0f}")
