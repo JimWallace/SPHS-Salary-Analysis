@@ -45,3 +45,8 @@ data/public_sphs_scrape/raw_html/
 # Python cache artifacts
 __pycache__/
 *.pyc
+
+# Promotion cohort: files with names (repository is public)
+data/private/
+data/review/
+data/raw/*.html
