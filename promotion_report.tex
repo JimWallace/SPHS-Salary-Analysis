@@ -1,0 +1,154 @@
+\documentclass{article}
+\PassOptionsToPackage{table,xcdraw}{xcolor}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{pgfplotstable}
+\usepackage{float}
+\pgfplotsset{compat=1.18}
+\input{format}
+\definecolor{NonMHIColor}{HTML}{0072B2}
+\definecolor{MHIColor}{HTML}{D55E00}
+
+% Numbers below come from: python3 scripts/build_promotion_pool.py --year 2025
+\input{analysis_output/promotion_pool_2025.tex}
+\input{data/private/sphs_comparison_2025.tex}
+\newcommand{\PoolData}{analysis_output/promotion_pool_2025.csv}
+\newcommand{\AxisMax}{260000}
+
+\title{Salary Position After Promotion to Professor:\\ Comparison with University of Waterloo and SPHS Faculty}
+\author{James R. Wallace\\ School of Public Health Sciences}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Summary}
+
+I was promoted to Professor on July 1, \PoolYear. This report compares my salary with the salaries of all research-stream faculty on the University of Waterloo main campus who were promoted from Associate Professor to Professor in \PoolPrevYear\ or \PoolYear\ ($n = \PoolN$). My annualized base salary of \SubjectBase\ is \SubjectRank\textsuperscript{th} of \PoolN\ (\SubjectPercentile\textsuperscript{nd} percentile). It is \GapMedian\ (\GapMedianPct\%) below the group median of \PoolMedian\ and \GapQOne\ below the lower quartile of \PoolQOne. Only \NumBelowSubject\ member of the group has a lower salary. Within the School of Public Health Sciences, all \SphsNProfAbove\ other Professors were paid more in \PoolYear\ than my annualized base. I request a base salary adjustment of at least \GapQOne\ (\GapQOnePct\%), which would bring my salary to the lower quartile of the University comparison group.
+
+\section*{Data and Methods}
+
+\begin{enumerate}[leftmargin=*,itemsep=0.2em]
+    \item \textbf{Source.} University of Waterloo public salary disclosure lists for \PoolEarlierYear, \PoolPrevYear\ and \PoolYear\ (\href{https://uwaterloo.ca/about/accountability/salary-disclosure}{Salary Disclosure Archives}). Each list gives name, position title and salary paid for the calendar year. I archived each page once and recorded its retrieval date and SHA-256 hash, so the analysis can be repeated exactly.
+    \item \textbf{Comparison group.} A person is in the group if their disclosed title changed from ``Associate Professor'' to ``Professor'' between two consecutive lists. This gives \PoolNCurrent\ faculty promoted in \PoolYear\ (including me) and \PoolNEarlier\ promoted in \PoolPrevYear. All \PoolNEarlierKept\ of the \PoolNEarlier\ were still listed as Professor in \PoolYear. The group excludes affiliated colleges (Renison, Conrad Grebel, St.\ Jerome's, United College), which are not under the UW--FAUW Memorandum of Agreement; teaching-stream titles; and research, clinical, adjunct and visiting ranks.
+    \item \textbf{Matching.} Names were matched across years by exact surname and given name after normalization (upper case, accents, punctuation and middle initials removed). Where two people shared a normalized name, the full name with middle initials was used. Every match that was not exact was checked manually.
+    \item \textbf{Measure.} For colleagues, the \PoolYear\ salary paid as disclosed. For me, my annualized base salary. My disclosed \PoolYear\ figure (\$143{,}600) includes about eight months of sabbatical at 85\% pay, so it understates my salary rate.
+    \item \textbf{School comparison.} SPHS faculty were identified from the public SPHS faculty listing. For SPHS, this report gives only my rank among faculty with the title Professor in \PoolYear. It does not report any colleague's salary.
+\end{enumerate}
+
+\section*{Results}
+
+Table~\ref{tab:pool} and Figure~\ref{fig:pool} show the \PoolYear\ salaries of the comparison group. The difference does not come from the size of my promotion increase. It existed before promotion: in \PoolPrevYear, when all \PoolNCurrent\ members of my cohort were Associate Professors, my disclosed salary (\SubjectPrevPaid) was the lowest of the \PoolNCurrent. Among the \PoolNCurrent\ faculty promoted in \PoolYear\ alone, my annualized base is \SubjectRankCurrent\textsuperscript{st} of \PoolNCurrent.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lr}
+\toprule
+\PoolYear\ salary, faculty promoted in \PoolPrevYear\ or \PoolYear\ ($n = \PoolN$) & \\
+\midrule
+Lower quartile & \PoolQOne \\
+Median & \PoolMedian \\
+Upper quartile & \PoolQThree \\
+\midrule
+My annualized base salary & \SubjectBase \\
+My rank (1 = highest) & \SubjectRank\ of \PoolN \\
+Difference from median & $-$\GapMedian\ ($-$\GapMedianPct\%) \\
+Difference from lower quartile & $-$\GapQOne \\
+\bottomrule
+\end{tabular}
+\caption{Distribution of \PoolYear\ salaries in the comparison group. Quartiles use the inclusive method; each is interpolated between two people, so no figure is the salary of one person.}
+\label{tab:pool}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.98\textwidth,
+        height=0.42\textwidth,
+        xlabel={Faculty member, ordered from lowest to highest \PoolYear\ salary},
+        ylabel={\PoolYear\ salary (\$CAD)},
+        xmin=0, xmax=49,
+        ymin=140000, ymax=\AxisMax,
+        xtick=\empty,
+        scaled y ticks=false,
+        yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=0,/pgf/number format/1000 sep={{,}}},
+        ytick={140000,160000,180000,200000,220000,240000,260000},
+        grid=major,
+        major grid style={draw=black!12},
+        axis x line*=bottom,
+        axis y line*=left,
+        tick label style={font=\small},
+        label style={font=\small},
+        unbounded coords=discard,
+        legend style={at={(0.98,0.03)},anchor=south east,draw=none,fill=white,fill opacity=0.85,text opacity=1,font=\small,cells={anchor=west}},
+        clip=false
+    ]
+        % Interquartile range and median
+        \fill[black!7] (axis cs:0,\PoolQOneRaw) rectangle (axis cs:49,\PoolQThreeRaw);
+        \addplot[black!60, dashed, thick, domain=0:49, samples=2, forget plot] {\PoolMedianRaw};
+        \node[anchor=south east, font=\footnotesize, text=black!70] at (axis cs:49,\PoolMedianRaw) {Median \PoolMedian};
+        \node[anchor=north east, font=\footnotesize, text=black!60] at (axis cs:49,\PoolQOneRaw) {Middle 50\% of group};
+
+        % Gap from my salary to the median
+        \draw[<->, MHIColor, thick] (axis cs:2,\SubjectBaseRaw+2500) -- (axis cs:2,\PoolMedianRaw);
+        \node[anchor=south west, font=\footnotesize, text=MHIColor, align=left] at (axis cs:1.4,\PoolMedianRaw+1500) {$-$\GapMedian\ ($-$\GapMedianPct\%) below median};
+
+        \addplot[only marks, mark=*, mark size=2.6pt, draw=NonMHIColor, fill=NonMHIColor!25]
+            table[col sep=comma, x=rank_ascending, y expr={(\thisrow{cohort}==\PoolPrevYear && \thisrow{salary}<=\AxisMax) ? \thisrow{salary} : nan}] {\PoolData};
+        \addlegendentry{Promoted \PoolPrevYear\ (n = \PoolNEarlierKept)}
+        \addplot[only marks, mark=*, mark size=2.6pt, draw=NonMHIColor, fill=NonMHIColor]
+            table[col sep=comma, x=rank_ascending, y expr={(\thisrow{cohort}==\PoolYear && \thisrow{subject}==0) ? \thisrow{salary} : nan}] {\PoolData};
+        \addlegendentry{Promoted \PoolYear\ (n = \the\numexpr\PoolNCurrent-1\relax)}
+        \addplot[only marks, mark=diamond*, mark size=5pt, draw=black, fill=MHIColor]
+            table[col sep=comma, x=rank_ascending, y expr={\thisrow{subject}==1 ? \thisrow{salary} : nan}] {\PoolData};
+        \addlegendentry{Wallace (annualized base)}
+
+        % One value is above the axis range
+        \draw[->, NonMHIColor, thick] (axis cs:48,\AxisMax-9000) -- (axis cs:48,\AxisMax);
+        \node[anchor=east, font=\footnotesize, text=black!70] at (axis cs:47.6,\AxisMax-4500) {1 value off scale};
+    \end{axis}
+    \end{tikzpicture}
+    \caption{\PoolYear\ salaries of all \PoolN\ research-stream main-campus faculty promoted to Professor in \PoolPrevYear\ or \PoolYear. Each point is one person. The shaded band is the interquartile range and the dashed line is the median. My annualized base salary is \SubjectRank\textsuperscript{th} of \PoolN. One salary above the axis range is shown by an arrow.}
+    \label{fig:pool}
+\end{figure}
+
+
+\section*{School of Public Health Sciences}
+
+Within SPHS, \SphsNProf\ other faculty held the title Professor in \PoolYear. All \SphsNProfAbove\ were paid more than my annualized base salary, so my salary is the lowest of the \the\numexpr\SphsNProf+1\relax\ SPHS Professors. Most SPHS Professors were promoted many years ago, so this is context rather than a like-for-like comparison.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Benchmark (University comparison group, $n = \PoolN$) & \PoolYear\ salary & Adjustment to reach & \% of my base \\
+\midrule
+Lower quartile & \PoolQOne & \GapQOne & \GapQOnePct \\
+Median & \PoolMedian & \GapMedian & \GapMedianPctOfBase \\
+\bottomrule
+\end{tabular}
+\caption{Adjustment to my annualized base salary (\SubjectBase) needed to reach each benchmark.}
+\label{tab:benchmarks}
+\end{table}
+
+\section*{Interpretation and Limitations}
+
+\begin{itemize}[leftmargin=*,itemsep=0.2em]
+    \item The comparison is descriptive. It does not identify the cause of the difference.
+    \item Disclosed salaries are amounts paid in the calendar year. Colleagues' figures can include sabbatical reductions, which lower them, or administrative stipends, which raise them. The median and quartiles are not much affected by a small number of such cases.
+    \item My annualized base is a full-year rate. The \PoolYear\ figures for colleagues promoted in \PoolYear\ include about six months at the Associate Professor rate. This makes the comparison conservative: it tends to understate the difference.
+    \item The university pool does not control for discipline or Faculty, and salary structures differ between Faculties. Within SPHS, where Faculty and discipline are the same, my salary is also the lowest of the Professors, although that group differs in seniority.
+\end{itemize}
+
+\section*{Conclusion and Request}
+
+Among University of Waterloo faculty promoted to Professor in \PoolPrevYear\ and \PoolYear, my salary is near the bottom of the distribution: \SubjectRank\textsuperscript{th} of \PoolN, and \GapMedian\ below the median. Within SPHS, my salary is the lowest of the \the\numexpr\SphsNProf+1\relax\ Professors.
+
+I request a base salary adjustment of at least \GapQOne\ (\GapQOnePct\% of my current base). This would bring my salary to the lower quartile of recent promotions across the University, which is the lower edge of the comparison group and not its middle.
+
+\end{document}
