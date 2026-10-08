@@ -80,6 +80,9 @@ class NameNormalizationTests(unittest.TestCase):
     def test_leading_initial_kept(self):
         self.assertEqual(normalize_given("J. Robert"), "J ROBERT")
 
+    def test_initial_without_space(self):
+        self.assertEqual(normalize_given("P.Robert"), normalize_given("P. Robert"))
+
     def test_name_key(self):
         self.assertEqual(name_key("WALLACE", "JAMES R."), ("WALLACE", "JAMES"))
         self.assertEqual(name_key("Wallace", "James"), ("WALLACE", "JAMES"))
