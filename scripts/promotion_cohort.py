@@ -148,6 +148,11 @@ class Record:
         return name_key(self.surname, self.given)
 
     @property
+    def full_key(self) -> tuple[str, str]:
+        """Like key, but keeps middle initials. Used only to separate people whose key is not unique."""
+        return normalize_name_part(self.surname), normalize_name_part(self.given)
+
+    @property
     def name(self) -> str:
         return f"{self.surname}, {self.given}"
 
@@ -255,10 +260,17 @@ def build_cohorts(prev: list[Record], curr: list[Record]) -> CohortResult:
         stream = a.cls.stream
         same_prev, same_curr = prev_index[a.key], curr_index.get(a.key, [])
         if len(same_prev) > 1 or len(same_curr) > 1:
-            step[stream, "excluded: name not unique in a year"] += 1
-            for b in same_curr or [None]:
-                review.append(review_row("ambiguous exact name (not unique in a year)", a, b))
-            continue
+            # Try the full name with middle initials. A match found this way stays in the review file.
+            full_prev = [r for r in same_prev if r.full_key == a.full_key]
+            full_curr = [r for r in same_curr if r.full_key == a.full_key]
+            if len(full_prev) == 1 and len(full_curr) == 1:
+                review.append(review_row("name not unique; matched by middle initial", a, full_curr[0]))
+                same_curr = full_curr
+            else:
+                step[stream, "excluded: name not unique in a year"] += 1
+                for b in same_curr or [None]:
+                    review.append(review_row("ambiguous exact name (not unique in a year)", a, b))
+                continue
         if not same_curr:
             unmatched.append(a)
             step[stream, "excluded: no exact name match in curr year"] += 1
