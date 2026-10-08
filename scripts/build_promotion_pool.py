@@ -13,10 +13,15 @@ Outputs (no names):
 - analysis_output/promotion_pool_<year>.csv   (rank, salary, cohort, subject)
 - analysis_output/promotion_pool_<year>.tex   (LaTeX macros for promotion_report.tex)
 - data/private/sphs_comparison_<year>.tex     (gitignored)
+- data/review/health_matches.csv              (gitignored: surname-only roster matches to check)
 
 The SPHS comparison uses the faculty list in data/sphs.csv. It reports only counts: how many
 other SPHS faculty have the title Professor in YEAR, and how many of them were paid more than
 Wallace's annualized base. No colleague's salary is reported.
+
+The Faculty of Health subset uses data/private/health_roster.csv (scripts/build_health_roster.py).
+A pool member is in Health when surname and first given name match a roster name. A match on
+surname only is not counted; it goes to data/review/health_matches.csv.
 """
 
 from __future__ import annotations
@@ -29,6 +34,9 @@ import promotion_cohort as pc
 OUT_DIR = pc.ROOT / "analysis_output"
 PRIVATE_DIR = pc.ROOT / "data" / "private"
 SPHS_LIST = pc.ROOT / "data" / "sphs.csv"
+HEALTH_ROSTER = PRIVATE_DIR / "health_roster.csv"
+UNIT_MANIFEST = pc.ROOT / "data" / "raw" / "unit_manifest.csv"
+HEALTH_REVIEW = pc.ROOT / "data" / "review" / "health_matches.csv"
 
 
 def find_one(index: dict, record: pc.Record) -> pc.Record | None:
@@ -69,6 +77,47 @@ def sphs_macros(curr_year: list[pc.Record], base: float) -> dict[str, str]:
     }
 
 
+def roster_match(record: pc.Record, roster: list[list[str]]) -> str:
+    """'yes' for surname + first given name, 'surname' for surname only, '' for no match."""
+    surname = pc.normalize_name_part(record.surname).split()
+    given = pc.normalize_given(record.given).split()[:1]
+    result = ""
+    for tokens in roster:
+        if all(t in tokens for t in surname):
+            if given and tokens[0] == given[0]:
+                return "yes"
+            result = "surname"
+    return result
+
+
+def health_macros(pool: list[tuple[float, str, bool, pc.Record]], base: float) -> dict[str, str]:
+    """Only counts, so that no colleague can be identified."""
+    with HEALTH_ROSTER.open(encoding="utf-8") as f:
+        roster = [pc.normalize_name_part(r["name"]).split() for r in csv.DictReader(f)]
+    health, review = [], []
+    for salary, cohort, is_subject, record in pool:
+        match = "yes" if is_subject else roster_match(record, roster)
+        if match == "yes":
+            health.append(salary)
+        elif match == "surname":
+            review.append({"reason": "surname matches Health roster; given name does not",
+                           "name": record.name, "title": record.title, "cohort": cohort})
+    HEALTH_REVIEW.parent.mkdir(parents=True, exist_ok=True)
+    with HEALTH_REVIEW.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=["reason", "name", "title", "cohort"])
+        writer.writeheader()
+        writer.writerows(review)
+    rank, _ = pc.position(health, base)
+    print(f"Faculty of Health: {len(health)} in pool, Wallace rank {rank}; {len(review)} rows to check")
+    return {
+        "HealthN": str(len(health)),
+        "HealthRank": str(rank),
+        "HealthNAbove": str(sum(s > base for s in health)),
+        "HealthNReview": str(len(review)),
+        "HealthRosterDate": min(r["retrieved"] for r in csv.DictReader(UNIT_MANIFEST.open(encoding="utf-8"))),
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--year", type=int, required=True)
@@ -81,26 +130,26 @@ def main() -> None:
     current = pc.build_cohorts(y1, y2).cohorts["research"]
     index = pc.index_by_key(y2)
 
-    pool: list[tuple[float, str, bool]] = []
+    pool: list[tuple[float, str, bool, pc.Record]] = []
     earlier_kept = 0
     for _, b in earlier:
         c = find_one(index, b)
         if c and c.cls.rank == "Professor" and pc.is_main_campus_regular(c.cls):
-            pool.append((c.paid, str(year - 1), False))
+            pool.append((c.paid, str(year - 1), False, c))
             earlier_kept += 1
     subject_prev = None
     for a, b in current:
         is_subject = a.key == pc.SUBJECT
         if is_subject:
             subject_prev = a.paid
-        pool.append((base if is_subject else b.paid, str(year), is_subject))
+        pool.append((base if is_subject else b.paid, str(year), is_subject, b))
     if subject_prev is None:
         raise SystemExit("Wallace is not in the current cohort.")
 
-    salaries = [s for s, _, _ in pool]
+    salaries = [s for s, _, _, _ in pool]
     rank, pct = pc.position(salaries, base)
     _, q1, median, q3, _ = pc.five_numbers(salaries)
-    current_salaries = [s for s, c, _ in pool if c == str(year)]
+    current_salaries = [s for s, c, _, _ in pool if c == str(year)]
     rank_current, _ = pc.position(current_salaries, base)
     prev_values = [a.paid for a, _ in current]
     rank_prev, _ = pc.position(prev_values, subject_prev)
@@ -111,7 +160,7 @@ def main() -> None:
     with (OUT_DIR / f"promotion_pool_{year}.csv").open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["rank_ascending", "salary", "cohort", "subject"])
-        for i, (s, c, is_subject) in enumerate(pool, start=1):
+        for i, (s, c, is_subject, _) in enumerate(pool, start=1):
             writer.writerow([i, f"{s:.2f}", c, int(is_subject)])
 
     macros = {
@@ -144,7 +193,7 @@ def main() -> None:
         "GapMedianPctOfBase": f"{100 * (median - base) / base:.0f}",
     }
     write_macros(OUT_DIR / f"promotion_pool_{year}.tex", macros, year)
-    write_macros(PRIVATE_DIR / f"sphs_comparison_{year}.tex", sphs_macros(y2, base), year)
+    write_macros(PRIVATE_DIR / f"sphs_comparison_{year}.tex", sphs_macros(y2, base) | health_macros(pool, base), year)
 
     print(f"Pool n = {len(salaries)} ({len(current)} promoted {year}, {earlier_kept} of {len(earlier)} promoted {year - 1})")
     print(f"Wallace annualized base ${base:,.2f}: rank {rank} of {len(salaries)} (1 = highest), percentile {pct:.0f}")

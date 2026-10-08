@@ -1,0 +1,4 @@
+unit,url,file,retrieved,sha256,bytes
+SPHS,https://uwaterloo.ca/public-health-sciences/faculty,unit-sphs_retrieved-2026-10-08.html,2026-10-08,341bb06d1cd097898f5828fb9356c3a88591be7b8ca68d8ac753d1df45ab731e,164127
+KHS,https://uwaterloo.ca/kinesiology-health-sciences/faculty,unit-khs_retrieved-2026-10-08.html,2026-10-08,14afeb25d8d7fecc8ce2585828aadd6ff41dcd9e4334a5974f872db8351295ae,122897
+RLS,https://uwaterloo.ca/recreation-and-leisure-studies/our-people/researchers-profiles,unit-rls_retrieved-2026-10-08.html,2026-10-08,4b25e027234e014712ce74134dc07f07965de93dc81f71a398a8ca6c89f54443,137355
