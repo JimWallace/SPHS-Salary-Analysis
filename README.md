@@ -34,8 +34,9 @@ All inputs are public:
 - **MHI affiliation:** the public SPHS Health Informatics faculty roster.
 - **Faculty list and research groups:** the public SPHS faculty listing.
 
-`data/sphs.csv` is the panel used in the report: one row per faculty member, an `MHI` flag and one
-column per year. `data/public_sphs_scrape/` has the roster and group tags. `data/raw/manifest.csv`
+The panel used in the report, `data/sphs.csv` (one row per faculty member, an `MHI` flag and one
+column per year), is not in the repository: the University already publishes the disclosures.
+Rebuild it with steps 1–3 of `scripts/run_full_pipeline.sh`. `data/public_sphs_scrape/` has the roster and group tags. `data/raw/manifest.csv`
 records the retrieval date and SHA-256 hash of each archived disclosure page.
 
 No internal personnel records were used. Two optional covariates (terminal-degree domain and
