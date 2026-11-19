@@ -36,8 +36,11 @@ All inputs are public:
 
 The panel used in the report, `data/sphs.csv` (one row per faculty member, an `MHI` flag and one
 column per year), is not in the repository: the University already publishes the disclosures.
-Rebuild it with steps 1–3 of `scripts/run_full_pipeline.sh`. `data/public_sphs_scrape/` has the roster and group tags. `data/raw/manifest.csv`
-records the retrieval date and SHA-256 hash of each archived disclosure page.
+Rebuild it with steps 1–3 of `scripts/run_full_pipeline.sh`.
+For the same reason, no generated file that names individual faculty is published (the per-person
+tables, roster scrape, matched pairs and plot data; `.gitignore` lists them). The pipeline
+regenerates them, and the report needs them to build. `data/raw/manifest.csv` records the
+retrieval date and SHA-256 hash of each archived disclosure page.
 
 No internal personnel records were used. Two optional covariates (terminal-degree domain and
 self-defined research factors) come from faculty CVs that are **not** in this repository; see
@@ -51,7 +54,7 @@ below.
 | `SalaryData/`, `SalaryData.xcodeproj` | Main analysis (Swift): regressions, segmented growth, entry cohorts |
 | `scripts/` | Python data collection and output builders; `lme4_growth_models.R` for the multilevel models |
 | `scripts/run_full_pipeline.sh` | Runs everything in order |
-| `analysis_output/`, `outputs/`, `output/` | Generated tables and figure data used by the report |
+| `analysis_output/`, `outputs/`, `output/` | Generated summary tables (files that name individual faculty are regenerated locally) |
 | `figures/` | Figures |
 | `tests/` | Unit tests for the promotion-cohort script |
 
@@ -68,9 +71,9 @@ latexmk -pdf main.tex                 # the report
 python3 -m unittest discover -s tests
 ```
 
-Steps 4 and 7 of the pipeline read faculty CVs from `Faculty CVs/`, which is not in the
-repository, so a full rerun needs those files. The generated files in `analysis_output/` are the
-ones the report was built from.
+Run the pipeline before building the report: it reads generated files that aren't published.
+Steps 4 and 7 read faculty CVs from `Faculty CVs/`, which is not in the repository, so a full
+rerun needs those files.
 
 ### Private CV-based covariate (local only)
 

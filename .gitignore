@@ -56,3 +56,31 @@ promotion_report.pdf
 
 # Rebuilt from the public disclosures (scripts/run_full_pipeline.sh, steps 1-3)
 data/sphs.csv
+
+# Generated files that name individual faculty: rebuilt by scripts/run_full_pipeline.sh, not published
+analysis_output/appendix_analysis_verification_matrix.csv
+analysis_output/appendix_faculty_exploratory_matrix.csv
+analysis_output/appendix_public_health_informatics_roster.csv
+analysis_output/appendix_skeptic_leave_one_pair_out.csv
+analysis_output/cv_start_year_crosswalk.csv
+analysis_output/disclosure_completeness_table.csv
+analysis_output/disclosure_public_crosscheck.csv
+analysis_output/entry_cohort_matched_pairs.csv
+analysis_output/entry_cohort_matched_pairs_cv_start.csv
+analysis_output/entry_cohort_matched_pairs_disclosure_start.csv
+analysis_output/faculty_completeness_matrix.csv
+analysis_output/faculty_cv_crosswalk.csv
+analysis_output/full_professor_salary_comparison.csv
+analysis_output/jw_peer_series_list.tex
+analysis_output/jw_peer_series_plot.tex
+analysis_output/plot_matched_scatter_mhi.csv
+analysis_output/plot_matched_scatter_nonmhi.csv
+analysis_output/plot_scatter_mhi.csv
+analysis_output/plot_scatter_nonmhi.csv
+analysis_output/public_health_informatics_roster.csv
+analysis_output/table1_faculty_listing.csv
+data/public_sphs_scrape/faculty_group_membership.csv
+data/public_sphs_scrape/faculty_roster_with_groups.csv
+outputs/matching_table.csv
+outputs/matching_table.md
+data/public_sphs_scrape/cross_appointments_reference.csv
