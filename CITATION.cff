@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this data or code, please cite the report."
+title: "SPHS Salary Analysis"
+type: software
+authors:
+  - family-names: Wallace
+    given-names: James R.
+    orcid: "https://orcid.org/0000-0002-5162-0256"
+    affiliation: "School of Public Health Sciences, University of Waterloo"
+repository-code: "https://github.com/JimWallace/SPHS-Salary-Analysis"
+preferred-citation:
+  type: report
+  title: "Are Interdisciplinary Faculty Evaluated Equitably? Evidence from SPHS Salary Disclosures (2011–2025)"
+  authors:
+    - family-names: Wallace
+      given-names: James R.
+      orcid: "https://orcid.org/0000-0002-5162-0256"
+  year: 2026
+  month: 5
+  url: "https://github.com/JimWallace/SPHS-Salary-Analysis"
