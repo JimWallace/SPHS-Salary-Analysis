@@ -131,6 +131,17 @@ Outputs:
 
 Optional: `data/private/required_names.csv` (columns `year,surname,given`) lists people who must be in the cohort. If one is missing, the script stops. The raw HTML files are gitignored because they contain names.
 
+## Licence
+
+- **Code** (`scripts/`, `SalaryData/`, `SalaryData.xcodeproj`, `tests/`): [MIT](LICENSE).
+- **Report, figures and derived data** (`main.tex`, `format.tex`, `SPHS_Salary_Analysis.pdf`,
+  `figures/`, `data/`, `analysis_output/`, `outputs/`, `output/`):
+  [CC BY 4.0](LICENSE-CC-BY-4.0).
+
+The salary figures themselves are public records from the University of Waterloo's disclosures
+under Ontario's *Public Sector Salary Disclosure Act*. The licence covers this compilation and
+analysis, not those records.
+
 ## Citing
 
 See [`CITATION.cff`](CITATION.cff), or GitHub's "Cite this repository" button.

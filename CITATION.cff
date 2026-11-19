@@ -2,6 +2,9 @@ cff-version: 1.2.0
 message: "If you use this data or code, please cite the report."
 title: "SPHS Salary Analysis"
 type: software
+license:
+  - MIT
+  - CC-BY-4.0
 authors:
   - family-names: Wallace
     given-names: James R.
