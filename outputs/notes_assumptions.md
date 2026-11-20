@@ -6,7 +6,7 @@
 - Permutation approach is cluster-level MHI-label shuffling at the person cluster level, consistent with `permutationSummaryForSlopeGap(...)` in `SalaryData/Regression by MHI.swift`.
 - Baseline permutation used monte-carlo with 20000 shuffles.
 - Matched-entry permutation used exact with 462 shuffles.
-- Exact permutation is feasible for matched-entry because the matched FE sample has 9 clusters with 4 treated clusters, giving C(9,4)=126 assignments.
+- Exact permutation is feasible for matched-entry because the matched FE sample has 11 clusters with 5 treated clusters, giving C(11,5)=462 assignments.
 - Balance summary compares matched treated vs matched control faculty on first disclosure year and starting salary. SEs are Welch-style SEs for difference in means at the faculty level.
 - For balance reporting, N (person-years), clusters, and treated clusters are shown using the matched FE sample counts to satisfy standardized reporting fields.
 - Cumulative gap table scales annual slope-gap estimates and CIs linearly over years-since-entry (1 to 5 years).
