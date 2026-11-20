@@ -1,0 +1,23 @@
+{
+  "title": "Are Interdisciplinary Faculty Evaluated Equitably? Evidence from SPHS Salary Disclosures (2011-2025)",
+  "upload_type": "publication",
+  "publication_type": "report",
+  "description": "<p>An analysis of University of Waterloo public salary disclosures (2011-2025) for faculty in the School of Public Health Sciences, comparing salary position and salary growth for faculty affiliated with the Master of Health Informatics (MHI) program with other faculty in the School. Includes the report (PDF and LaTeX source), the constructed salary panel, model outputs and the analysis code.</p><p>The code is licensed under the MIT License; the report and data under CC BY 4.0 (see LICENSE).</p>",
+  "creators": [
+    {
+      "name": "Wallace, James R.",
+      "affiliation": "School of Public Health Sciences, University of Waterloo",
+      "orcid": "0000-0002-5162-0256"
+    }
+  ],
+  "license": "cc-by-4.0",
+  "access_right": "open",
+  "keywords": [
+    "salary equity",
+    "faculty evaluation",
+    "interdisciplinary scholarship",
+    "health informatics",
+    "public sector salary disclosure",
+    "University of Waterloo"
+  ]
+}

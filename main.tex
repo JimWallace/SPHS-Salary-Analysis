@@ -255,7 +255,7 @@ Using publicly available salary disclosures for \DataMinYear--\DataMaxYear, this
 
 Because salary progression reflects the cumulative outcome of repeated performance evaluations, these patterns strongly suggest that interdisciplinary faculty may be evaluated differently within the current system. The results therefore warrant a formal review of evaluation practices within the School. A constructive next step would be a faculty-level equity audit linking salary outcomes to rank progression, workload assignments, and APR evaluations. Such an investigation would allow the School and Faculty to determine whether current evaluation processes operate consistently with the University's stated commitments to fair, transparent, and discipline-appropriate assessment of faculty performance.
 
-These group-level patterns translate into a concrete present-day disparity at the rank of Full Professor. Appendix~\ref{app:fp_salary_comparison} reports 2025 disclosed salaries for all SPHS Full Professors: the author's salary (\$143{,}600) is the lowest in the cohort, with gaps of \$41{,}653 to \$123{,}878 above his salary across the other Full Professors. Appendix~\ref{app:salary_projection} further estimates that, applying the matched entry-aligned growth gap of \(-\$2{,}726\)/year cumulatively from his 2014 start, the author's projected counterfactual 2025 salary is approximately \$173{,}585 (a shortfall of about \$29{,}985). Together, these figures illustrate how the documented growth-gap pattern materializes as a measurable, present-day compensation shortfall for at least one MHI-affiliated faculty member.
+These group-level patterns translate into a concrete present-day disparity at the rank of Full Professor. Appendix~\ref{app:fp_salary_comparison} reports 2025 disclosed salaries for all SPHS Full Professors: the author's salary (\$143{,}600) is the lowest in the cohort, with gaps of \$41{,}653 to \$123{,}878 above his salary across the other Full Professors. This illustrates how the documented growth-gap pattern can materialize as a measurable, present-day compensation shortfall for at least one MHI-affiliated faculty member.
 
 
 
@@ -555,7 +555,34 @@ These group-level patterns translate into a concrete present-day disparity at th
 
 \autoref{fig:salary_position_median} and \autoref{fig:salary_percentile_cdf} compare the within-year distribution of salaries for MHI and non-MHI faculty. For each year, salaries are centred relative to the same-year median and converted to percentile ranks within the School. Across the active-faculty sample, MHI salaries tend to occupy lower positions within the annual distribution. Of the 51 MHI person-year observations, 41 (80.39\%) fall below the within-year median salary, compared with 118 of 291 (40.55\%) non-MHI observations.
 
-Permutation-based tests of the difference in these proportions indicate that this pattern is unlikely to arise from random variation alone. Faculty-cluster permutation tests yield two-sided \(p\)-values of 0.034 (person-year weighting) and 0.022 (faculty-mean weighting). While these tests are descriptive rather than causal, they indicate a consistent distributional difference between groups.
+Faculty-cluster permutation tests of the difference in these proportions (Table~\ref{tab:percentile_binary_tests}) give the two-sided \(p\)-values reported in the main text: 0.034 with person-year weighting and 0.022 with faculty-mean weighting.
+
+\IfFileExists{analysis_output/plot_percentile_binary_tests.csv}{
+\begin{table}[h]
+    \centering
+    \scriptsize
+    \setlength{\tabcolsep}{2.4pt}
+    \renewcommand{\arraystretch}{1.05}
+    \resizebox{\linewidth}{!}{
+    \pgfplotstabletypeset[
+        col sep=comma,
+        columns={test,estimand,observed_diff_pp,p_one_sided,p_two_sided,n_permutations,mhi_below_p50_pct,nonmhi_below_p50_pct},
+        columns/test/.style={column name=Test,string type},
+        columns/estimand/.style={column name=Estimand,string type},
+        columns/observed_diff_pp/.style={column name=Observed diff (pp)},
+        columns/p_one_sided/.style={column name=One-sided $p$},
+        columns/p_two_sided/.style={column name=Two-sided $p$},
+        columns/n_permutations/.style={column name=Permutations},
+        columns/mhi_below_p50_pct/.style={column name=MHI below 50\%},
+        columns/nonmhi_below_p50_pct/.style={column name=Non-MHI below 50\%},
+        every head row/.style={before row=\toprule,after row=\midrule},
+        every last row/.style={after row=\bottomrule}
+    ]{analysis_output/plot_percentile_binary_tests.csv}
+    }
+    \caption{Binary tests for the pooled percentile outcome of being below the 50th percentile within year. The first row is a naive person-year test; the latter rows are faculty-cluster permutation tests that preserve the number of MHI faculties when reassigning group labels.}
+    \label{tab:percentile_binary_tests}
+\end{table}
+}{}
 
 
 
@@ -606,165 +633,6 @@ Permutation-based tests of the difference in these proportions indicate that thi
     \end{tikzpicture}
     \caption{Appendix sensitivity figure using same-year mean centering: bars show person-years by salary band relative to the same-year average salary. In the current active-faculty sample, 49 of 51 MHI person-years are below the same-year average and 2 are above.}
 \end{figure}
-}{}
-
-\IfFileExists{analysis_output/plot_percentile_binary_tests.csv}{
-\begin{table}[h]
-    \centering
-    \scriptsize
-    \setlength{\tabcolsep}{2.4pt}
-    \renewcommand{\arraystretch}{1.05}
-    \resizebox{\linewidth}{!}{
-    \pgfplotstabletypeset[
-        col sep=comma,
-        columns={test,estimand,observed_diff_pp,p_one_sided,p_two_sided,n_permutations,mhi_below_p50_pct,nonmhi_below_p50_pct},
-        columns/test/.style={column name=Test,string type},
-        columns/estimand/.style={column name=Estimand,string type},
-        columns/observed_diff_pp/.style={column name=Observed diff (pp)},
-        columns/p_one_sided/.style={column name=One-sided $p$},
-        columns/p_two_sided/.style={column name=Two-sided $p$},
-        columns/n_permutations/.style={column name=Permutations},
-        columns/mhi_below_p50_pct/.style={column name=MHI below 50\%},
-        columns/nonmhi_below_p50_pct/.style={column name=Non-MHI below 50\%},
-        every head row/.style={before row=\toprule,after row=\midrule},
-        every last row/.style={after row=\bottomrule}
-    ]{analysis_output/plot_percentile_binary_tests.csv}
-    }
-    \caption{Binary tests for the pooled percentile outcome of being below the 50th percentile within year. The first row is a naive person-year test; the latter rows are faculty-cluster permutation tests that preserve the number of MHI faculties when reassigning group labels.}
-\end{table}
-}{}
-
-\IfFileExists{analysis_output/plot_hist_year_adj_median_mhi.csv}{
-\begin{figure}[h]
-    \centering
-    \begin{tikzpicture}
-    \begin{axis}[
-        width=0.90\textwidth,
-        height=0.36\textwidth,
-        ybar=0pt,
-        bar width=6pt,
-        xlabel={Salary relative to the same-year median (\$CAD)},
-        ylabel={Person-years},
-        scaled x ticks=false,
-        scaled y ticks=false,
-        ymin=-14,
-        ytick={-10,0,10,20,30},
-        minor ytick={-5,5,15,25},
-        minor tick style={draw=black!60},
-        major tick length=3pt,
-        minor tick length=1.8pt,
-        grid=major,
-        axis x line*=bottom,
-        yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=0},
-        xlabel style={at={(axis description cs:0.5,-0.36)},anchor=north},
-        xticklabel style={/pgf/number format/fixed,/pgf/number format/precision=0,/pgf/number format/1000 sep={,},rotate=45,anchor=east,yshift=-10pt},
-        tick label style={font=\small},
-        label style={font=\small},
-        legend style={at={(0.98,0.98)},anchor=north east,draw=none,fill=none,font=\small}
-    ]
-        \addplot[black, semithick, domain=-70000:110000, samples=2, forget plot] {0};
-        \addplot+[bar shift=0pt, draw=none, fill=NonMHIColor!35] table[col sep=comma, x=bin_mid, y expr={\thisrow{count} > 0 ? \thisrow{count} : nan}] {analysis_output/plot_hist_year_adj_median_nonmhi.csv};
-        \addplot+[bar shift=0pt, draw=none, fill=MHIColor!35] table[col sep=comma, x=bin_mid, y expr={\thisrow{count} > 0 ? -\thisrow{count} : nan}] {analysis_output/plot_hist_year_adj_median_mhi.csv};
-        \legend{Non-MHI,MHI}
-    \end{axis}
-    \end{tikzpicture}
-    \caption{Population-pyramid view using same-year median centering: bars show person-years by salary band relative to the same-year median salary. Non-MHI is plotted above the axis; MHI is mirrored below the axis for direct distribution comparison. Values left of zero are below that year's median. In the current active-faculty sample, 41 of 51 MHI person-years fall below the within-year median (rank-based cutoff used throughout the report); the histogram itself shows 42 observations in strictly-negative bins because one observation lies at the exact same-year median and is binned with positive values. This year adjustment reduces distortion from hire timing across calendar years, but remains descriptive and does not fully control for rank or promotion stage.}
-\end{figure}
-}{}
-
-\IfFileExists{analysis_output/plot_hist_year_adj_mean_mhi.csv}{
-\begin{figure}[h]
-    \centering
-    \begin{tikzpicture}
-    \begin{axis}[
-        width=0.90\textwidth,
-        height=0.36\textwidth,
-        ybar=0pt,
-        bar width=6pt,
-        xlabel={Salary relative to the same-year average (\$CAD)},
-        ylabel={Person-years},
-        scaled x ticks=false,
-        scaled y ticks=false,
-        ymin=-14,
-        ytick={-10,0,10,20,30},
-        minor ytick={-5,5,15,25},
-        minor tick style={draw=black!60},
-        major tick length=3pt,
-        minor tick length=1.8pt,
-        grid=major,
-        axis x line*=bottom,
-        yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=0},
-        xlabel style={at={(axis description cs:0.5,-0.36)},anchor=north},
-        xticklabel style={/pgf/number format/fixed,/pgf/number format/precision=0,/pgf/number format/1000 sep={,},rotate=45,anchor=east,yshift=-10pt},
-        tick label style={font=\small},
-        label style={font=\small},
-        legend style={at={(0.98,0.98)},anchor=north east,draw=none,fill=none,font=\small}
-    ]
-        \addplot[black, semithick, domain=-70000:110000, samples=2, forget plot] {0};
-        \addplot+[bar shift=0pt, draw=none, fill=NonMHIColor!35] table[col sep=comma, x=bin_mid, y expr={\thisrow{count} > 0 ? \thisrow{count} : nan}] {analysis_output/plot_hist_year_adj_mean_nonmhi.csv};
-        \addplot+[bar shift=0pt, draw=none, fill=MHIColor!35] table[col sep=comma, x=bin_mid, y expr={\thisrow{count} > 0 ? -\thisrow{count} : nan}] {analysis_output/plot_hist_year_adj_mean_mhi.csv};
-        \legend{Non-MHI,MHI}
-    \end{axis}
-    \end{tikzpicture}
-    \caption{Appendix sensitivity figure using same-year mean centering: bars show person-years by salary band relative to the same-year average salary. In the current active-faculty sample, 49 of 51 MHI person-years are below the same-year average and 2 are above.}
-\end{figure}
-}{}
-
-\IfFileExists{analysis_output/plot_percentile_cdf_mhi.csv}{
-\begin{figure}[h]
-    \centering
-    \begin{tikzpicture}
-    \begin{axis}[
-        width=0.90\textwidth,
-        height=0.36\textwidth,
-        xlabel={Salary percentile within year},
-        ylabel={Cumulative proportion of observations},
-        xmin=0,
-        xmax=100,
-        ymin=0,
-        ymax=1.02,
-        xtick={0,25,50,75,100},
-        ytick={0,0.2,0.4,0.6,0.8,1.0},
-        yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=1},
-        grid=major,
-        tick label style={font=\small},
-        label style={font=\small},
-        legend style={at={(0.98,0.02)},anchor=south east,draw=none,fill=none,font=\small}
-    ]
-        \addplot[black, dashed, semithick, forget plot] coordinates {(50,0) (50,1)};
-        \addplot+[const plot, no markers, thick, NonMHIColor] table[col sep=comma, x=salary_percentile, y=cum_prop] {analysis_output/plot_percentile_cdf_nonmhi.csv};
-        \addplot+[const plot, no markers, thick, MHIColor] table[col sep=comma, x=salary_percentile, y=cum_prop] {analysis_output/plot_percentile_cdf_mhi.csv};
-        \legend{Non-MHI,MHI}
-    \end{axis}
-    \end{tikzpicture}
-    \caption{Within-year salary-percentile cumulative distributions. For each year, faculty were ranked by salary and converted to percentile rank as rank/$n$ for that year. Curves show cumulative proportions across all person-years by group. The dashed vertical line marks the 50th percentile. In the current active-faculty sample, MHI has mean percentile 24.22 and median percentile 18.18, with 80.39\% (41/51) below the 50th percentile; non-MHI has mean percentile 57.10 and median percentile 57.58, with 40.55\% (118/291) below the 50th percentile.}
-\end{figure}
-}{}
-
-\IfFileExists{analysis_output/plot_percentile_binary_tests.csv}{
-\begin{table}[h]
-    \centering
-    \scriptsize
-    \setlength{\tabcolsep}{2.4pt}
-    \renewcommand{\arraystretch}{1.05}
-    \resizebox{\linewidth}{!}{
-    \pgfplotstabletypeset[
-        col sep=comma,
-        columns={test,estimand,observed_diff_pp,p_one_sided,p_two_sided,n_permutations,mhi_below_p50_pct,nonmhi_below_p50_pct},
-        columns/test/.style={column name=Test,string type},
-        columns/estimand/.style={column name=Estimand,string type},
-        columns/observed_diff_pp/.style={column name=Observed diff (pp)},
-        columns/p_one_sided/.style={column name=One-sided $p$},
-        columns/p_two_sided/.style={column name=Two-sided $p$},
-        columns/n_permutations/.style={column name=Permutations},
-        columns/mhi_below_p50_pct/.style={column name=MHI below 50\%},
-        columns/nonmhi_below_p50_pct/.style={column name=Non-MHI below 50\%},
-        every head row/.style={before row=\toprule,after row=\midrule},
-        every last row/.style={after row=\bottomrule}
-    ]{analysis_output/plot_percentile_binary_tests.csv}
-    }
-    \caption{Binary tests for the pooled percentile outcome of being below the 50th percentile within year. The first row is a naive person-year test; the latter rows are faculty-cluster permutation tests that preserve the number of MHI faculties when reassigning group labels.}
-\end{table}
 }{}
 
 \IfFileExists{analysis_output/appendix_skeptic_specification_grid.csv}{
@@ -862,83 +730,6 @@ Permutation-based tests of the difference in these proportions indicate that thi
 \clearpage
 \refstepcounter{section}
 \phantomsection
-\section*{Appendix \thesection: Salary Projection for James Wallace}
-\label{app:salary_projection}
-
-\textbf{Purpose.} This appendix gives a plain‑language, non‑causal projection of what James Wallace’s salary might look like if his growth had followed comparable non‑MHI trajectories. It is an approximation based on group‑level estimates and should be treated as an illustrative counterfactual rather than a personal prediction.
-
-\IfFileExists{analysis_output/jw_peer_series_list.tex}{
-\input{analysis_output/jw_peer_series_list.tex}
-\begin{figure}[h]
-    \centering
-    \begin{tikzpicture}
-    \begin{axis}[
-        width=0.98\textwidth,
-        height=0.44\textwidth,
-        xlabel={Year},
-        ylabel={Salary (\$CAD)},
-        xmin=\JWPeerXMin,
-        xmax=2025.5,
-        xtick distance=1,
-        scaled x ticks=false,
-        scaled y ticks=false,
-        grid=major,
-        clip=false,
-        axis x line*=bottom,
-        axis y line*=left,
-        enlarge x limits={upper, value=0.12},
-        yticklabel={\$\pgfmathprintnumber[fixed,precision=0,1000 sep={,}]{\tick}},
-        xticklabel style={/pgf/number format/fixed,/pgf/number format/precision=0,/pgf/number format/1000 sep={}},
-        tick label style={font=\small},
-        label style={font=\small}
-    ]
-        \IfFileExists{analysis_output/jw_peer_series_plot.tex}{
-        \input{analysis_output/jw_peer_series_plot.tex}
-        }{}
-    \end{axis}
-    \end{tikzpicture}
-    \caption{James Wallace’s salary trajectory compared to faculty who started within \(\pm 1\) year (start year = \JWPeerStartYear). Lines are labeled at their final observed year and colored by MHI status (Non‑MHI in blue, MHI in orange); James Wallace is emphasized in bold.}
-    \label{fig:jw_entry_peers}
-\end{figure}
-}{\textit{James Wallace peer-series figure not found. Run \texttt{python3 scripts/build\_jw\_peer\_trajectory\_plot.py}.}}
-
-\IfFileExists{analysis_output/salary_projection_james_wallace.csv}{
-\pgfplotstableread[col sep=comma]{analysis_output/salary_projection_james_wallace.csv}\JWProjection
-\pgfplotstablegetelem{0}{start_year}\of{\JWProjection}\let\JWProjStartYear\pgfplotsretval
-\pgfplotstablegetelem{0}{first_obs_year}\of{\JWProjection}\let\JWProjFirstObsYear\pgfplotsretval
-\pgfplotstablegetelem{0}{first_obs_salary}\of{\JWProjection}\let\JWProjFirstObsSalary\pgfplotsretval
-\pgfplotstablegetelem{0}{t1}\of{\JWProjection}\let\JWProjTone\pgfplotsretval
-\pgfplotstablegetelem{0}{s1}\of{\JWProjection}\let\JWProjSone\pgfplotsretval
-\pgfplotstablegetelem{0}{T}\of{\JWProjection}\let\JWProjT\pgfplotsretval
-\pgfplotstablegetelem{0}{conservative_gap}\of{\JWProjection}\let\JWProjConservativeGap\pgfplotsretval
-\pgfplotstablegetelem{0}{conservative_gap_abs}\of{\JWProjection}\let\JWProjConservativeGapAbs\pgfplotsretval
-\pgfplotstablegetelem{0}{matched_gap}\of{\JWProjection}\let\JWProjMatchedGap\pgfplotsretval
-\pgfplotstablegetelem{0}{matched_gap_abs}\of{\JWProjection}\let\JWProjMatchedGapAbs\pgfplotsretval
-\pgfplotstablegetelem{0}{conservative_raise}\of{\JWProjection}\let\JWProjConservativeRaise\pgfplotsretval
-\pgfplotstablegetelem{0}{matched_raise}\of{\JWProjection}\let\JWProjMatchedRaise\pgfplotsretval
-\pgfplotstablegetelem{0}{conservative_proj}\of{\JWProjection}\let\JWProjConservativeProj\pgfplotsretval
-\pgfplotstablegetelem{0}{matched_proj}\of{\JWProjection}\let\JWProjMatchedProj\pgfplotsretval
-
-\textbf{Methods (plain language).} We start with James Wallace’s most recent disclosed salary and ask: if his salary had grown at the same pace as comparable non‑MHI faculty, how much higher would it be today? We use two estimates of the annual growth gap. The matched estimate is treated as the primary benchmark because it aligns faculty by entry timing (more comparable trajectories), while the conservative estimate is a lower‑bound reference. Both estimates assume the growth gap compounds linearly over time.
-\begin{itemize}
-    \item \textbf{Conservative projection:} uses the pooled conditional growth model estimate of \(\Delta g = \$\pgfmathprintnumber[fixed,precision=0,1000 sep={,}]{\JWProjConservativeGap}\) per year.
-    \item \textbf{Matched projection:} uses the matched entry-aligned fixed-effects estimate of \(\Delta g = \$\pgfmathprintnumber[fixed,precision=0,1000 sep={,}]{\JWProjMatchedGap}\) per year.
-\end{itemize}
-Both projections assume linear growth differences over time and hold all other factors constant.
-
-\textbf{Key caveats.} The growth-gap estimates are derived from group-level models and do not account for individual rank progression, workload assignments, external offers, or performance evaluation histories. The projections therefore provide a structured approximation of potential cumulative differences, not a definitive individual counterfactual.
-
-\textbf{Numbers (in real dollars).} From the verification table (Appendix~\ref{app:faculty_verification_matrix}), James Wallace’s start year is \(\JWProjStartYear\) and the current year in the dataset is \(\JWProjTone\) (\(S_{\JWProjTone}=\$\pgfmathprintnumber[fixed,precision=2,1000 sep={,}]{\JWProjSone}\)), so \(T = \JWProjT\) years. (The first observed disclosure appears in \(\JWProjFirstObsYear\), with salary \(=\$\pgfmathprintnumber[fixed,precision=2,1000 sep={,}]{\JWProjFirstObsSalary}\).) The implied counterfactual salaries are:
-\begin{itemize}
-    \item \textbf{Conservative projection:} Implied salary \(=\$\pgfmathprintnumber[fixed,precision=2,1000 sep={,}]{\JWProjConservativeProj}\). This equates to a \(\$\pgfmathprintnumber[fixed,precision=0,1000 sep={,}]{\JWProjConservativeRaise}\) raise.
-    \item \textbf{Matched projection:} Implied salary \(=\$\pgfmathprintnumber[fixed,precision=2,1000 sep={,}]{\JWProjMatchedProj}\). This equates to a \(\$\pgfmathprintnumber[fixed,precision=0,1000 sep={,}]{\JWProjMatchedRaise}\) raise.
-\end{itemize}
-}{\textit{Salary projection CSV not found. Run \texttt{python3 scripts/build\_salary\_projection.py}.}}
-
-\clearpage
-\clearpage
-\refstepcounter{section}
-\phantomsection
 \section*{Appendix \thesection: Faculty Verification Matrix}
 \label{app:faculty_verification_matrix}
 \IfFileExists{analysis_output/appendix_analysis_verification_matrix.csv}{
@@ -992,7 +783,7 @@ Both projections assume linear growth differences over time and hold all other f
 
 \textbf{Purpose.} James Wallace was promoted to Full Professor effective July~1, 2025. This appendix documents where his salary sits relative to all other SPHS faculty who hold (or are estimated to hold) the rank of Full Professor as of the 2025 disclosure year, based on disclosed salaries from the Ontario Sunshine List.
 
-\textbf{Note on rank sources.} Promotion dates marked ``User-confirmed'' are based on information provided directly by the subject. Dates marked ``CV crosswalk'' are derived from employment history parsed from publicly available faculty CVs (see Appendix~\ref{app:faculty_verification_matrix}). Dates marked ``Tenure/appointment'' are estimated from appointment year and typical UWaterloo promotion timelines; exact promotion dates for those faculty were not available. Faculty with ``--'' in the source column were long-tenured at the time of analysis and are expected to hold Full Professor rank, but no specific promotion date was identified.
+\textbf{Note on rank sources.} Promotion dates marked ``User-confirmed'' are based on information provided directly by the subject. Dates marked ``CV crosswalk'' are derived from employment history in faculty CVs, which are not public (see Appendix~\ref{app:faculty_verification_matrix}). Dates marked ``Tenure/appointment'' are estimated from appointment year and typical UWaterloo promotion timelines; exact promotion dates for those faculty were not available. Faculty with ``--'' in the source column were long-tenured at the time of analysis and are expected to hold Full Professor rank, but no specific promotion date was identified.
 
 \IfFileExists{analysis_output/full_professor_salary_comparison.csv}{
 \begin{table}[h]
@@ -1019,6 +810,7 @@ Both projections assume linear growth differences over time and hold all other f
 }
 
 \newpage
+\nocite{*}
 \printbibliography
 
 \end{document}

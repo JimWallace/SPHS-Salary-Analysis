@@ -40,7 +40,24 @@ TITLE_RE = re.compile(
 )
 EMPLOYMENT_RE = re.compile(r"\b(employment history|employment|academic appointments|appointments)\b", re.I)
 
-MANUAL_START_YEAR_OVERRIDES: Dict[str, Tuple[int, str]] = {}
+# Manual start-year overrides come from colleagues' CVs, which are private, so
+# they live in a gitignored file: data/private/cv_start_year_overrides.csv
+# (columns: salary_name, start_year, note). The output CSV is gitignored too.
+OVERRIDES_PATH = ROOT / "data" / "private" / "cv_start_year_overrides.csv"
+
+
+def load_manual_overrides() -> Dict[str, Tuple[int, str]]:
+    if not OVERRIDES_PATH.exists():
+        print(f"No manual overrides at {OVERRIDES_PATH}; using CV parsing only.")
+        return {}
+    overrides: Dict[str, Tuple[int, str]] = {}
+    with OVERRIDES_PATH.open(newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            overrides[r["salary_name"].strip()] = (int(r["start_year"]), r.get("note", "").strip())
+    return overrides
+
+
+MANUAL_START_YEAR_OVERRIDES: Dict[str, Tuple[int, str]] = load_manual_overrides()
 
 
 def canonical_tokens(text: str) -> List[str]:

@@ -41,7 +41,6 @@ def main() -> None:
                 "public_match_status",
                 "public_name",
                 "cv_match_status",
-                "cv_filename",
             ],
         )
         writer.writeheader()
@@ -60,7 +59,6 @@ def main() -> None:
                     "public_match_status": pub.get("public_match_status", ""),
                     "public_name": pub.get("public_name", ""),
                     "cv_match_status": cv.get("cv_match_status", ""),
-                    "cv_filename": cv.get("cv_filename", ""),
                 }
             )
 
