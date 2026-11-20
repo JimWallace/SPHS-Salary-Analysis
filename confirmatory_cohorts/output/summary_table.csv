@@ -1,0 +1,10 @@
+group,cohorts,analysis,n,lower_quartile,median,upper_quartile,my_rank,my_percentile,my_diff_from_median,my_diff_from_lower_quartile,status
+a,2024-2025,A,48,189332.68,207957.22,221250.83,47,2.13,-45328.22,-26703.68,ok
+a,2024-2025,B-unadjusted,48,184379.11,196599.48,212111.44,47,2.13,-33970.48,-21750.11,ok
+a,2024-2025,B-adjusted,,,,,,,,,pending: scale increases not set in config.yml
+b,2023-2024-2025,A,62,192384.82,207957.22,223501.85,61,1.64,-45328.22,-29755.82,ok; not like-for-like (older cohorts have more years as Professor)
+b,2023-2024-2025,B-unadjusted,62,180472.96,195565.2,211492.3,59,4.92,-32936.2,-17843.96,ok
+b,2023-2024-2025,B-adjusted,,,,,,,,,pending: scale increases not set in config.yml
+c,2022-2023-2024-2025,A,86,194833.45,211579.57,225213.29,85,1.18,-48950.57,-32204.45,ok; not like-for-like (older cohorts have more years as Professor)
+c,2022-2023-2024-2025,B-unadjusted,89,withheld,withheld,withheld,82,7.95,withheld,withheld,"ok; withheld (equals one person's salary): lower_quartile, median, upper_quartile"
+c,2022-2023-2024-2025,B-adjusted,,,,,,,,,pending: scale increases not set in config.yml
