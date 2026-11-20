@@ -106,9 +106,12 @@ def section_cross_appointments(r: pd.DataFrame, reps: int, rng: np.random.Genera
     r["xa_f"] = r["xa"].astype(float)
     r["both"] = r["mhi_f"] * r["xa_f"]
     L = ["## 4. Cross-appointments", "",
-         f"{len(xa)} SPHS faculty list a cross- or joint appointment with another University of Waterloo unit "
-         "on their public profile (Planning, Statistics and Actuarial Science, Computer Science, Systems Design "
-         "Engineering, Psychology, Pharmacy, Biology). The list is a current snapshot; start dates are unknown.", ""]
+         f"{len(xa)} SPHS faculty hold a cross- or joint appointment with another University of Waterloo unit: "
+         "their public profile states one, or another unit lists them as faculty (Planning, Statistics and "
+         "Actuarial Science, Computer Science, Systems Design Engineering, Psychology, Pharmacy, Biology, "
+         "Sociology and Legal Studies). This matches the definition in the pre-registration. An earlier version "
+         "of this summary used profile wording only and found 8 people; it missed three. The list is a current "
+         "snapshot; start dates are unknown.", ""]
     labels = {(False, False): "Non-MHI, SPHS only", (False, True): "Non-MHI, cross-appointed",
               (True, False): "MHI, SPHS only", (True, True): "MHI, cross-appointed"}
     L += group_table(r, ["mhi", "xa"], labels)
@@ -301,11 +304,12 @@ def main() -> None:
 
     L += [f"Groups with fewer than {MIN_CELL} people are suppressed in the tables above.", ""]
     L += ["## Interpretation", "",
-          "- **The gap follows outside ties more than the MHI label.** Faculty whose research home is partly "
-          "outside the health sciences (cross-appointed to engineering, computer science, statistics, planning, "
-          "psychology, pharmacy or biology, or funded by NSERC) receive smaller raises whether or not they are in "
-          "MHI. Once that is accounted for, the MHI difference is small and not distinguishable from zero. Most "
-          "MHI faculty have such ties, which is why the gap shows up as an MHI gap.",
+          "- **The gap overlaps heavily with outside ties.** Nearly all cross-appointed faculty have below-median "
+          "raises, and most MHI faculty are cross-appointed or NSERC-funded. With both in the model, neither MHI "
+          "affiliation nor cross-appointment alone is clearly distinguishable from zero: the gap is shared between "
+          "them, and 29 people cannot separate the two. The broader outside-ties measure (cross-appointment or "
+          "NSERC funding) absorbs more of the MHI difference. All of this is exploratory; the university-wide "
+          "pre-registered test is the real check.",
           "- **Thesis supervision does not explain it.** Supervising more completed theses goes with larger "
           "raises across people, but MHI and cross-appointed faculty supervise about as many theses as others.",
           "- **This is consistent with interdisciplinary work being valued less**, for example if work done for, "
