@@ -17,6 +17,20 @@
     mhiLine/.style={draw=MHIColor, very thick, densely dashed}
 }
 
+% Public build: no colleague is named, and columns drawn from private sources (CVs,
+% personal communication) are left out. Set \namedtrue for the private version that
+% names faculty. Either way the per-person inputs come from scripts/run_full_pipeline.sh.
+\newif\ifnamed
+\namedfalse
+\newcount\anonrow
+\ifnamed
+  \def\LopoFirstCol{removed_pair}
+  \def\FpFirstCols{Faculty,{FP Since},Source}
+\else
+  \def\LopoFirstCol{pair_label}
+  \def\FpFirstCols{fp_label}
+\fi
+
 \newcommand{\DataMinYear}{2011}
 \newcommand{\DataMaxYear}{2025}
 \newcommand{\DataNextYear}{2026}
@@ -704,12 +718,21 @@ Faculty-cluster permutation tests of the difference in these proportions (Table~
     \setlength{\tabcolsep}{2.2pt}
     \renewcommand{\arraystretch}{1.05}
     \resizebox{\linewidth}{!}{
+    \global\anonrow=0
     \pgfplotstabletypeset[
         col sep=comma,
-        columns={
-            removed_pair,estimate,std_error,ci_low,ci_high,p_two_sided,delta_vs_full,n_obs,n_clusters,n_treated_clusters
+        columns/.expanded={
+            \LopoFirstCol,estimate,std_error,ci_low,ci_high,p_two_sided,delta_vs_full,n_obs,n_clusters,n_treated_clusters
         },
         columns/removed_pair/.style={column name=Removed pair,string type},
+        create on use/pair_label/.style={create col/assign/.code={%
+            \global\advance\anonrow by 1
+            \ifnum\anonrow=1
+                \pgfkeyssetvalue{/pgfplots/table/create col/next content}{None (full matched sample)}%
+            \else
+                \edef\anonlabel{Pair \the\numexpr\anonrow-1\relax}\pgfkeyslet{/pgfplots/table/create col/next content}\anonlabel%
+            \fi}},
+        columns/pair_label/.style={column name=Removed pair,string type},
         columns/estimate/.style={column name=Estimate},
         columns/std_error/.style={column name=SE},
         columns/ci_low/.style={column name=CI low},
@@ -732,6 +755,7 @@ Faculty-cluster permutation tests of the difference in these proportions (Table~
 \phantomsection
 \section*{Appendix \thesection: Faculty Verification Matrix}
 \label{app:faculty_verification_matrix}
+\ifnamed
 \IfFileExists{analysis_output/appendix_analysis_verification_matrix.csv}{
 \begin{landscape}
 \begin{table}[p]
@@ -774,6 +798,9 @@ Faculty-cluster permutation tests of the difference in these proportions (Table~
 }{
 \textit{Faculty analysis verification matrix CSV not found. Run \texttt{python3 scripts/build\_appendix\_analysis\_verification\_matrix.py}.}
 }
+\else
+The per-person panel (one row per faculty member, with MHI classification and annual disclosed salaries) is not printed in this version. It is assembled from the University of Waterloo's published salary disclosures, and \texttt{scripts/run\_full\_pipeline.sh} rebuilds it.
+\fi
 
 \clearpage
 \refstepcounter{section}
@@ -783,7 +810,11 @@ Faculty-cluster permutation tests of the difference in these proportions (Table~
 
 \textbf{Purpose.} James Wallace was promoted to Full Professor effective July~1, 2025. This appendix documents where his salary sits relative to all other SPHS faculty who hold (or are estimated to hold) the rank of Full Professor as of the 2025 disclosure year, based on disclosed salaries from the Ontario Sunshine List.
 
+\ifnamed
 \textbf{Note on rank sources.} Promotion dates marked ``User-confirmed'' are based on information provided directly by the subject. Dates marked ``CV crosswalk'' are derived from employment history in faculty CVs, which are not public (see Appendix~\ref{app:faculty_verification_matrix}). Dates marked ``Tenure/appointment'' are estimated from appointment year and typical UWaterloo promotion timelines; exact promotion dates for those faculty were not available. Faculty with ``--'' in the source column were long-tenured at the time of analysis and are expected to hold Full Professor rank, but no specific promotion date was identified.
+\else
+\textbf{Note.} Colleagues are not named in this version, and their promotion dates, some of which come from non-public sources, are left out. Salaries are from the 2025 disclosure.
+\fi
 
 \IfFileExists{analysis_output/full_professor_salary_comparison.csv}{
 \begin{table}[h]
@@ -791,9 +822,18 @@ Faculty-cluster permutation tests of the difference in these proportions (Table~
     \small
     \setlength{\tabcolsep}{5pt}
     \renewcommand{\arraystretch}{1.15}
+    \global\anonrow=0
     \pgfplotstabletypeset[
         col sep=comma,
-        columns={Faculty,{FP Since},Source,{Salary 2025},{Gap from Wallace}},
+        columns/.expanded={\FpFirstCols,{Salary 2025},{Gap from Wallace}},
+        create on use/fp_label/.style={create col/assign/.code={%
+            \global\advance\anonrow by 1
+            \ifnum\anonrow=1
+                \pgfkeyssetvalue{/pgfplots/table/create col/next content}{James R. Wallace}%
+            \else
+                \edef\anonlabel{Full Professor \the\numexpr\anonrow-1\relax}\pgfkeyslet{/pgfplots/table/create col/next content}\anonlabel%
+            \fi}},
+        columns/fp_label/.style={column name=Faculty, string type, column type=l},
         columns/Faculty/.style={column name=Faculty, string type, column type=l},
         columns/{FP Since}/.style={column name={Full Prof.\ Since}, string type, column type=c},
         columns/Source/.style={column name={Source}, string type, column type=l},

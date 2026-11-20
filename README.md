@@ -2,7 +2,7 @@
 
 **Author:** James R. Wallace, School of Public Health Sciences (SPHS), University of Waterloo
 
-The report is [`SPHS_Salary_Analysis.pdf`](SPHS_Salary_Analysis.pdf) (source: `main.tex`).
+The report is [`SPHS_Salary_Analysis.pdf`](SPHS_Salary_Analysis.pdf) (source: `main.tex`). This public version names no colleagues. Setting `\namedtrue` near the top of `main.tex` builds a private version that does.
 
 ## Question
 
@@ -14,7 +14,7 @@ Faculty affiliated with the Master of Health Informatics (MHI) program have rais
 - The public SPHS faculty listing, for the active-faculty roster and research-group tags.
 - MHI affiliation from the program's public faculty listing.
 
-The sample is 37 currently listed SPHS faculty, 35 of whom appear in at least one disclosure (342 person-years). The data are in `data/sphs.csv`.
+The sample is 37 currently listed SPHS faculty, 35 of whom appear in at least one disclosure (342 person-years). The University publishes the disclosures, so this repository doesn't republish them. No file that names individual faculty is committed: the salary panel (`data/sphs.csv`), the roster scrape, the per-person tables, matched pairs and plot data are rebuilt by the pipeline and listed in `.gitignore`.
 
 ## Findings
 
@@ -28,8 +28,8 @@ The sample is 37 currently listed SPHS faculty, 35 of whom appear in at least on
 |---|---|
 | `SalaryData/`, `SalaryData.xcodeproj` | Swift analysis (regressions, entry-cohort matching, permutation tests) |
 | `scripts/` | Python data preparation and table/figure builders; `lme4_growth_models.R` for the multilevel models |
-| `data/` | Salary panel (`sphs.csv`), public SPHS scrape, disclosure archive manifest |
-| `analysis_output/` | Model results and the CSVs the report's tables and figures read |
+| `data/` | Disclosure archive manifest (the salary panel and roster scrape are rebuilt locally) |
+| `analysis_output/` | Model results and aggregate CSVs (per-person files are rebuilt locally) |
 | `outputs/` | Summary deliverables (matching tables, fixed-effects growth estimates, assumptions) |
 | `output/` | University-wide promotion-cohort summary |
 | `figures/` | Static figures |
@@ -44,7 +44,7 @@ sh scripts/run_full_pipeline.sh
 Rscript scripts/lme4_growth_models.R
 ```
 
-Then compile the report with `latexmk -pdf main.tex` (pdfLaTeX, biber). See `outputs/repro_commands.md` and `outputs/notes_assumptions.md` for details.
+Then compile the report with `latexmk -pdf main.tex` (pdfLaTeX, biber). It needs the pipeline's per-person files, which aren't committed. See `outputs/repro_commands.md` and `outputs/notes_assumptions.md` for details.
 
 Some steps use faculty CVs to set each person's University of Waterloo start year (the "CV/override start-year rule"). The CVs are not public, so they and the files built from them (`Faculty CVs/`, `data/private/`, `analysis_output/cv_start_year_crosswalk.csv`, `analysis_output/faculty_cv_crosswalk.csv`) are not in the repository. Without them those start years are blank, and results that depend on them will differ from the report.
 
