@@ -1,0 +1,4 @@
+path,sha256,bytes,description,frozen
+data/private/uw_roster.csv,c6be3accf00294d83ed134e9d7eff72e8f5a39e47ad194b7ed62e813285e53a3,304936,"faculty listings and profile cross-appointment text, 41 units",2026-11-20
+data/private/uw_people.csv,aef1930d76dc8779ecb81f35f528660f46f77582d4caebdf8d25c2526ec32aba,152230,people linked to disclosures: home unit and cross-appointment flags,2026-11-20
+data/private/uw_panel_long.csv,bf465528bdeedbd0afcc5c0f376c5ba5039f7fa84d6128a52272961b5e97db52,569170,linked salary panel 2011-2025,2026-11-20
