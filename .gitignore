@@ -53,3 +53,7 @@ data/raw/*.html
 
 # Personal salary request (build locally with pdflatex promotion_report.tex)
 promotion_report.pdf
+
+# Built from colleagues' private CVs (see scripts/build_cv_start_year_crosswalk.py)
+analysis_output/cv_start_year_crosswalk.csv
+analysis_output/faculty_cv_crosswalk.csv
