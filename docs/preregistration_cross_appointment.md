@@ -4,12 +4,21 @@
 university-wide roster and salary panel were assembled but before any university-wide outcome was
 computed.*
 
+**Assembled data (before outcomes):** 41 units; 1,525 faculty listings; 1,106 people linked to the
+disclosures; 1,045 with a resolved home unit, of whom 130 are cross-appointed (Arts 12, Engineering
+59, Environment 3, Health 17, Mathematics 17, Science 22). SPHS-home faculty (29) are excluded from
+the test.
+
 ## Background and origin of the hypothesis
 
-In an exploratory analysis of the School of Public Health Sciences (SPHS), all eight faculty with a
-cross- or joint appointment to another University of Waterloo unit had below-median average annual
-raises, and cross-appointment accounted for much of an apparent gap affecting Master of Health
-Informatics faculty. That analysis was not pre-specified. This study tests the hypothesis on new data.
+In an exploratory analysis of the School of Public Health Sciences (SPHS), 9 of the 10 faculty in the
+salary sample with a cross- or joint appointment to another University of Waterloo unit had
+below-median average annual raises (2012–2025; exact probability under no association 0.004). Most
+Master of Health Informatics (MHI) faculty are cross-appointed, and with 29 people the two attributes
+could not be separated: each was associated with raises about $1,000 a year below the School median
+when both were modelled. That analysis was not pre-specified (an earlier version, using profile
+wording only, identified 8 of the 11 cross-appointed faculty). This study tests the cross-appointment
+hypothesis on new data.
 
 **Conflict of interest.** The author is an SPHS faculty member with a cross-appointment and is
 therefore in the group that generated the hypothesis. SPHS is excluded from the confirmatory sample.
@@ -35,7 +44,12 @@ Directional; tested one-sided.
   the disclosures by surname and first given name. Names shared by two disclosed people in any year
   are dropped.
 - **SPHS faculty (home unit SPHS) are excluded** from the confirmatory test.
-- People whose home unit cannot be determined are excluded.
+- People whose home unit cannot be determined are excluded. In the assembled data this is 60 of the
+  190 cross-appointed people, mostly joint appointments split evenly between two units; they are
+  reported descriptively.
+- Two-unit listings count as one person only with evidence of a cross-appointment (a position naming
+  another unit, a profile statement, a shared profile page, or an identical full name that is unique in
+  the disclosures); otherwise the name is treated as a possible collision and excluded.
 - Annual raises in calendar years **2016–2025** (before 2016 the $100,000 threshold leaves too few
   faculty per unit).
 

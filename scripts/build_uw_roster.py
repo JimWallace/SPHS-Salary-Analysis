@@ -82,7 +82,7 @@ UNITS = [
 ]
 
 FACULTY_POS = re.compile(r"\b(?:Professor|Lecturer)\b", re.I)
-EXCLUDE_POS = re.compile(r"\b(?:Adjunct|Emerit|Visiting|Retired|Postdoc|Status only|Clinical|Sessional|"
+EXCLUDE_POS = re.compile(r"\b(?:Adjunct|Emerit\w*|Visiting|Retired|Postdoc\w*|Status only|Clinical|Sessional|"
                          r"Research Professor|Research Assistant Professor|Research Associate Professor)\b", re.I)
 # Positions held at another institution (people listed without the word "adjunct").
 EXTERNAL = re.compile(r"\b(?:Universit(?:y|e|é)(?! of Waterloo| Research Chair)|College|Hospital|Institute|Laurier|"

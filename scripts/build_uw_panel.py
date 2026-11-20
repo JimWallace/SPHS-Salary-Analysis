@@ -96,30 +96,81 @@ def link_roster(panel_keys: set[str]) -> pd.DataFrame:
     return pd.DataFrame(linked)
 
 
+def qualifier(position: str) -> str:
+    """Text after the rank, e.g. 'Department of Chemical Engineering' in 'Professor | Department of ...'."""
+    m = re.split(r"\s*[,|;]\s*|\s+-\s+", position, maxsplit=1)
+    return m[1] if len(m) > 1 else ""
+
+
+_rspec = importlib.util.spec_from_file_location("roster", ROOT / "scripts" / "build_uw_roster.py")
+roster_mod = importlib.util.module_from_spec(_rspec)
+_rspec.loader.exec_module(roster_mod)
+ADMIN_TITLE = re.compile(r"\b(?:Director|Chair|Dean|Coordinator|Lead|Advisor|Adviser|Officer|Program|Programs|"
+                         r"Vice|President|Provost|Head|Undergraduate|Graduate|Associate Chair)\b", re.I)
+
+
+def names_unit(text: str, own_unit: str = "") -> bool:
+    """True if the qualifier names a University of Waterloo academic unit other than own_unit."""
+    if not text or ADMIN_TITLE.search(text):
+        return False
+    if re.search(r"\b(?:School|Department|Faculty) of\b", text):
+        return own_unit.lower() not in text.lower() if own_unit else True
+    words = set(re.findall(r"[a-z]+", text.lower()))
+    for _, unit, _slug in roster_mod.UNITS:
+        if unit == own_unit:
+            continue
+        toks = unit_tokens(unit)
+        if toks and toks <= words:
+            return True
+    return False
+
+
+def unit_tokens(unit: str) -> set[str]:
+    stop = {"and", "of", "the", "school", "department", "studies", "science", "sciences", "engineering"}
+    return {w.lower() for w in re.findall(r"[A-Za-z]+", unit)} - stop
+
+
 def resolve_people(linked: pd.DataFrame) -> pd.DataFrame:
+    """One row per disclosure key. Listings in several units are treated as one person only when
+    there is evidence of a cross-appointment (a position naming another unit, profile text stating
+    one, or a shared profile page); otherwise the key is flagged as a possible name collision."""
     out = []
     for key, g in linked[linked["key"].notna()].groupby("key"):
         units = sorted(set(g["unit"]))
-        plain = sorted(set(g.loc[~g["position"].str.contains(",|\\|", regex=True) |
-                                 ~g["position"].apply(lambda p: bool(UNIT_WORDS.search(p.split(",", 1)[-1] if "," in p else ""))),
-                                 "unit"]))
         xa_text = " || ".join(sorted(set(t for t in g["xa_text"] if t)))
-        home, how = None, ""
-        if len(units) == 1:
+        quals = [qualifier(p) for p in g["position"]]
+        named = [q for u, q in zip(g["unit"], quals) if names_unit(q, u)]
+        shared_page = g["profile_url"].nunique() < len(g)
+        # Identical full names are accepted: if two different people with that name were both
+        # disclosed in a year, the key was already dropped as ambiguous.
+        same_full_name = g["name"].map(tp.norm).nunique() == 1
+        evidence = bool(named) or bool(xa_text) or shared_page or same_full_name
+        status, home, how = "ok", None, ""
+        if len(units) == 1 and named:
+            # Listed only by a unit they are cross-appointed into (position names their home unit,
+            # whose own listing was not found): home unknown.
+            how = "unresolved (listed only outside home unit)"
+        elif len(units) == 1:
             home, how = units[0], "single listing"
-        elif len(plain) == 1:
-            home, how = plain[0], "plain title in one listing"
+        elif not evidence:
+            status, how = "possible name collision", "no cross-appointment evidence"
         else:
-            stated = sorted(set(g.loc[g["xa_text"].str.contains(r"cross|joint", case=False), "unit"]))
-            if len(stated) == 1:
-                home, how = stated[0], "profile states cross-appointment"
+            plain = sorted(set(u for u, q in zip(g["unit"], quals) if not names_unit(q, u)))
+            if len(plain) == 1:
+                home, how = plain[0], "plain title in one listing"
             else:
-                home, how = None, "unresolved"
+                # The home unit is the one not named in any qualifier or cross-appointment statement.
+                mentioned = " ".join(named + [xa_text]).lower()
+                not_named = [u for u in units if not (unit_tokens(u) & set(re.findall(r"[a-z]+", mentioned)))]
+                if len(not_named) == 1:
+                    home, how = not_named[0], "only unit not named as the other appointment"
+                else:
+                    how = "unresolved"
         out.append({
-            "key": key, "name": g["name"].iloc[0], "home_unit": home, "home_rule": how,
+            "key": key, "name": g["name"].iloc[0], "status": status, "home_unit": home, "home_rule": how,
             "home_faculty": g.loc[g["unit"] == home, "faculty"].iloc[0] if home else "",
             "n_units": len(units), "units": "; ".join(units),
-            "xa_listing": int(len(units) >= 2), "xa_profile": int(bool(xa_text)),
+            "xa_listing": int((len(units) >= 2 and evidence) or (len(units) == 1 and bool(named))), "xa_profile": int(bool(xa_text)),
             "xa_text": xa_text[:500],
         })
     return pd.DataFrame(out)
@@ -138,7 +189,8 @@ def main() -> None:
     OUT_PEOPLE.parent.mkdir(parents=True, exist_ok=True)
     people.to_csv(OUT_PEOPLE, index=False)
     panel.to_csv(OUT_PANEL, index=False)
-    print(f"People linked: {len(people)} (home unresolved: {(people['home_rule'] == 'unresolved').sum()}); "
+    print(f"People linked: {len(people)} (possible name collisions: {(people['status'] != 'ok').sum()}; "
+          f"home unresolved: {people['home_rule'].str.startswith('unresolved').sum()}); "
           f"listed by 2+ units: {people['xa_listing'].sum()}; profile states cross/joint: {people['xa_profile'].sum()}")
     print(f"Wrote {OUT_PEOPLE.relative_to(ROOT)} and {OUT_PANEL.relative_to(ROOT)} ({len(panel)} person-years)")
 
