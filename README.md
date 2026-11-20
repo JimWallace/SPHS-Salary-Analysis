@@ -1,56 +1,54 @@
-# Salary Discrepancies Between MHI- and Non-MHI-Affiliated Faculty Members in SPHS
+# Are Interdisciplinary Faculty Evaluated Equitably? Evidence from SPHS Salary Disclosures (2011–2025)
 
-**Author:** Jim Wallace  
-**Date:** March 2024  
+**Author:** James R. Wallace, School of Public Health Sciences (SPHS), University of Waterloo
 
-## Data Collection
+The report is [`SPHS_Salary_Analysis.pdf`](SPHS_Salary_Analysis.pdf) (source: `main.tex`).
 
-To investigate potential salary discrepancies between faculty members affiliated with the Master of Health Informatics (MHI) program and those who are not (non-MHI) at the University of Waterloo, data was collected from the following sources:
+## Question
 
-- University of Waterloo public salary disclosures (2011–2024)  
-- Faculty association publications outlining salary structures  
-- School of Public Health Sciences faculty listings  
+Faculty affiliated with the Master of Health Informatics (MHI) program have raised concerns that the annual performance review (APR) process may disadvantage interdisciplinary scholarship. Because merit increases accumulate in salary, a disadvantage in evaluation should show up as slower salary growth. The report asks whether MHI-affiliated faculty in SPHS have lower salaries, or slower salary growth, than other SPHS faculty.
 
-The data included annual salary figures and MHI affiliation status over a ten-year period to enable longitudinal analysis of salary progression.
+## Data
 
-## Analysis
+- University of Waterloo public salary disclosures, 2011–2025 (salaries of $100,000 or more, by calendar year).
+- The public SPHS faculty listing, for the active-faculty roster and research-group tags.
+- MHI affiliation from the program's public faculty listing.
 
-Faculty members were categorized into two groups based on MHI affiliation. Average salary increases over the ten-year period were computed for each group. Since the dataset covers the full population of faculty in the department, formal statistical inference was not required. Descriptive comparisons and trend visualizations were used to illustrate observed differences.
+The sample is 37 currently listed SPHS faculty, 35 of whom appear in at least one disclosure (342 person-years). The data are in `data/sphs.csv`.
 
-## Results
+## Findings
 
-The analysis reveals a notable disparity in salary progression:
+- **Salary position.** About 80% of MHI person-years fall below the School's same-year median salary, compared with about 41% of non-MHI person-years (faculty-cluster permutation tests: two-sided *p* = 0.034 weighted by person-year, 0.022 weighted by faculty).
+- **Salary growth.** A three-step multilevel growth model (lme4) estimates MHI salary growth at about $1,595 a year slower (95% CI $69 to $3,121; *p* = 0.049). Comparisons that align faculty by career stage give gaps of roughly $2,700 to $3,000 a year.
+- The analysis is descriptive. Public data cannot identify the mechanism behind the gap, and the report recommends a faculty-level equity audit linking salary outcomes to rank, workload and APR evaluations.
 
-- **Non-MHI faculty:** average annual salary increase of approximately \$3,074  
-- **MHI-affiliated faculty:** average annual increase of around \$1,541  
+## Repository layout
 
-Over ten years, this resulted in a cumulative difference of approximately \$15,330 in favor of non-MHI faculty. This pattern supports a hypothesis of systemic bias in performance evaluation, particularly given the interdisciplinary nature of the MHI program.
+| Folder | Contents |
+|---|---|
+| `SalaryData/`, `SalaryData.xcodeproj` | Swift analysis (regressions, entry-cohort matching, permutation tests) |
+| `scripts/` | Python data preparation and table/figure builders; `lme4_growth_models.R` for the multilevel models |
+| `data/` | Salary panel (`sphs.csv`), public SPHS scrape, disclosure archive manifest |
+| `analysis_output/` | Model results and the CSVs the report's tables and figures read |
+| `outputs/` | Summary deliverables (matching tables, fixed-effects growth estimates, assumptions) |
+| `output/` | University-wide promotion-cohort summary |
+| `figures/` | Static figures |
+| `tests/` | Unit tests for the promotion-cohort pipeline |
 
-![Faculty salaries over time by MHI affiliation, with regression lines showing different growth rates.](figures/scatter.png)
+## Reproducing the analysis
 
-## References
-
-- University of Waterloo salary disclosures (2011–2024)  
-- FAUW salary structure publication  
-- University of Waterloo SPHS MHI-affiliated faculty listings  
-
-## Private CV-Based Covariate (Local Only)
-
-To add the terminal-degree domain factor from private CVs:
-
-1. Place CV PDFs in `Faculty CVs/` (this folder is gitignored).
-2. Run:
+The full pipeline runs on macOS (Xcode and Python 3):
 
 ```bash
-python3 scripts/build_terminal_degree_domains.py
+sh scripts/run_full_pipeline.sh
+Rscript scripts/lme4_growth_models.R
 ```
 
-This writes `data/private_terminal_degree_domain.csv` (also gitignored).  
-The Swift analysis automatically uses this file when present.
+Then compile the report with `latexmk -pdf main.tex` (pdfLaTeX, biber). See `outputs/repro_commands.md` and `outputs/notes_assumptions.md` for details.
 
-## Public SPHS Group Tags
+Some steps use faculty CVs to set each person's University of Waterloo start year (the "CV/override start-year rule"). The CVs are not public, so they and the files built from them (`Faculty CVs/`, `data/private/`, `analysis_output/cv_start_year_crosswalk.csv`, `analysis_output/faculty_cv_crosswalk.csv`) are not in the repository. Without them those start years are blank, and results that depend on them will differ from the report.
 
-To pull publicly available researcher-group tags from the SPHS faculty listing:
+## Public SPHS group tags
 
 ```bash
 python3 scripts/scrape_public_sphs_groups.py
@@ -64,7 +62,7 @@ Outputs:
 - `analysis_output/public_sphs_group_summary.csv` (group counts)
 - `data/public_sphs_scrape/raw_html/` (local HTML cache, gitignored)
 
-## University-Wide Promotion Cohort
+## University-wide promotion cohort
 
 This compares faculty whose disclosed title changed from "Associate Professor" to "Professor" between two consecutive years. It uses the full UW disclosure lists.
 
@@ -93,3 +91,7 @@ Outputs:
 - `data/review/matches_to_check.csv` (gitignored; name matches and admin titles to check by hand)
 
 Optional: `data/private/required_names.csv` (columns `year,surname,given`) lists people who must be in the cohort. If one is missing, the script stops. The raw HTML files are gitignored because they contain names.
+
+## Citing
+
+Cite the archived release on Zenodo (see `CITATION.cff`).
