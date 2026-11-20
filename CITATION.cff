@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this report, data or code, please cite it as below."
+title: "Are Interdisciplinary Faculty Evaluated Equitably? Evidence from SPHS Salary Disclosures (2011-2025)"
+type: dataset
+authors:
+  - family-names: Wallace
+    given-names: James R.
+    affiliation: "School of Public Health Sciences, University of Waterloo"
+    orcid: "https://orcid.org/0000-0002-5162-0256"
+version: 1.0.0
+date-released: 2026-11-20
+license:
+  - CC-BY-4.0
+  - MIT
+repository-code: "https://github.com/JimWallace/SPHS-Salary-Analysis"
+keywords:
+  - salary equity
+  - faculty evaluation
+  - interdisciplinary scholarship
+  - health informatics
+  - public sector salary disclosure
+  - University of Waterloo
