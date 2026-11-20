@@ -12,7 +12,7 @@ Outcome: annual raise minus the SPHS median raise that year (2012–2025; stipen
 |---|---|---|---|---|---|
 | Non-MHI, SPHS only | 19 | 116 | $809 | $665 | 6 of 19 |
 | Non-MHI, cross-appointed | 5 | 46 | -$723 | -$225 | 5 of 5 |
-| MHI, SPHS only | 2 | 8 | $83 | $620 | 1 of 2 |
+| MHI, SPHS only | (fewer than 3 people) | – | – | – | – |
 | MHI, cross-appointed | 3 | 17 | -$1,719 | -$1,770 | 3 of 3 |
 
 Regression of the residual raise on group indicators with year fixed effects. p-values reassign the indicator among people (cross-appointment is shuffled within MHI and non-MHI faculty, and vice versa).
@@ -34,7 +34,7 @@ NSERC and SSHRC awards where the faculty member is the lead applicant at Waterlo
 |---|---|---|---|
 | Non-MHI, SPHS only | 19 | 0 | 4 |
 | Non-MHI, cross-appointed | 5 | 4 | 1 |
-| MHI, SPHS only | 2 | 1 | 0 |
+| MHI, SPHS only | (fewer than 3 people) | – | – |
 | MHI, cross-appointed | 3 | 2 | 0 |
 
 Does an NSERC orientation go with smaller raises, and does it account for the MHI gap?
@@ -57,7 +57,7 @@ Cross-appointment and NSERC funding pick out nearly the same people, and most MH
 |---|---|---|---|
 | Non-MHI, health sciences only | 19 | $397 | 6 of 19 |
 | Non-MHI, outside ties | 5 | -$665 | 5 of 5 |
-| MHI, health sciences only | 1 | $2,771 | 0 of 1 |
+| MHI, health sciences only | (fewer than 3 people) | – | – |
 | MHI, outside ties | 4 | -$1,719 | 4 of 4 |
 
 | Model | Coefficient | Estimate | p |
@@ -75,7 +75,7 @@ Completed master's and PhD theses in UWSpace listing the faculty member as a sup
 |---|---|---|---|
 | Non-MHI, SPHS only | 19 | 1.00 | 0.84 |
 | Non-MHI, cross-appointed | 5 | 0.67 | 0.88 |
-| MHI, SPHS only | 2 | 0.58 | 0.58 |
+| MHI, SPHS only | (fewer than 3 people) | – | – |
 | MHI, cross-appointed | 3 | 0.83 | 1.00 |
 
 Across people: each extra completed thesis per year goes with a $1,703 difference in the average raise (p = 0.045, supervision rates reassigned among people).
@@ -91,6 +91,8 @@ Within person: each thesis completed in the two prior years goes with a $239 cha
 ## 1. Research output
 
 Not run yet: needs publication data (OpenAlex API key).
+
+Groups with fewer than 3 people are suppressed in the tables above.
 
 ## Interpretation
 

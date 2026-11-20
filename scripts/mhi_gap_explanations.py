@@ -29,7 +29,10 @@ import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-XAPPT = ROOT / "data" / "public_sphs_scrape" / "sphs_internal_cross_appointments.csv"
+# Built from public profiles, but kept private: joined with public salaries it identifies individuals.
+XAPPT = ROOT / "data" / "private" / "sphs_internal_cross_appointments.csv"
+MIN_CELL = 3  # suppress statistics for groups with fewer people than this
+SUPPRESSED = "(fewer than 3 people)"
 OPENALEX = ROOT / "data" / "private" / "openalex_person_year.csv"
 GRANTS = ROOT / "data" / "private" / "grants_person_year.csv"
 THESES = ROOT / "data" / "private" / "theses_person_year.csv"
@@ -87,6 +90,9 @@ def group_table(df: pd.DataFrame, by: list[str], labels: dict) -> list[str]:
         p = pm
         for b, k in zip(by, key):
             p = p[p[b] == k]
+        if len(p) < MIN_CELL:
+            out.append(f"| {labels[key]} | {SUPPRESSED} | – | – | – | – |")
+            continue
         out.append(f"| {labels[key]} | {g['person'].nunique()} | {len(g)} | {money(g['resid'].mean())} | "
                    f"{money(float(p['m'].median()))} | {int((p['m'] < 0).sum())} of {len(p)} |")
     return out
@@ -186,6 +192,9 @@ def section_grants(r: pd.DataFrame, reps: int, rng: np.random.Generator) -> list
     for (m, x), grp in pm.groupby(["mhi", "xa"]):
         lab = f"{'MHI' if m else 'Non-MHI'}, {'cross-appointed' if x else 'SPHS only'}"
         ppl = grp.index
+        if len(ppl) < MIN_CELL:
+            L.append(f"| {lab} | {SUPPRESSED} | – | – |")
+            continue
         L.append(f"| {lab} | {len(ppl)} | {sum(p in nserc for p in ppl)} | {sum(p in sshrc for p in ppl)} |")
     L += ["", "Does an NSERC orientation go with smaller raises, and does it account for the MHI gap?", ""]
     est, p = person_perm(r, "resid", ["nserc"], "nserc", reps, rng)
@@ -221,6 +230,9 @@ def section_theses(r: pd.DataFrame, reps: int, rng: np.random.Generator) -> list
          "| Group | People | Theses per year (median of people) | Theses per year (mean) |", "|---|---|---|---|"]
     for (m, x), grp in pm.groupby(["mhi", "xa"]):
         lab = f"{'MHI' if m else 'Non-MHI'}, {'cross-appointed' if x else 'SPHS only'}"
+        if len(grp) < MIN_CELL:
+            L.append(f"| {lab} | {SUPPRESSED} | – | – |")
+            continue
         L.append(f"| {lab} | {len(grp)} | {grp['rate'].median():.2f} | {grp['rate'].mean():.2f} |")
     est, p = person_perm(r, "resid", ["thesis_rate"], "thesis_rate", reps, rng)
     L += ["", f"Across people: each extra completed thesis per year goes with a {money(est)} difference in the "
@@ -247,6 +259,9 @@ def section_outside(r: pd.DataFrame, reps: int, rng: np.random.Generator) -> lis
          "| Group | People | Mean of person averages | People below median |", "|---|---|---|---|"]
     for (m, o), grp in pm.groupby(["mhi", "o"]):
         lab = f"{'MHI' if m else 'Non-MHI'}, {'outside ties' if o else 'health sciences only'}"
+        if len(grp) < MIN_CELL:
+            L.append(f"| {lab} | {SUPPRESSED} | – | – |")
+            continue
         L.append(f"| {lab} | {len(grp)} | {money(grp['m'].mean())} | {int((grp['m'] < 0).sum())} of {len(grp)} |")
     L += ["", "| Model | Coefficient | Estimate | p |", "|---|---|---|---|"]
     est, p = person_perm(r, "resid", ["mhi_f"], "mhi_f", reps, rng)
@@ -284,6 +299,7 @@ def main() -> None:
     if not OPENALEX.exists():
         L += ["## 1. Research output", "", "Not run yet: needs publication data (OpenAlex API key).", ""]
 
+    L += [f"Groups with fewer than {MIN_CELL} people are suppressed in the tables above.", ""]
     L += ["## Interpretation", "",
           "- **The gap follows outside ties more than the MHI label.** Faculty whose research home is partly "
           "outside the health sciences (cross-appointed to engineering, computer science, statistics, planning, "
