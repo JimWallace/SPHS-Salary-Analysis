@@ -1,13 +1,33 @@
-# Pre-registration (draft): cross-appointment and annual salary increases at the University of Waterloo
+# Pre-registration: cross-appointment and annual salary increases at the University of Waterloo
 
-*Draft for posting on OSF before the confirmatory analysis is run. Written on 2026-11-20, after the
-university-wide roster and salary panel were assembled but before any university-wide outcome was
-computed.*
+*Registered by archiving this repository version on Zenodo (DOI recorded in the release notes) before
+any test is run. Written on 2026-11-20, after the university-wide roster and salary panel were
+assembled but before any university-wide outcome was computed. The analysis code,
+`scripts/cross_appointment_test.py`, is frozen in the same release; it was checked only on simulated
+salaries.*
 
 **Assembled data (before outcomes):** 41 units; 1,525 faculty listings; 1,106 people linked to the
 disclosures; 1,045 with a resolved home unit, of whom 130 are cross-appointed (Arts 12, Engineering
 59, Environment 3, Health 17, Mathematics 17, Science 22). SPHS-home faculty (29) are excluded from
-the test.
+the test. People with at least one usable raise in 2016–2025: 851, of whom 110 are cross-appointed,
+in 37 home units (counts depend only on which salary years exist, not on salary values).
+
+## Two tests
+
+- **Test A (retrospective):** raises in calendar years 2016–2025. The salary data are already public,
+  so this is a pre-analysis plan: the analysis is fixed before it is run, but the outcome data exist.
+- **Test B (prospective):** the raise from 2025 to 2026, using the 2026 salary disclosure, which
+  Ontario requires to be published by 31 March 2027. Cross-appointment status was recorded in
+  November 2026, before that outcome was public. Same hypothesis, sample rules and analysis as Test A,
+  restricted to the single raise year 2026, using the frozen roster.
+
+Each test is reported on its own; neither result changes how the other is run or reported.
+
+## Frozen inputs
+
+The roster and linked panel contain names and are not published. Their SHA-256 hashes are recorded in
+`docs/registration_manifest.csv`; the test script checks them at run time and reports any mismatch as
+a deviation. The files can be shared with a reviewer, who can confirm they match the registered hashes.
 
 ## Background and origin of the hypothesis
 
@@ -82,6 +102,15 @@ Directional; tested one-sided.
   - percentage raises instead of dollars.
 - **Not tested here:** causal direction. Cross-appointment status is a current snapshot, so a
   difference could reflect who takes cross-appointments rather than their effect.
+
+## Run order
+
+1. Archive this version on Zenodo (registration).
+2. Run Test A: `python3 scripts/cross_appointment_test.py --test A`; publish
+   `output/cross_appointment_test_A.md` unchanged.
+3. After the 2026 disclosure is published: archive the page, then run
+   `python3 scripts/cross_appointment_test.py --test B --disclosure-2026 <path>`; publish
+   `output/cross_appointment_test_B.md` unchanged.
 
 ## Deviations
 
