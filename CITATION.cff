@@ -8,6 +8,14 @@ authors:
     affiliation: "School of Public Health Sciences, University of Waterloo"
     orcid: "https://orcid.org/0000-0002-5162-0256"
 version: 1.0.0
+doi: 10.5281/zenodo.24397927
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.24397927
+    description: "All versions (resolves to the latest)"
+  - type: doi
+    value: 10.5281/zenodo.24397928
+    description: "Version 1.0.0"
 date-released: 2026-11-20
 license:
   - CC-BY-4.0
