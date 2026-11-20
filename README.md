@@ -1,5 +1,7 @@
 # Are Interdisciplinary Faculty Evaluated Equitably? Evidence from SPHS Salary Disclosures (2011–2025)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24397927.svg)](https://doi.org/10.5281/zenodo.24397927)
+
 **Author:** James R. Wallace, School of Public Health Sciences (SPHS), University of Waterloo
 
 The report is [`SPHS_Salary_Analysis.pdf`](SPHS_Salary_Analysis.pdf) (source: `main.tex`).
@@ -94,4 +96,4 @@ Optional: `data/private/required_names.csv` (columns `year,surname,given`) lists
 
 ## Citing
 
-Cite the archived release on Zenodo (see `CITATION.cff`).
+Cite the archived release on Zenodo: [doi:10.5281/zenodo.24397927](https://doi.org/10.5281/zenodo.24397927) (all versions; v1.0.0 is [doi:10.5281/zenodo.24397928](https://doi.org/10.5281/zenodo.24397928)). See `CITATION.cff`.
