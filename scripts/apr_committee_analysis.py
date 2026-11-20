@@ -49,6 +49,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PANEL = ROOT / "data" / "sphs.csv"
 MEMBERSHIP = ROOT / "data" / "private" / "apr_committee_membership.csv"
 ADMIN = ROOT / "data" / "private" / "admin_stipend_roles.csv"
+TITLES = ROOT / "data" / "sphs_titles.csv"  # optional: built by scripts/build_disclosure_title_panels.py
 OUT_SUMMARY = ROOT / "output" / "apr_committee_summary.md"
 OUT_PERSON_CYCLES = ROOT / "data" / "private" / "apr_committee_person_cycles.csv"
 OUT_WITHIN = ROOT / "data" / "private" / "apr_committee_within_person.csv"
@@ -89,9 +90,24 @@ def load_admin() -> set[tuple[str, int]]:
     return {(s, int(y)) for s, y in zip(a["surname"], a["cycle_start"])}
 
 
+def load_rank_changes() -> set[tuple[str, int]]:
+    """(surname, year) pairs where the disclosed rank differs from the previous disclosed year."""
+    if not TITLES.exists():
+        return set()
+    t = pd.read_csv(TITLES).sort_values(["Surname", "year"])
+    out = set()
+    for person, g in t.groupby("Surname"):
+        prev = None
+        for y, r in zip(g["year"], g["rank"]):
+            if prev is not None and r != prev:
+                out.add((person, int(y)))
+            prev = r
+    return out
+
+
 def build_rows(salary: pd.DataFrame, mhi: dict[str, bool], members: dict[int, set[str]],
                admin: set[tuple[str, int]], cycles: list[int], horizon: int,
-               apply_exclusions: bool = True) -> pd.DataFrame:
+               apply_exclusions: bool = True, rank_changes: set[tuple[str, int]] | None = None) -> pd.DataFrame:
     """One row per person x cycle with an observable outcome S[Y+horizon] - S[Y]."""
     rows = []
     for person in salary.index:
@@ -106,7 +122,9 @@ def build_rows(salary: pd.DataFrame, mhi: dict[str, bool], members: dict[int, se
             window_cycles = range(y - 1, y + horizon)
             is_admin = any((person, c) in admin for c in window_cycles)
             partial_start = (y == first)
-            excluded = is_admin or partial_start
+            # A rank change in year Y..Y+horizon puts some or all of a promotion increase in the window.
+            promo = any((person, t) in (rank_changes or set()) for t in range(y, y + horizon + 1))
+            excluded = is_admin or partial_start or (rank_changes is not None and promo)
             if apply_exclusions and excluded:
                 continue
             rows.append({
@@ -118,6 +136,7 @@ def build_rows(salary: pd.DataFrame, mhi: dict[str, bool], members: dict[int, se
                 "raise_pct": float((s[y + horizon] / s[y] - 1) * 100),
                 "excluded_admin": is_admin,
                 "excluded_partial_start": partial_start,
+                "promotion_in_window": promo,
             })
     df = pd.DataFrame(rows)
     if df.empty:
@@ -253,6 +272,11 @@ def main() -> None:
     full1 = build_rows(salary, mhi, members, admin, FULL_CYCLES, horizon=1)
     small2 = build_rows(salary, mhi, members, admin, SMALL_CYCLES, horizon=2)
     full2_all = build_rows(salary, mhi, members, admin, FULL_CYCLES, horizon=2, apply_exclusions=False)
+    rank_changes = load_rank_changes()
+    full2_np = build_rows(salary, mhi, members, admin, FULL_CYCLES, horizon=2, rank_changes=rank_changes) \
+        if rank_changes else pd.DataFrame()
+    small2_np = build_rows(salary, mhi, members, admin, SMALL_CYCLES, horizon=2, rank_changes=rank_changes) \
+        if rank_changes else pd.DataFrame()
 
     # Winsorize residuals at the 5th/95th percentile (guards against leave years, promotions).
     full2_w = full2.copy()
@@ -327,6 +351,10 @@ def main() -> None:
     L += model_block("Full cycles, 2-year change, percentile rank in cycle", full2, args.reps, rng, y="pctile", unit="pctile pts")
     L += model_block("Full cycles, 2-year change, winsorized 5/95", full2_w, args.reps, rng)
     L += model_block("Full cycles, no exclusions", full2_all, args.reps, rng)
+    if len(full2_np):
+        L += model_block("Full cycles, also excluding windows with a rank change (promotion)", full2_np, args.reps, rng)
+        L += model_block("Same, percentile rank in cycle", full2_np, args.reps, rng, y="pctile", unit="pctile pts")
+        L += model_block("Placebo: small cycles, excluding rank changes", small2_np, args.reps, rng)
     L += model_block("Placebo: small cycles, 2-year change", small2, args.reps, rng)
     L += model_block("*Across people* (no person baseline): full cycles, 2-year change", full2, args.reps, rng,
                      person_fe=False)
@@ -416,9 +444,10 @@ def main() -> None:
     L.append("- **The negative within-person estimate should not be read as a penalty.** It rests on the few "
              f"members ({len(wp)}) observed both on and off the committee in full cycles. It is weaker on the "
              "outlier-robust percentile scale, and the placebo (small cycles, where tenured members are not "
-             "rated) is also negative. That pattern fits timing, not the committee itself: people tend to be "
-             "elected after strong stretches (promotion, return from leave), so their off-committee cycles "
-             "include those bumps.")
+             "rated) is also negative. Excluding windows that contain a promotion leaves it negative but much less "
+             "precise, so promotions are not the explanation. The pattern still fits timing more than the "
+             "committee itself: people may be elected after strong stretches, or serve less in years with "
+             "unusual pay (e.g. leaves), so their off-committee cycles include those bumps.")
     L.append("- **The people who serve tend to get above-median raises anyway.** Across people, members sit "
              "higher in each cycle's raise distribution than non-members, in serving and non-serving cycles "
              "alike. This is consistent with the committee being drawn from faculty who are rated well, "
@@ -431,8 +460,8 @@ def main() -> None:
     L.append("")
     L.append("- Small sample: about two dozen members over six usable full cycles. Only large effects "
              "(roughly $1,500–2,000 per cycle or more) are detectable; a null is not evidence of no effect.")
-    L.append("- Promotions (Associate to Full) raise salary and are not flagged, because the panel does not "
-             "hold yearly titles. The winsorized specification limits their influence.")
+    L.append("- Promotions are flagged from the titles in the public disclosures (`data/sphs_titles.csv`); the "
+             "rank-change rows drop any window that contains one.")
     L.append("- Disclosed salary includes stipends; admin-role years are excluded but smaller stipends "
              "(program leads, teaching fellow) are not.")
     L.append("- Under biennial review a full-cycle rating sets two years of increases, so part of the effect "

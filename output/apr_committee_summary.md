@@ -42,10 +42,13 @@ Estimates are from a regression of the outcome on committee membership with a se
 | Full cycles, 2-year change, percentile rank in cycle | -12.5 pctile pts | 15.9 pctile pts | 0.105 | 0.946 | 100 rows, 23 member-cycles, 28 people |
 | Full cycles, 2-year change, winsorized 5/95 | -$4,149 | $4,056 | 0.007 | 0.997 | 100 rows, 23 member-cycles, 28 people |
 | Full cycles, no exclusions | -$3,419 | $2,955 | 0.018 | 0.992 | 127 rows, 31 member-cycles, 30 people |
-| Placebo: small cycles, 2-year change | -$3,235 | $6,294 | 0.292 | 0.852 | 76 rows, 11 member-cycles, 28 people |
-| *Across people* (no person baseline): full cycles, 2-year change | $936 | $2,311 | 0.555 | 0.274 | 100 rows, 23 member-cycles, 28 people |
-| *Across people*: full cycles, percentile rank | +16.7 pctile pts | 9.9 pctile pts | 0.021 | 0.011 | 100 rows, 23 member-cycles, 28 people |
-| *Across people*: placebo small cycles | $3,435 | $2,982 | 0.164 | 0.069 | 76 rows, 11 member-cycles, 28 people |
+| Full cycles, also excluding windows with a rank change (promotion) | -$7,315 | $11,129 | 0.034 | 0.983 | 65 rows, 14 member-cycles, 26 people |
+| Same, percentile rank in cycle | -18.1 pctile pts | 41.6 pctile pts | 0.187 | 0.906 | 65 rows, 14 member-cycles, 26 people |
+| Placebo: small cycles, excluding rank changes | -$3,696 | $10,705 | 0.479 | 0.759 | 48 rows, 5 member-cycles, 25 people |
+| Placebo: small cycles, 2-year change | -$3,235 | $6,294 | 0.289 | 0.858 | 76 rows, 11 member-cycles, 28 people |
+| *Across people* (no person baseline): full cycles, 2-year change | $936 | $2,311 | 0.564 | 0.286 | 100 rows, 23 member-cycles, 28 people |
+| *Across people*: full cycles, percentile rank | +16.7 pctile pts | 9.9 pctile pts | 0.021 | 0.010 | 100 rows, 23 member-cycles, 28 people |
+| *Across people*: placebo small cycles | $3,435 | $2,982 | 0.164 | 0.070 | 76 rows, 11 member-cycles, 28 people |
 
 The *across people* rows drop the per-person baseline: they compare members with everyone else eligible in the same cycle. They answer a different question (do the people who serve get larger raises?) and mix any committee effect with who gets elected.
 
@@ -61,7 +64,7 @@ Members observed both on and off the committee in full cycles: **7**.
 | Median of (on − off) | -$3,400 |
 | Members with larger raise when serving | 2 of 7 |
 | Sign test p (two-sided) | 0.453 |
-| Sign-flip permutation p for mean (two-sided) | 0.092 |
+| Sign-flip permutation p for mean (two-sided) | 0.089 |
 | Range of (on − off) | -$18,378 to $1,611 |
 
 ### Members versus never-members (descriptive, confounded by who gets elected)
@@ -90,14 +93,14 @@ Correlation across 6 cycles between MHI seat share and the MHI gap: r = 0.63. Wi
 ## Interpretation
 
 - **No sign that serving pays off for the people serving.** Compared with their own raises in other cycles, members do *not* get larger raises in the cycles they serve. If anything the estimate is negative, and the one-sided test for a gain is far from significant in every specification.
-- **The negative within-person estimate should not be read as a penalty.** It rests on the few members (7) observed both on and off the committee in full cycles. It is weaker on the outlier-robust percentile scale, and the placebo (small cycles, where tenured members are not rated) is also negative. That pattern fits timing, not the committee itself: people tend to be elected after strong stretches (promotion, return from leave), so their off-committee cycles include those bumps.
+- **The negative within-person estimate should not be read as a penalty.** It rests on the few members (7) observed both on and off the committee in full cycles. It is weaker on the outlier-robust percentile scale, and the placebo (small cycles, where tenured members are not rated) is also negative. Excluding windows that contain a promotion leaves it negative but much less precise, so promotions are not the explanation. The pattern still fits timing more than the committee itself: people may be elected after strong stretches, or serve less in years with unusual pay (e.g. leaves), so their off-committee cycles include those bumps.
 - **The people who serve tend to get above-median raises anyway.** Across people, members sit higher in each cycle's raise distribution than non-members, in serving and non-serving cycles alike. This is consistent with the committee being drawn from faculty who are rated well, rather than with membership changing anyone's rating.
 - **MHI representation** on the committee has been low (0–3 of 5–11 seats). The MHI raise gap is smallest in the cycle with the most MHI seats, but six cycles cannot separate this from chance or from the 1-year outcome used for that cycle.
 
 ## Caveats
 
 - Small sample: about two dozen members over six usable full cycles. Only large effects (roughly $1,500–2,000 per cycle or more) are detectable; a null is not evidence of no effect.
-- Promotions (Associate to Full) raise salary and are not flagged, because the panel does not hold yearly titles. The winsorized specification limits their influence.
+- Promotions are flagged from the titles in the public disclosures (`data/sphs_titles.csv`); the rank-change rows drop any window that contains one.
 - Disclosed salary includes stipends; admin-role years are excluded but smaller stipends (program leads, teaching fellow) are not.
 - Under biennial review a full-cycle rating sets two years of increases, so part of the effect can fall outside the two-year window.
 - If members recuse themselves from their own file, any benefit would have to work through other channels (e.g. the norms the committee sets, or how colleagues rate one another).
