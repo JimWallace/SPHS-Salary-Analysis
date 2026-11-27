@@ -17,7 +17,7 @@ OUTPUTS := analysis_output/anomaly_input_summary.md analysis_output/anomaly_fit_
            analysis_output/anomaly_inputs.tex analysis_output/anomaly_table_subject.tex \
            analysis_output/anomaly_table_coefficients.tex
 
-.PHONY: anomaly anomaly-inputs anomaly-models anomaly-report anomaly-check anomaly-verify anomaly-test
+.PHONY: anomaly-wg2020 anomaly anomaly-inputs anomaly-models anomaly-report anomaly-check anomaly-verify anomaly-test
 
 anomaly: anomaly-inputs anomaly-models anomaly-report anomaly-check
 
@@ -48,3 +48,8 @@ anomaly-verify:
 	$(MAKE) anomaly
 	sha256sum $(OUTPUTS) > /tmp/anomaly_hashes_2.txt
 	diff /tmp/anomaly_hashes_1.txt /tmp/anomaly_hashes_2.txt && echo "Rebuild is byte-identical."
+
+# Test 1 (private, not part of `make anomaly`): the Working Group's published 2020 equation applied to the
+# subject's own 1 May 2020 record. Reads and writes data/private/ only.
+anomaly-wg2020:
+	$(PY) $(SCRIPTS)/anomaly_wg2020_self.py
