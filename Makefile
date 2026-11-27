@@ -28,7 +28,7 @@ anomaly-models: anomaly-inputs
 	Rscript $(SCRIPTS)/anomaly_models.R
 	cd $(SCRIPTS) && $(PY) anomaly_cross_report.py
 
-anomaly-report: anomaly-models
+anomaly-report: anomaly-models anomaly-wg2020
 	pdflatex -interaction=nonstopmode -halt-on-error anomaly_report.tex >/dev/null
 	pdflatex -interaction=nonstopmode -halt-on-error anomaly_report.tex >/dev/null
 	@echo "Built anomaly_report.pdf"

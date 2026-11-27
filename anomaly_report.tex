@@ -16,6 +16,8 @@
 \input{analysis_output/anomaly_results.tex}
 \input{analysis_output/anomaly_cross_report.tex}
 \input{analysis_output/promotion_pool_2025.tex}
+% Private: the subject's own 2020 record and ratings (scripts/anomaly_wg2020_self.py)
+\input{data/private/anomaly_wg2020_self.tex}
 
 \title{Applying the University's Salary Anomaly Screen to My Salary}
 \author{James R. Wallace\\ School of Public Health Sciences}
@@ -31,7 +33,7 @@ The University and the Faculty Association screen faculty salaries for anomalies
 
 This report runs the same model on public data, without the two rating-based terms, and asks whether my salary would be flagged. Among regular faculty in the Faculty of Health ($n = \OnemainN$ colleagues), my predicted salary is \OnemainFitted; my annualized base salary of \OnemainActual\ is \OnemainRatio\% of that, a difference of \OnemainGap. My salary would be flagged by the screen. It is flagged in \NFlagOne\ of \NSpecsOne\ Faculty of Health specifications. Among the faculty promoted to Professor in 2024 or 2025, adjusted for seniority, my salary is \TwomainRatio\% of its prediction (a difference of \TwomainGap): the first part of the rule is met, the second narrowly is not, and it is flagged in \NFlagTwo\ of \NSpecsTwo\ specifications.
 
-Under the University's own model, my average merit rating would need to be about \OnemainBreakEven\ units below that of comparable Faculty of Health colleagues (\TwomainBreakEven\ units for the promotion group) to account for these gaps. The analysis is descriptive and does not identify a cause.
+Under the University's own model, my average merit rating would need to be about \OnemainBreakEven\ units below that of comparable Faculty of Health colleagues (\TwomainBreakEven\ units for the promotion group) to account for these gaps. My own average rating for 2014--2020 was \WRAvg; against the unit average of \WUnitMean, the rating difference accounts for about \WDeficitDollars\ of these gaps. Applied to my 2020 record with my actual ratings, the full model would not have flagged my salary in 2020, but it predicts my salary only at an average rating below the one I received. The analysis is descriptive and does not identify a cause.
 
 \section*{Data and Methods}
 
@@ -136,7 +138,15 @@ Specification & $n$ & Fitted & Actual & Gap & Actual/fitted & Flagged & Break-ev
 
 The Working Group's model credits each unit of average merit rating with \WGRCoef\ of salary. The public data have no ratings, so the models above attribute none of the gap to them. Dividing each gap by the Working Group's coefficient gives the difference in average rating that would account for it (Table~\ref{tab:subject}, last column). Under the University's own model, my average merit rating would need to be \OnemainBreakEven\ units below that of comparable Faculty of Health colleagues, or \TwomainBreakEven\ units below that of comparable recently promoted Professors, to account for this gap. Across all specifications the figure is \BreakEvenRange\ units. The coefficient is in 2020 dollars; salary scale increases since then would make one unit worth more today, which would lower these figures somewhat.
 
-These figures do not say what my ratings were. They say how large a rating difference the Working Group's model would need in order to treat my salary as expected. If the ratings themselves differ for reasons unrelated to performance, a model that controls for them would not detect the resulting salary difference. That is a property of any model that conditions on a rating, and it is the reason this analysis removes the rating-based terms. It is not a claim that the Working Group's model is wrong for the purpose it was built for.
+These figures alone do not say what my ratings were (the next section uses them). They say how large a rating difference the Working Group's model would need in order to treat my salary as expected. If the ratings themselves differ for reasons unrelated to performance, a model that controls for them would not detect the resulting salary difference. That is a property of any model that conditions on a rating, and it is the reason this analysis removes the rating-based terms. It is not a claim that the Working Group's model is wrong for the purpose it was built for.
+
+\section*{The Full Model Applied to My 2020 Record}
+
+The Working Group's fitted equation can be applied to one person's record, as its own worked example does. On 1 May 2020 I was an Associate Professor in Health, hired as an Assistant Professor in 2014, with a doctorate in 2012, \WOPA\ Outstanding Performance Awards, and an average merit rating of \WRAvg\ over \WRN\ years. The equation predicts a base salary of \WFitted. My 1 May 2020 base salary is not public. The 2020 disclosure gives pay for the calendar year, which combines four months at the previous rate and eight at the new one, so my base lies between \WBaseLo\ (no increase on 1 May 2020) and \WBaseHi\ (a 10\% increase). The 2021 figure is not used because it includes a parental leave.
+
+My salary was therefore \WGapLo\ to \WGapHi\ below the prediction, or \WRatioLo\% to \WRatioHi\% of it. The first part of the rule is met and the second is not: the full model would not have flagged my salary in 2020. The model would predict my actual salary only with an average rating of \WRMatchLo\ to \WRMatchHi, below the \WRAvg\ I received, so part of the 2020 shortfall is not explained by my ratings even under the full model. (Averaging over five evaluations rather than seven years gives an average of \WRAvgAlt\ and a prediction of \WFittedAlt.)
+
+The ratings in \WUnitApplies\ were held to an average of \WUnitMean\ (\WUnitSource). My average was \WDeficit\ below that. Under the Working Group's coefficient, that difference is worth about \WDeficitDollars, or about \WShareOne\% of the Faculty of Health gap and \WShareTwo\% of the promotion-group gap in 2025. To account for those gaps, my ratings would need to have been \OnemainBreakEven\ and \TwomainBreakEven\ units below those of comparable colleagues.
 
 \section*{Comparison with My Earlier Analyses}
 
