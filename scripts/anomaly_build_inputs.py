@@ -73,6 +73,7 @@ DEGREES = {"doctoral": "Doctoral", "masters": "Masters", "bachelor": "Bachelor",
            "graduate license": "Graduate License"}
 RANK_SHORT = {"assistant professor": "Assistant", "associate professor": "Associate", "professor": "Professor",
               "lecturer": "Lecturer"}
+RANK_ORDER = {"Lecturer": 0, "Assistant": 1, "Associate": 2, "Professor": 3}
 ADMIN_ROLE = re.compile(r"\b(?:Dean|Chair|Director|Vice-President|Provost|President|Principal|Head)\b", re.I)
 SENIOR_ADMIN_TITLE = re.compile(r"^(?:President|Vice-President|Provost|Dean)\b|, Dean\b|^Dean,", re.I)
 
@@ -90,11 +91,31 @@ FIELDS = [
 ]
 
 
+CORE = ("highest_degree", "degree_year", "hire_year_uw", "rank_at_hire", "home_unit")
+
+
+def missing(v) -> bool:
+    return v in (None, "", "unknown", "null")
+
+
 def load_collected() -> dict[str, dict]:
+    """Primary records (batch_*.json), with gaps filled from supplement_*.json in file order.
+    A supplement never overrides a primary value; its sources are appended."""
     out = {}
     for path in sorted(COLLECT_DIR.glob("batch_*.json")):
         for row in json.loads(path.read_text(encoding="utf-8")):
+            row.setdefault("filled_by", {})
             out[row["person_id"]] = row
+    for path in sorted(COLLECT_DIR.glob("supplement_*.json")):
+        for sup in json.loads(path.read_text(encoding="utf-8")):
+            rec = out.setdefault(sup["person_id"], {"person_id": sup["person_id"], "sources": [], "confidence": {},
+                                                    "filled_by": {}})
+            for field in CORE:
+                if field in sup and not missing(sup[field]) and missing(rec.get(field)):
+                    rec[field] = sup[field]
+                    rec["filled_by"][field] = path.stem
+                    rec.setdefault("confidence", {})[field] = sup.get("confidence", {}).get(field, "")
+                    rec.setdefault("sources", []).extend(s for s in sup.get("sources", []) if s.get("field") == field)
     return out
 
 
@@ -203,11 +224,20 @@ def main() -> None:
         if rh_note:
             rank_src = rh_note
 
-        if hire_year and hire_year > first_year:
-            checks.append(f"hire year {hire_year} after first disclosure {first_year}")
+        first_rank = rank_from_title(hist[first_year].title)
+        if hire_src == "collected" and hire_year > first_year and first_rank:
+            # Disclosed as a ranked faculty member before the collected hire year: the disclosure wins.
+            checks.append(f"collected hire year {hire_year} after first disclosure as faculty {first_year}; "
+                          "replaced by first disclosure year")
+            hire_year, hire_src = first_year, "first disclosure (collected value contradicted)"
+        if rank_src == "collected" and first_rank and first_year - hire_year <= 1 \
+                and RANK_ORDER.get(rank_hire, 0) > RANK_ORDER.get(first_rank, 0):
+            # Hired at a higher rank than the one disclosed within a year of hire: the disclosure wins.
+            checks.append(f"collected rank at hire {rank_hire} above first disclosed rank {first_rank}; replaced")
+            rank_hire, rank_src = first_rank, "first disclosure title (collected value contradicted)"
         if degree_year and hire_year and degree_year > hire_year:
             checks.append("degree after hire (negative lag)")
-        if rank_src == "collected" and first_year - hire_year <= 1:
+        if rank_src == "collected" and hire_src == "collected" and first_year - hire_year <= 1:
             disc_rank = rank_from_title(hist[first_year].title)
             if disc_rank and disc_rank != rank_hire:
                 checks.append(f"rank at hire {rank_hire} vs first disclosed title {disc_rank}")
@@ -285,10 +315,11 @@ def main() -> None:
                                    ("rank_at_hire", rank_hire if rank_src == "collected" else None, rh_note),
                                    ("home_unit", unit_text, "")):
             srcs = sources_for(rec, field) or [{}]
+            filled = rec.get("filled_by", {}).get(field)
             for s in srcs:
                 log.append({
                     "person_id": pid, "field": field, "value": "" if value is None else value,
-                    "method": note or method, "source_url": s.get("url", ""), "retrieved": s.get("retrieved", ""),
+                    "method": note or (f"gap fill ({filled})" if filled else method), "source_url": s.get("url", ""), "retrieved": s.get("retrieved", ""),
                     "quote": s.get("quote", ""), "confidence": conf.get(field, "") if field != "home_unit" else "",
                     "automated_checks": row["checks"], "manual_verification": "",
                 })
