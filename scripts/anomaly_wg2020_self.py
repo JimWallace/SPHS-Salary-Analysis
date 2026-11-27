@@ -159,13 +159,23 @@ def write_macros(results: list[dict]) -> None:
         with unit.open(encoding="utf-8") as f:
             u = next(csv.DictReader(f))
         with (ROOT / "analysis_output" / "anomaly_subject_results.csv").open(encoding="utf-8") as f:
-            gaps = {r["spec"]: float(r["gap"]) for r in csv.DictReader(f)}
+            subj = {r["spec"]: r for r in csv.DictReader(f)}
+        gaps = {k: float(r["gap"]) for k, r in subj.items()}
         mean, own = float(u["mean_rating"]), float(lo["r_average"])
         dollars = (mean - own) * float(load_coefs()["R-score avg"])
         m.update({"WUnitMean": f"{mean:.2f}", "WUnitApplies": u["applies_to"], "WUnitSource": u["source"],
                   "WDeficit": f"{mean - own:.2f}", "WDeficitDollars": money(dollars),
                   "WShareOne": f"{100 * dollars / gaps['S1_main']:.0f}",
                   "WShareTwo": f"{100 * dollars / gaps['S2_main']:.0f}"})
+        # 2025, ratings added back approximately: the main fit's prediction (colleagues assumed to average
+        # the unit mean) less the Working Group's value of my rating difference.
+        for spec, key in (("S1_main", "One"), ("S2_main", "Two")):
+            fit_adj = float(subj[spec]["fitted"]) - dollars
+            act = float(subj[spec]["actual"])
+            gap = fit_adj - act
+            m.update({f"WAdj{key}Fitted": money(fit_adj), f"WAdj{key}Gap": money(gap),
+                      f"WAdj{key}Ratio": f"{100 * act / fit_adj:.1f}",
+                      f"WAdj{key}Flag": "Yes" if (gap > FLAG_ABS and act < FLAG_REL * fit_adj) else "No"})
     if len(results) >= 4:
         m["WFittedAlt"] = money(results[2]["fitted_2020"])
         m["WRAvgAlt"] = f"{float(results[2]['r_average']):.2f}"
