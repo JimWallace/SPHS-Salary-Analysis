@@ -97,3 +97,20 @@ Optional: `data/private/required_names.csv` (columns `year,surname,given`) lists
 ## Citing
 
 Cite the archived release on Zenodo: [doi:10.5281/zenodo.24397927](https://doi.org/10.5281/zenodo.24397927) (all versions; v1.0.0 is [doi:10.5281/zenodo.24397928](https://doi.org/10.5281/zenodo.24397928)). See `CITATION.cff`.
+
+## Salary anomaly screen
+
+Applies the regression screen from the University's 2020–21 Salary Anomaly Working Group to public salary data, without the screen's rating-based terms (average merit rating and Outstanding Performance Awards). It asks whether the author's salary would be flagged.
+
+```bash
+make anomaly          # inputs -> models (R) -> report -> independent checks
+make anomaly-verify   # rebuild twice from scratch and confirm identical outputs
+```
+
+- `scripts/anomaly_health_roster.py`, `anomaly_targets.py`, `anomaly_build_inputs.py`, `anomaly_orcid_fill.py`: build the inputs.
+- `scripts/anomaly_models.R`: fits the models (base R `lm`).
+- `scripts/anomaly_check.py`: recomputes the author's fitted salary by hand, refits the main models in Python, and audits the outputs for names.
+- `docs/anomaly_collection_protocol.md`: how degree and hire years were collected from public sources.
+- `anomaly_report.tex`: the report source. The PDF is built locally and not committed.
+
+Colleague-level inputs (`data/private/anomaly_inputs.csv`, `verification_log.csv`, collected sources) are gitignored. Published outputs in `analysis_output/anomaly_*` contain only the author's values, model coefficients, fit statistics and unlabelled residuals. Rebuilding needs the private inputs, so a fresh checkout cannot reproduce the models.
