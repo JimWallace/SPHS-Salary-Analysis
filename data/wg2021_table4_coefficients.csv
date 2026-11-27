@@ -1,0 +1,40 @@
+term,estimate,std_error
+(Intercept),55882.15,5247.35
+R-score avg,27711.54,2164.78
+Lag,1053.81,146.69
+Years.UW,3119.49,132.54
+Years.UW.sq,-28.80,3.16
+OPA,3881.91,473.20
+Highest.Degree:Doctoral,9802.09,3731.89
+Highest.Degree:Graduate License,-9013.73,7572.62
+Highest.Degree:Masters,8958.48,3755.76
+Highest.Degree:Professional,16505.81,4680.32
+Rank.at.Hire:Associate Professor,2699.49,2434.18
+Rank.at.Hire:Lecturer,-2795.57,1955.96
+Rank.at.Hire:Professor,26974.51,3859.57
+Current.Rank:Associate Professor,6582.83,1253.00
+Current.Rank:Lecturer,-12156.7,4115.02
+Current.Rank:Professor,14892.48,1592.78
+Academic.Group:ARTS,-9808.95,3891.31
+Academic.Group:ENG,11481.13,3819.00
+Academic.Group:ENV,-3020.77,5327.41
+Academic.Group:MATH,-221.04,3844.06
+Academic.Group:SCI,-4103.36,4196.23
+Academic.Group:SAF,7222.36,4517.28
+Academic.Group:Econ,7289.76,5815.53
+Academic.Group:CSCS,3600.38,4387.72
+Academic.Group:SOVS,17685.04,7796.67
+Academic.Group:Pharmacy,28657.24,6741.58
+Academic.Group:ARTS x Prof,3249.25,4213.67
+Academic.Group:ENG x Prof,2890.13,4115.15
+Academic.Group:ENV x Prof,-3054.03,5637.46
+Academic.Group:MATH x Prof,12504.37,4196.51
+Academic.Group:SCI x Prof,3380.60,4523.92
+Academic.Group:SAF x Prof,35402.05,5097.57
+Academic.Group:Econ x Prof,6940.58,6336.02
+Academic.Group:CSCS x Prof,19097.21,4772.01
+Academic.Group:SOVS x Prof,-3809.09,8053.30
+Academic.Group:Pharmacy x Prof,-8899.50,7324.97
+Lag x Rank.at.Hire:Associate Professor,797.14,266.25
+Lag x Rank.at.Hire:Lecturer,-198.29,177.82
+Lag x Rank.at.Hire:Professor,297.41,234.53

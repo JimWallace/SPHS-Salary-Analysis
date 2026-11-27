@@ -97,3 +97,22 @@ Optional: `data/private/required_names.csv` (columns `year,surname,given`) lists
 ## Citing
 
 Cite the archived release on Zenodo: [doi:10.5281/zenodo.24397927](https://doi.org/10.5281/zenodo.24397927) (all versions; v1.0.0 is [doi:10.5281/zenodo.24397928](https://doi.org/10.5281/zenodo.24397928)). See `CITATION.cff`.
+
+## Salary anomaly screen
+
+Applies the regression screen from the University's 2020–21 Salary Anomaly Working Group to public salary data, without the screen's rating-based terms (average merit rating and Outstanding Performance Awards). It asks whether the author's salary would be flagged.
+
+```bash
+make anomaly          # inputs -> models (R) -> report -> independent checks
+make anomaly-verify   # rebuild twice from scratch and confirm identical outputs
+```
+
+- `scripts/anomaly_health_roster.py`, `anomaly_targets.py`, `anomaly_build_inputs.py`, `anomaly_orcid_fill.py`: build the inputs.
+- `scripts/anomaly_models.R`: fits the models (base R `lm`).
+- `scripts/anomaly_check.py`: recomputes the author's fitted salary by hand, refits the main models in Python, and audits the outputs for names.
+- `docs/anomaly_collection_protocol.md`: how degree and hire years were collected from public sources.
+- `anomaly_report.tex`: the report source. The PDF is built locally and not committed.
+- `scripts/anomaly_wg2020_self.py` (`make anomaly-wg2020`): applies the Working Group's published 2020 equation (`data/wg2021_table4_coefficients.csv`, checked against the report's worked example) to the author's own 2020 record. Its inputs (the author's ratings) and outputs stay in `data/private/`.
+- `scripts/anomaly_fit2020.R`: fits the Faculty of Health model on 2020 salaries, including a truncated regression for the $100,000 disclosure threshold, and compares its prediction with the Working Group model's. Its outputs stay in `data/private/`.
+
+Colleague-level inputs (`data/private/anomaly_inputs.csv`, `verification_log.csv`, collected sources) are gitignored. Published outputs in `analysis_output/anomaly_*` contain only the author's values, model coefficients, fit statistics and unlabelled residuals. Rebuilding needs the private inputs, so a fresh checkout cannot reproduce the models.
