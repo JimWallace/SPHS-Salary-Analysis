@@ -181,7 +181,7 @@ Specification & $n$ & estimable & Flagged & Share & Middle half & Middle 80\% & 
 
 \section*{Comparison with Computer Science}
 
-The promotion-group model includes academic group, with Computer Science in the Mathematics group. Predicting my salary from that fit with the Mathematics group in place of Health gives \TwocsmainFitted, against \TwomainFitted\ for Health. My salary is \TwocsmainGap\ below that, or \TwocsmainRatio\% of it (break-even R \TwocsmainBreakEven), and it is flagged in \CSFlagN\ of \CSSpecs\ specifications, with gaps of \CSGapRange\ (Table~\ref{tab:cs}). The Mathematics term (\MathCoef, standard error \MathCoefSE) rests on \TwoMathN\ colleagues, \TwoMathCS\ of them in Computer Science, and the Health level on \TwoHealthN. The comparison therefore shows the direction and rough size of the difference, not a precise figure. It also assumes that seniority and lag have the same effect in every group.
+As a first check, the promotion-group model includes academic group, and Computer Science is part of its Mathematics group. Predicting my salary from that fit with the Mathematics group in place of Health gives \TwocsmainFitted, against \TwomainFitted\ for Health. My salary is \TwocsmainGap\ below that, or \TwocsmainRatio\% of it (break-even R \TwocsmainBreakEven), and it is flagged in \CSFlagN\ of \CSSpecs\ specifications, with gaps of \CSGapRange\ (Table~\ref{tab:cs}). The Mathematics term (\MathCoef, standard error \MathCoefSE) rests on \TwoMathN\ colleagues, \TwoMathCS\ of them in Computer Science, and the Health level on \TwoHealthN. The comparison therefore shows the direction and rough size of the difference, not a precise figure. It also assumes that seniority and lag have the same effect in every group.
 
 \begin{table}[H]
 \centering
@@ -198,7 +198,24 @@ Specification & $n$ & Fitted, Health & Fitted, Mathematics & Gap & Actual/fitted
 \label{tab:cs}
 \end{table}
 
-A fuller comparison would fit the Faculty of Health model to Computer Science faculty. Nothing has been collected for it. The Cheriton School's public listing (retrieved \CSRetrieved) has \CSListed\ regular faculty whose home is the School, after removing adjunct, emeritus and research appointments and faculty cross-appointed from other units. Of these, \CSMatched\ (\CSCoverage\%) appear in the 2025 disclosure: \CSProf\ Professors, \CSAssoc\ Associate Professors, \CSAssist\ Assistant Professors and \CSTeaching\ in the teaching stream. Under the collection protocol, each person needs a highest degree and its year, a hire year, rank at hire, home unit, administrative roles and any leave, each with a source, retrieval date and quotation. In the Faculty of Health, \HSecondShare\% of colleagues needed a second search, each needed about \HEvidence\ evidence entries, and \HInFit\ of \HOk\ (\HFitShare\%) reached the main fit. At those rates, collecting all \CSMatched\ means \CSBatches\ first-round batches of \CSBatchSize, about \CSSecond\ second-round searches and about \CSEvidence\ evidence entries, and would give a main fit of about \CSExpFit\ colleagues. A fit as large as the Faculty of Health one would need about \CSNeed\ people.
+The fuller comparison fits the Faculty of Health model to Computer Science faculty. The Cheriton School's public listing (retrieved \CSRetrieved) has \CSListed\ regular faculty whose home is the School, after removing adjunct, emeritus and research appointments and faculty cross-appointed from other units. Of these, \CSMatched\ (\CSCoverage\%) appear in the 2025 disclosure: \CSProf\ Professors, \CSAssoc\ Associate Professors, \CSAssist\ Assistant Professors and \CSTeaching\ in the teaching stream. Their degree and hire details were collected under the same protocol, in two rounds, and a hire year was found in a public source for \CSHireSourced\ of \CSInputs. The main fit has \CmainN\ colleagues (the estimate before collection was about \CSExpFit).
+
+My salary is predicted from my own record (rank, rank at hire, lag and years since hire) as for a member of the School: \CmainFitted. My salary is \CmainRatio\% of that, a gap of \CmainGap\ (break-even R \CmainBreakEven), and it is flagged in \NFlagC\ of \NSpecsC\ specifications, with gaps of \GapRangeC\ (Table~\ref{tab:csfit}). The fit is weaker than in the Faculty of Health (adjusted $R^2 = \CmainAdjRsq\%$; residual SD \CmainResidSD): Computer Science salaries vary widely at a given rank and seniority, so this prediction is less precise. It describes what colleagues with my record are paid in Computer Science, not what I would be paid there.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrrcr}
+\toprule
+Specification & $n$ & Fitted & Actual & Gap & Actual/fitted & Flagged & Break-even R \\
+\midrule
+\csname @@input\endcsname analysis_output/anomaly_table_csfit.tex 
+\bottomrule
+\end{tabular}
+\caption{The Faculty of Health specifications of Table~\ref{tab:subject}, fitted to Cheriton School of Computer Science faculty, predicting my salary from my own record. $n$ counts Computer Science colleagues in the fit.}
+\label{tab:csfit}
+\end{table}
 
 \section*{Comparison with My Earlier Analyses}
 

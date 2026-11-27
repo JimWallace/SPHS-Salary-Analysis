@@ -129,3 +129,60 @@ Complete cases, not excluded: **37**
 | hired 2025 or later (excluded) | 0 |
 | automated check raised | 0 |
 | hire year from first-disclosure fallback | 6 |
+
+## Computer Science comparison sample (n = 97, the subject not included)
+
+| Variable | Present | Missing | Source: collected | Source: fallback/derived |
+|---|---|---|---|---|
+| current_rank | 97 | 0 | 0 | 97 |
+| rank_at_hire | 84 | 13 | 83 | 1 |
+| hire_year | 97 | 0 | 82 | 15 |
+| highest_degree | 96 | 1 | 96 | 0 |
+| degree_year | 94 | 3 | 94 | 0 |
+| lag | 94 | 3 | 0 | 94 |
+| salary_2024 | 86 | 11 | 0 | 86 |
+| salary_2025 | 97 | 0 | 0 | 97 |
+
+Complete cases, not excluded: **73**
+
+| Count | Value |
+|---|---|
+| **current_rank** | |
+| 35 | Professor |
+| 26 | Associate |
+| 19 | Assistant |
+| 17 | Lecturer |
+| **rank_at_hire** | |
+| 51 | Assistant |
+| 14 | Lecturer |
+| 13 | unknown |
+| 12 | Professor |
+| 7 | Associate |
+| **highest_degree** | |
+| 95 | Doctoral |
+| 1 | unknown |
+| 1 | Masters |
+| **academic_group** | |
+| 97 | CSCS |
+| **confidence (lowest field)** | |
+| 64 | high |
+| 17 | low |
+| 16 | medium |
+| **promotion year source (current rank)** | |
+| 47 | exact |
+| 36 | hire |
+| 12 | censored |
+| 2 | interval |
+| **promoted in 2024 or 2025** | |
+| 74 | 0 |
+| 23 | 1 |
+
+| Flag | Count |
+|---|---|
+| admin_flag (broad: any role, incl. associate chairs and undated) | 34 |
+| admin_flag_confirmed (stipended role held in 2024-25, or admin in disclosed title) | 26 |
+| leave_flag | 35 |
+| senior administrator (excluded) | 0 |
+| hired 2025 or later (excluded) | 2 |
+| automated check raised | 2 |
+| hire year from first-disclosure fallback | 15 |
