@@ -85,3 +85,8 @@ data/sphs.csv
 outputs/matching_table.csv
 outputs/matching_table.md
 data/sphs_titles.csv
+
+# Salary anomaly screen: archived source documents (hash recorded in data/raw/documents_manifest.csv)
+data/raw/documents/
+# Anomaly report PDF (personal; build locally with `make anomaly`)
+anomaly_report.pdf

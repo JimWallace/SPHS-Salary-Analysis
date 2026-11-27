@@ -4,6 +4,8 @@
 Usage:
   python3 scripts/fetch_salary_disclosure.py 2026
   python3 scripts/fetch_salary_disclosure.py 2025 --html saved_copy.html   # archive a copy you already downloaded
+  python3 scripts/fetch_salary_disclosure.py 2023 --refetch   # archive a new copy; the old entry moves to
+                                                              # data/raw/manifest_superseded.csv
 
 The page is downloaded only if the manifest has no entry for the year.
 Outputs:
@@ -24,6 +26,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RAW_DIR = ROOT / "data" / "raw"
 MANIFEST = RAW_DIR / "manifest.csv"
+SUPERSEDED = RAW_DIR / "manifest_superseded.csv"
 MANIFEST_FIELDS = ["year", "url", "file", "retrieved", "sha256", "bytes"]
 # Newer lists use the first pattern; older lists (2023 and before) use the second.
 DISCLOSURE_URLS = [
@@ -67,10 +70,24 @@ def main() -> None:
     parser.add_argument("--html", type=Path, help="archive this already-downloaded copy instead of downloading")
     parser.add_argument("--url", help="source URL of the --html copy (default: first URL pattern)")
     parser.add_argument("--retrieved", default=date.today().isoformat(), help="retrieval date (ISO), default today")
+    parser.add_argument("--refetch", action="store_true",
+                        help="archive a new copy even if the year is in the manifest (old entry is kept in "
+                             "manifest_superseded.csv)")
     args = parser.parse_args()
 
     rows = read_manifest()
     existing = [r for r in rows if int(r["year"]) == args.year]
+    if existing and args.refetch:
+        old = []
+        if SUPERSEDED.exists():
+            with SUPERSEDED.open(encoding="utf-8") as f:
+                old = list(csv.DictReader(f))
+        with SUPERSEDED.open("w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=MANIFEST_FIELDS)
+            writer.writeheader()
+            writer.writerows(old + existing)
+        rows = [r for r in rows if int(r["year"]) != args.year]
+        existing = []
     if existing:
         print(f"{args.year} is already in {MANIFEST.relative_to(ROOT)} ({existing[0]['file']}); nothing to do.")
         return

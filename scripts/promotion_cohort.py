@@ -170,8 +170,8 @@ def parse_disclosure(page_html: str) -> list[Record]:
     records = []
     for tr in re.findall(r"<tr[^>]*>(.*?)</tr>", page_html, flags=re.IGNORECASE | re.DOTALL):
         cells = [clean_text(c) for c in re.findall(r"<t[dh][^>]*>(.*?)</t[dh]>", tr, flags=re.IGNORECASE | re.DOTALL)]
-        if len(cells) != 5 or cells[0] == "Surname":
-            continue
+        if len(cells) != 5 or cells[0] == "Surname" or not re.search(r"[0-9]", cells[3]):
+            continue  # header rows and blank spacer rows (2019 and later)
         surname, given, title, paid, _benefits = cells
         records.append(Record(surname, given, title, parse_money(paid), classify_title(title)))
     return records
