@@ -13,7 +13,9 @@ OUTPUTS := analysis_output/anomaly_input_summary.md analysis_output/anomaly_fit_
            analysis_output/anomaly_coefficients.csv analysis_output/anomaly_subject_results.csv \
            analysis_output/anomaly_subject_design.csv analysis_output/anomaly_residuals_S1_main.csv \
            analysis_output/anomaly_residuals_S2_main.csv analysis_output/anomaly_results.tex \
-           analysis_output/anomaly_skipped_specs.csv
+           analysis_output/anomaly_skipped_specs.csv analysis_output/anomaly_cross_report.tex \
+           analysis_output/anomaly_inputs.tex analysis_output/anomaly_table_subject.tex \
+           analysis_output/anomaly_table_coefficients.tex
 
 .PHONY: anomaly anomaly-inputs anomaly-models anomaly-report anomaly-check anomaly-verify anomaly-test
 
@@ -24,6 +26,7 @@ anomaly-inputs:
 
 anomaly-models: anomaly-inputs
 	Rscript $(SCRIPTS)/anomaly_models.R
+	cd $(SCRIPTS) && $(PY) anomaly_cross_report.py
 
 anomaly-report: anomaly-models
 	pdflatex -interaction=nonstopmode -halt-on-error anomaly_report.tex >/dev/null
