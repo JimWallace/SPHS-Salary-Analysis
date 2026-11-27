@@ -78,11 +78,13 @@ ADMIN_ROLE = re.compile(r"\b(?:Dean|Chair|Director|Vice-President|Provost|Presid
 SENIOR_ADMIN_TITLE = re.compile(r"^(?:President|Vice-President|Provost|Dean)\b|, Dean\b|^Dean,", re.I)
 
 FIELDS = [
-    "person_id", "is_subject", "name_key", "in_health", "in_pool", "pool_year",
+    "person_id", "is_subject", "name_key", "in_health", "in_pool", "pool_year", "in_cs",
     "unit", "faculty", "academic_group", "academic_group_s2", "academic_group_source",
     "current_rank", "current_title_2025", "rank_2024", "rank_2020", "salary_2020", "rank_at_hire", "rank_at_hire_source",
     "hire_year", "hire_year_source", "first_disclosure_year",
     "highest_degree", "degree_year", "lag", "years_since_hire",
+    "title_rank_2025", "promotion_year", "promotion_year_source", "years_in_rank", "rank_start_censored",
+    "promoted_2024_25",
     "salary_2023", "salary_2024", "salary_2025", "salary_2025_paid", "salary_max_2024_2025",
     "admin_flag", "admin_flag_confirmed", "admin_detail", "senior_admin_title", "leave_flag", "leave_detail",
     "exclude_reason",
@@ -155,6 +157,54 @@ def rank_from_title(title: str) -> str:
     if cls.rank in ("Assistant", "Associate", "Professor"):
         return "Lecturer" if cls.stream == "teaching" else cls.rank
     return ""
+
+
+def title_rank(title: str) -> str:
+    """Rank as written in the disclosed title, keeping the teaching-stream steps apart
+    ('Assistant', 'Associate-TS', 'Lecturer', ...); '' if the title names no rank."""
+    if title.strip().startswith("Lecturer"):
+        return "Lecturer"
+    cls = pc.classify_title(title)
+    if cls.rank in ("Assistant", "Associate", "Professor"):
+        return cls.rank + ("-TS" if cls.stream == "teaching" else "")
+    return ""
+
+
+def rank_timing(titles: dict[int, str], hire_year: int | None, hired_into_rank: bool) -> dict:
+    """Year the person reached their current disclosed rank, read from changes in title across the lists.
+
+    The current rank is the 2025 title rank. Walking back from 2025, the promotion year is the first list
+    in the unbroken run at that rank (lists whose title names no rank, e.g. an administrative title, do
+    not break the run). Sources:
+      exact     the previous list shows a different rank in the year before;
+      interval  the previous list at a different rank is two or more years earlier (the person was below
+                the disclosure threshold or absent); the later bound is used;
+      hire      no earlier list at another rank and the person was hired at this rank (collected rank
+                at hire); the hire year is used;
+      censored  no earlier list at another rank and not hired at this rank: the promotion was in or before
+                the first list at this rank; that year is used as a bound and rank_start_censored = 1.
+    years_in_rank = 2025 - promotion year. promoted_2024_25 = 1 if the promotion year is 2024 or 2025."""
+    years = sorted(y for y, t in titles.items() if title_rank(t))
+    if not years:
+        return {"title_rank_2025": "", "promotion_year": "", "promotion_year_source": "unknown",
+                "years_in_rank": "", "rank_start_censored": "", "promoted_2024_25": ""}
+    ranks = {y: title_rank(titles[y]) for y in years}
+    current = ranks[years[-1]]
+    k = len(years) - 1
+    while k > 0 and ranks[years[k - 1]] == current:
+        k -= 1
+    start = years[k]
+    censored = 0
+    if k > 0:
+        source = "exact" if years[k] - years[k - 1] == 1 else "interval"
+        year = start
+    elif hired_into_rank and hire_year:
+        source, year = "hire", min(hire_year, start)
+    else:
+        source, year, censored = "censored", start, 1
+    return {"title_rank_2025": current, "promotion_year": year, "promotion_year_source": source,
+            "years_in_rank": REFERENCE_YEAR - year, "rank_start_censored": censored,
+            "promoted_2024_25": int(source in ("exact", "interval") and year >= REFERENCE_YEAR - 1)}
 
 
 def academic_group(unit_text: str, in_health: bool) -> tuple[str, str]:
@@ -245,6 +295,8 @@ def main() -> None:
         current_rank = rank_from_title(r2025.title) or norm_rank(t["listed_position"])
         unit_text = rec.get("home_unit") or ""
         group, group_src = academic_group(unit_text, t["in_health"] == "1")
+        if t.get("in_cs") == "1" and t["in_health"] != "1":
+            group, group_src = "CSCS", "Computer Science listing"
 
         roles = [f"{a.get('role', '')} ({a.get('years', '')})" for a in rec.get("admin_roles", []) or []]
         title_admin = [h.title for y, h in hist.items() if y in (2024, 2025) and "admin" in h.cls.flags]
@@ -284,10 +336,18 @@ def main() -> None:
 
         retrieved = sorted({s.get("retrieved", "") for s in rec.get("sources", []) if s.get("retrieved")})
         lag = hire_year - degree_year if (hire_year and degree_year) else None
+        # Hired at the current rank: the first title rank is the entry rank of its ladder (Assistant, or
+        # Assistant/Lecturer in the teaching stream), or the collected rank at hire equals the current one.
+        entry_rank = title_rank(hist[min(hist)].title) if hist else ""
+        hired_into = (bool(rank_hire) and rank_hire == current_rank != "Lecturer") or \
+            entry_rank in ("Assistant", "Assistant-TS", "Lecturer")
+        timing = rank_timing({y: h.title for y, h in hist.items()}, hire_year if hire_src == "collected" else None,
+                             hired_into)
         row = {
             "person_id": pid, "is_subject": t["is_subject"],
             "name_key": f"{r2025.key[0]}|{r2025.key[1]}",
             "in_health": t["in_health"], "in_pool": t["in_pool"], "pool_year": t["pool_year"],
+            "in_cs": t.get("in_cs", "0"),
             "unit": t["unit"] or unit_text, "faculty": "Health" if t["in_health"] == "1" else unit_text,
             "academic_group": group, "academic_group_s2": STAGE2_GROUP.get(group, group),
             "academic_group_source": group_src,
@@ -299,6 +359,7 @@ def main() -> None:
             "hire_year": hire_year or "", "hire_year_source": hire_src, "first_disclosure_year": first_year,
             "highest_degree": degree, "degree_year": degree_year or "", "lag": "" if lag is None else lag,
             "years_since_hire": REFERENCE_YEAR - hire_year if hire_year else "",
+            **timing,
             "salary_2023": sal[2023] or "", "salary_2024": sal[2024] or "",
             "salary_2025": f"{salary_2025:.2f}", "salary_2025_paid": sal[2025],
             "salary_max_2024_2025": f"{max(salary_2025, sal[2024] or 0):.2f}",
@@ -395,9 +456,11 @@ def write_summary(rows: list[dict]) -> None:
     m = sum(r["match_2025"] == "unique" for r in roster)
     out.append(f"| Total | {len(roster)} | {m} | {m / len(roster):.0%} |")
 
-    for label, key in (("Stage 1: Faculty of Health", "in_health"), ("Stage 2: promotion pool", "in_pool")):
+    for label, key in (("Stage 1: Faculty of Health", "in_health"), ("Stage 2: promotion pool", "in_pool"),
+                       ("Computer Science comparison sample", "in_cs")):
         sub = [r for r in rows if r[key] == "1"]
-        out += ["", f"## {label} (n = {len(sub)}, including the subject)", "",
+        incl = ", including the subject" if key != "in_cs" else ", the subject not included"
+        out += ["", f"## {label} (n = {len(sub)}{incl})", "",
                 "| Variable | Present | Missing | Source: collected | Source: fallback/derived |", "|---|---|---|---|---|"]
         for v in required:
             present = sum(str(r[v]) != "" for r in sub)
@@ -419,6 +482,8 @@ def write_summary(rows: list[dict]) -> None:
             ("highest_degree", Counter(r["highest_degree"] or "unknown" for r in sub)),
             ("academic_group", Counter(r["academic_group"] or "unknown" for r in sub)),
             ("confidence (lowest field)", Counter(r["confidence_min"] or "none" for r in sub)),
+            ("promotion year source (current rank)", Counter(r["promotion_year_source"] for r in sub)),
+            ("promoted in 2024 or 2025", Counter(str(r["promoted_2024_25"]) for r in sub)),
         ):
             out.append(f"| **{name}** | |")
             out += [f"| {n} | {k} |" for k, n in sorted(counter.items(), key=lambda kv: -kv[1])]
@@ -450,6 +515,10 @@ def write_macros(rows: list[dict], roster: list[dict]) -> None:
         "HealthExcludedAdmin": sum(r["senior_admin_title"] == 1 for r in health),
         "HealthHireSourced": sum(r["hire_year_source"].startswith("collected") for r in health),
         "PoolHireSourced": sum(r["hire_year_source"].startswith("collected") for r in pool),
+        "CSInputs": sum(r["in_cs"] == "1" for r in rows),
+        "CSHireSourced": sum(r["in_cs"] == "1" and r["hire_year_source"].startswith("collected") for r in rows),
+        "CSLagFound": sum(r["in_cs"] == "1" and str(r["lag"]) != "" for r in rows),
+        "CSExcluded": sum(r["in_cs"] == "1" and bool(r["exclude_reason"]) for r in rows),
         "LeaveThreshold": f"{100 * (EXPECTED_SCALE_GROWTH_2025 - 1):.2f}",
         "WGHash": wg["sha256"][:16], "WGRetrieved": wg["retrieved"],
         "AnomSubjectBase": "\\$" + f"{SUBJECT_BASE_2025:,.0f}".replace(",", "{,}"),

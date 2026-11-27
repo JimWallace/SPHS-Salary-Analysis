@@ -11,7 +11,10 @@ Usage:
    factor coding, numpy least squares) on the same people (data/private/anomaly_model_samples.csv) and
    compares the subject's prediction and the adjusted R^2 with R's.
 3. Name audit: no colleague's name may appear in any public output (analysis_output/, output/,
-   docs/, the report source and its PDF text). Prints file and line only, never the name.
+   docs/, the report source and its PDF text). Prints file and line only, never the name. The Computer
+   Science listing names (data/private/cs_roster.csv) are checked too.
+4. Row-level audit: no pseudonymous person id (P + 8 hex digits) in any public output, and the public
+   screen-rate file has one row per specification (totals only).
 
 Exits non-zero if any check fails.
 """
@@ -58,7 +61,7 @@ def dummies(values: list[str], ref: str) -> tuple[list[str], np.ndarray]:
     return levels, np.array([[1.0 if v == lev else 0.0 for lev in levels] for v in values]).reshape(len(values), -1)
 
 
-def refit(spec: str, stage: int) -> list[str]:
+def refit(spec: str, stage: int, screen: bool = True) -> list[str]:
     inputs = {r["person_id"]: r for r in read(ac.PRIVATE / "anomaly_inputs.csv")}
     sample = [r for r in read(ac.PRIVATE / "anomaly_model_samples.csv") if r["spec"] == spec]
     subject = next(r for r in inputs.values() if r["is_subject"] == "1")
@@ -104,7 +107,52 @@ def refit(spec: str, stage: int) -> list[str]:
     ok = abs(pred - float(r_res["fitted"])) <= TOL and abs(adj - float(r_fit["adj_r2"])) < 1e-6
     print(f"  refit {spec:10s} numpy {pred:12,.2f} vs R {float(r_res['fitted']):12,.2f}; adj R2 {adj:.6f} vs "
           f"{float(r_fit['adj_r2']):.6f}; full rank {keep}  {'ok' if ok else 'MISMATCH'}")
-    return [] if ok else [f"refit {spec}"]
+    errors = [] if ok else [f"refit {spec}"]
+    if stage == 1 and screen:
+        errors += screen_check(spec, Xo, y)
+    return errors
+
+
+def screen_check(spec: str, X: np.ndarray, y: np.ndarray) -> list[str]:
+    """The screen for every colleague by brute force: drop each colleague, refit, predict them, apply the
+    two-part rule. Compares the count with the public total (no row-level output)."""
+    flagged, not_est = 0, 0
+    for i in range(len(y)):
+        keep = np.arange(len(y)) != i
+        Xi = X[keep]
+        if np.linalg.matrix_rank(Xi) < np.linalg.matrix_rank(X):
+            not_est += 1  # the only member of a category: no leave-one-out prediction
+            continue
+        b, *_ = np.linalg.lstsq(Xi, y[keep], rcond=None)
+        fitted = float(X[i] @ b)
+        flagged += (fitted - y[i] > 5000) and (y[i] < 0.9 * fitted)
+    pub = next(r for r in read(OUT / "anomaly_screen_rates.csv") if r["spec"] == spec)
+    ok = flagged == int(pub["n_flagged"]) and len(y) - not_est == int(pub["n_estimable"])
+    print(f"  screen {spec:9s} brute-force refits: {flagged} flagged of {len(y) - not_est} vs R "
+          f"{pub['n_flagged']} of {pub['n_estimable']}  {'ok' if ok else 'MISMATCH'}")
+    return [] if ok else [f"screen {spec}"]
+
+
+def public_files() -> list[Path]:
+    files = [p for d in ("analysis_output", "output", "docs") for p in (ROOT / d).glob("**/*")
+             if p.is_file() and "anomaly" in p.name]
+    return files + [ROOT / "anomaly_report.tex"]
+
+
+def row_audit() -> list[str]:
+    hits = 0
+    for f in public_files():
+        if not f.exists():
+            continue
+        for i, line in enumerate(f.read_text(encoding="utf-8", errors="replace").splitlines(), 1):
+            if re.search(r"\bP[0-9a-f]{8}\b", line.replace("P1234abcd", "")):  # the protocol's example id
+                print(f"  PERSON ID {f.relative_to(ROOT)}:{i}")
+                hits += 1
+    rates = read(OUT / "anomaly_screen_rates.csv")
+    specs = [r["spec"] for r in rates]
+    ok = len(specs) == len(set(specs)) and not {"person_id", "actual", "loo_fitted"} & set(rates[0])
+    print(f"  row-level audit: {hits} person ids in public outputs; screen rates one row per spec: {ok}")
+    return [] if hits == 0 and ok else ["row-level audit"]
 
 
 def name_audit() -> list[str]:
@@ -127,10 +175,15 @@ def name_audit() -> list[str]:
         names.add(t["display_name"])
     for r in roster:
         names.add(r["name"])
+    cs_roster = ac.PRIVATE / "cs_roster.csv"
+    if cs_roster.exists():
+        for r in read(cs_roster):
+            names.add(r["name"])
+            toks = r["name"].split()
+            if toks and len(toks[-1]) >= 6:
+                surnames.add(toks[-1])
     surnames -= {"Wallace"}
-    files = [p for d in ("analysis_output", "output", "docs") for p in (ROOT / d).glob("**/*")
-             if p.is_file() and "anomaly" in p.name]
-    files += [ROOT / "anomaly_report.tex"]
+    files = public_files()
     pdf = ROOT / "anomaly_report.pdf"
     texts = []
     for f in files:
@@ -159,8 +212,12 @@ def main() -> None:
     errors += hand_check()
     print("2. Independent refit (numpy)")
     errors += refit("S1_main", 1) + refit("S2_main", 2)
+    if any(r["spec"] == "C1_main" for r in read(OUT / "anomaly_subject_results.csv")):
+        errors += refit("C1_main", 1, screen=False)
     print("3. Name audit of public outputs")
     errors += name_audit()
+    print("4. Row-level audit of public outputs")
+    errors += row_audit()
     if errors:
         sys.exit("FAILED: " + ", ".join(errors))
     print("All checks passed.")

@@ -15,6 +15,7 @@
 \input{analysis_output/anomaly_inputs.tex}
 \input{analysis_output/anomaly_results.tex}
 \input{analysis_output/anomaly_cross_report.tex}
+\input{analysis_output/anomaly_cs_scope.tex}
 \input{analysis_output/promotion_pool_2025.tex}
 % Private: the subject's own 2020 record and ratings (scripts/anomaly_wg2020_self.py)
 \input{data/private/anomaly_wg2020_self.tex}
@@ -32,7 +33,7 @@
 
 The University and the Faculty Association screen faculty salaries for anomalies with a regression model. The model used in the University's 2020--21 Salary Anomaly Working Group review predicts each person's salary from their career history and flags a salary that is more than \$5{,}000 \emph{and} more than 10\% below its prediction. That model includes each person's average merit rating and number of Outstanding Performance Awards. A model that holds merit ratings constant compares people with similar ratings, so it cannot show a difference in salary that arises from the ratings themselves.
 
-This report runs the same model on public data, without the two rating-based terms, and asks whether my salary would be flagged. Among regular faculty in the Faculty of Health ($n = \OnemainN$ colleagues), my predicted salary is \OnemainFitted; my annualized base salary of \OnemainActual\ is \OnemainRatio\% of that, a difference of \OnemainGap. My salary would be flagged by the screen. It is flagged in \NFlagOne\ of \NSpecsOne\ Faculty of Health specifications. Among the faculty promoted to Professor in 2024 or 2025, adjusted for seniority, my salary is \TwomainRatio\% of its prediction (a difference of \TwomainGap): the first part of the rule is met, the second narrowly is not, and it is flagged in \NFlagTwo\ of \NSpecsTwo\ specifications.
+This report runs the same model on public data, without the two rating-based terms, and asks whether my salary would be flagged. Among regular faculty in the Faculty of Health ($n = \OnemainN$ colleagues), my predicted salary is \OnemainFitted; my annualized base salary of \OnemainActual\ is \OnemainRatio\% of that, a difference of \OnemainGap. My salary would be flagged by the screen. It is flagged in \NFlagOne\ of \NSpecsOne\ Faculty of Health specifications. Among the faculty promoted to Professor in 2024 or 2025, adjusted for seniority, my salary is \TwomainRatio\% of its prediction (a difference of \TwomainGap): the first part of the rule is met, the second narrowly is not, and it is flagged in \NFlagTwo\ of \NSpecsTwo\ specifications. The same model fitted to faculty in the Cheriton School of Computer Science ($n = \CmainN$ colleagues) predicts \CmainFitted\ for my record; my salary is \CmainRatio\% of that, and it is flagged in \NFlagC\ of \NSpecsC\ specifications. That fit is less precise (adjusted $R^2 = \CmainAdjRsq\%$), and it describes what Computer Science colleagues with my record are paid, not what I would be paid there.
 
 Under the University's own model, my average merit rating would need to be about \OnemainBreakEven\ units below that of comparable Faculty of Health colleagues (\TwomainBreakEven\ units for the promotion group) to account for these gaps. My own average rating for 2014--2020 was \WRAvg; against the unit average of \WUnitMean, the rating difference accounts for about \WDeficitDollars\ of these gaps. Applied to my 2020 record with my actual ratings, the full model would not have flagged my salary in 2020, but it predicts my salary only at an average rating below the one I received. The analysis is descriptive and does not identify a cause.
 
@@ -137,6 +138,85 @@ The same Faculty of Health specification, fitted on 2020 salaries (\FTwentyN\ pr
 
 Most of the 2025 change comes with the promotion. Holding years since hire and lag constant, Faculty of Health Professors are paid \FTwentyFivePrem\ more than Associate Professors in the 2025 fit (\FTwentyPrem\ in 2020). In the Working Group's model the same difference is \WGPrem, because the merit rating and award terms carry much of what distinguishes higher-paid faculty. The two models therefore treat different evidence as the measure of performance: the Working Group's model uses the merit ratings, and a model without them uses rank, which reflects the outcome of the promotion process. My salary is consistent with the first and well below what the second predicts. This is an interpretation of the coefficients; it identifies where the models diverge, not why my salary did.
 
+\section*{Time in Rank}
+
+The models above compare people of the same rank, but not people who have held that rank for the same time. I was promoted to Professor in 2025. Each colleague's promotion year was read from the change in title across the 2011--2025 disclosure lists: the first list showing the current rank after a list showing another one. Teaching-stream steps count as promotions. For colleagues hired at their current rank, the hire year is used. For \RankCensN\ colleagues in the main sample the current rank already appears in their first list, and they were not hired at it, so their promotion year is known only to be no later than that list; they enter at that bound, with an indicator. In all, \RankRecentN\ colleagues were promoted in 2024 or 2025 (\RankRecentTwentyFiveN\ in 2025).
+
+Adding years in current rank changes my prediction little (Table~\ref{tab:rank}). Salary rises by \RankYearsCoef\ per year in rank (standard error \RankYearsCoefSE), but years since hire and rank already account for most of it, and my prediction is \OnexrankyearsFitted. An indicator for promotion in 2024 or 2025 has a larger effect: recently promoted colleagues are paid \RecentCoefAbs\ less than others of the same rank and seniority (standard error \RecentCoefSE), and my prediction falls to \OnexrecentFitted. My salary is \OnexrecentRatio\% of that, and it is flagged in all three versions. Part of the indicator reflects the timing of pay: promotions take effect on 1 July, so colleagues promoted in 2025 were paid at their earlier rank for half of the year, while my figure is a full-year rate. The indicator version therefore understates my prediction somewhat.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrrcr}
+\toprule
+Specification & $n$ & Fitted & Actual & Gap & Actual/fitted & Flagged & Break-even R \\
+\midrule
+\csname @@input\endcsname analysis_output/anomaly_table_rank.tex 
+\bottomrule
+\end{tabular}
+\caption{Faculty of Health model with time in current rank added. Columns as in Table~\ref{tab:subject}. The uncensored version drops the \RankKnownDropped\ colleagues whose promotion year is only bounded.}
+\label{tab:rank}
+\end{table}
+
+\section*{How Often the Screen Flags Colleagues}
+
+A flag means more if the screen flags few people. The same rule was applied to each colleague in the Faculty of Health fits: each colleague's salary is predicted from the fit without them (and without me), and the two-part rule is applied. In the main fit, \ScrFlag\ of \ScrN\ colleagues (\ScrPct\%) are flagged; \ScrNotEst\ colleague, the only member of one category, has no leave-one-out prediction and is not counted. Half of colleagues are paid from \ScrIQR\ of their prediction, and four in five from \ScrDecile. My salary, at \OnemainRatio\% of its prediction, is below that range. By unit, \ScrSPHS\ colleagues in SPHS, \ScrKHS\ in KHS and \ScrRLS\ in RLS are flagged. Across the \ScrSpecs\ specifications, \ScrFlagRange\ colleagues are flagged (\ScrPctRange; Table~\ref{tab:screen}). Only these totals are reported; no colleague's result is published.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+& & Not & & & \multicolumn{2}{c}{Actual/fitted (\%)} & \multicolumn{3}{c}{Flagged / colleagues} \\
+Specification & $n$ & estimable & Flagged & Share & Middle half & Middle 80\% & SPHS & KHS & RLS \\
+\midrule
+\csname @@input\endcsname analysis_output/anomaly_table_screen.tex 
+\bottomrule
+\end{tabular}
+\caption{The screen applied to every colleague in the Faculty of Health specifications of Table~\ref{tab:subject}, excluding me. $n$ counts colleagues with a leave-one-out prediction. Middle half: 25th to 75th percentile; middle 80\%: 10th to 90th.}
+\label{tab:screen}
+\end{table}
+
+\section*{Comparison with Computer Science}
+
+As a first check, the promotion-group model includes academic group, and Computer Science is part of its Mathematics group. Predicting my salary from that fit with the Mathematics group in place of Health gives \TwocsmainFitted, against \TwomainFitted\ for Health. My salary is \TwocsmainGap\ below that, or \TwocsmainRatio\% of it (break-even R \TwocsmainBreakEven), and it is flagged in \CSFlagN\ of \CSSpecs\ specifications, with gaps of \CSGapRange\ (Table~\ref{tab:cs}). The Mathematics term (\MathCoef, standard error \MathCoefSE) rests on \TwoMathN\ colleagues, \TwoMathCS\ of them in Computer Science, and the Health level on \TwoHealthN. The comparison therefore shows the direction and rough size of the difference, not a precise figure. It also assumes that seniority and lag have the same effect in every group.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrrcr}
+\toprule
+Specification & $n$ & Fitted, Health & Fitted, Mathematics & Gap & Actual/fitted & Flagged & Break-even R \\
+\midrule
+\csname @@input\endcsname analysis_output/anomaly_table_cs.tex 
+\bottomrule
+\end{tabular}
+\caption{Promotion-group specifications of Table~\ref{tab:subject}, predicting my salary with the Mathematics group term in place of Health. Gap, actual/fitted, flag and break-even R refer to the Mathematics prediction.}
+\label{tab:cs}
+\end{table}
+
+The fuller comparison fits the Faculty of Health model to Computer Science faculty. The Cheriton School's public listing (retrieved \CSRetrieved) has \CSListed\ regular faculty whose home is the School, after removing adjunct, emeritus and research appointments and faculty cross-appointed from other units. Of these, \CSMatched\ (\CSCoverage\%) appear in the 2025 disclosure: \CSProf\ Professors, \CSAssoc\ Associate Professors, \CSAssist\ Assistant Professors and \CSTeaching\ in the teaching stream. Their degree and hire details were collected under the same protocol, in two rounds, and a hire year was found in a public source for \CSHireSourced\ of \CSInputs. The main fit has \CmainN\ colleagues (the estimate before collection was about \CSExpFit).
+
+My salary is predicted from my own record (rank, rank at hire, lag and years since hire) as for a member of the School: \CmainFitted. My salary is \CmainRatio\% of that, a gap of \CmainGap\ (break-even R \CmainBreakEven), and it is flagged in \NFlagC\ of \NSpecsC\ specifications, with gaps of \GapRangeC\ (Table~\ref{tab:csfit}). The fit is weaker than in the Faculty of Health (adjusted $R^2 = \CmainAdjRsq\%$; residual SD \CmainResidSD): Computer Science salaries vary widely at a given rank and seniority, so this prediction is less precise. It describes what colleagues with my record are paid in Computer Science, not what I would be paid there.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrrcr}
+\toprule
+Specification & $n$ & Fitted & Actual & Gap & Actual/fitted & Flagged & Break-even R \\
+\midrule
+\csname @@input\endcsname analysis_output/anomaly_table_csfit.tex 
+\bottomrule
+\end{tabular}
+\caption{The Faculty of Health specifications of Table~\ref{tab:subject}, fitted to Cheriton School of Computer Science faculty, predicting my salary from my own record. $n$ counts Computer Science colleagues in the fit.}
+\label{tab:csfit}
+\end{table}
+
 \section*{Comparison with My Earlier Analyses}
 
 Two earlier reports used the same public disclosures with different methods (Table~\ref{tab:cross}). My March report compared the salary growth of faculty affiliated with the Master of Health Informatics with that of other SPHS faculty. My October report placed my salary among the \PoolN\ faculty promoted to Professor in 2024 or 2025, without adjusting for seniority. To put the March growth estimates on the same footing as a salary level, the table multiplies each annual gap by my \XYearsSinceHire\ years since hire.
@@ -174,7 +254,7 @@ The estimates agree in size. The Faculty of Health screen gap (\XOneGap) lies wi
 
 \section*{Reproducibility}
 
-\texttt{make anomaly} rebuilds every table, figure and number in this report from the archived disclosure lists (with their SHA-256 hashes), the archived Working Group report, and the collected public-source values; \texttt{make anomaly-verify} rebuilds it twice from scratch and checks that the outputs are identical. The models are fitted in R (base \texttt{lm}). An independent script recomputes my fitted values from the coefficients, refits the main models in Python, and checks that no colleague's name appears in any output. Colleague-level data stay in a private folder and are not published.
+\texttt{make anomaly} rebuilds every table, figure and number in this report from the archived disclosure lists (with their SHA-256 hashes), the archived Working Group report, and the collected public-source values; \texttt{make anomaly-verify} rebuilds it twice from scratch and checks that the outputs are identical. The models are fitted in R (base \texttt{lm}). An independent script recomputes my fitted values from the coefficients, refits the main models in Python, recounts the colleagues flagged in the main fit by refitting without each one, and checks that no colleague's name or identifier appears in any output. Colleague-level data stay in a private folder and are not published.
 
 \newpage
 \appendix

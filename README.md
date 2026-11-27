@@ -109,7 +109,9 @@ make anomaly-verify   # rebuild twice from scratch and confirm identical outputs
 
 - `scripts/anomaly_health_roster.py`, `anomaly_targets.py`, `anomaly_build_inputs.py`, `anomaly_orcid_fill.py`: build the inputs.
 - `scripts/anomaly_models.R`: fits the models (base R `lm`).
-- `scripts/anomaly_check.py`: recomputes the author's fitted salary by hand, refits the main models in Python, and audits the outputs for names.
+  It also fits Stage 1 with time in current rank (promotion years read from title changes across the disclosure lists), applies the screen to every Faculty of Health colleague (`analysis_output/anomaly_screen_rates.csv` has totals only; row-level results stay in `data/private/anomaly_screen_rows.csv`), and predicts the author's salary under Stage 2 with the Mathematics group (which holds Computer Science) in place of Health.
+- `scripts/anomaly_cs_scope.py`: builds the Cheriton School of Computer Science roster from the School's public listing (`--roster`, private) and writes counts and the collection-effort estimate. The CS faculty's degree and hire details were collected under the same protocol (`data/private/anomaly_collect/batch_cs_*.json`, `supplement_round2_cs_01.json`), and `anomaly_models.R` fits the Stage 1 model to them (`analysis_output/anomaly_table_csfit.tex`).
+- `scripts/anomaly_check.py`: recomputes the author's fitted salary by hand, refits the main models in Python, recounts the colleague screen by brute-force refits, and audits the outputs for names and person ids.
 - `docs/anomaly_collection_protocol.md`: how degree and hire years were collected from public sources.
 - `anomaly_report.tex`: the report source. The PDF is built locally and not committed.
 - `scripts/anomaly_wg2020_self.py` (`make anomaly-wg2020`): applies the Working Group's published 2020 equation (`data/wg2021_table4_coefficients.csv`, checked against the report's worked example) to the author's own 2020 record. Its inputs (the author's ratings) and outputs stay in `data/private/`.

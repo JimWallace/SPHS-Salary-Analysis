@@ -6,7 +6,9 @@ Usage:
 
 Targets are (1) Faculty of Health roster members matched to the 2025 disclosure
 (data/private/health_roster.csv, from anomaly_health_roster.py) and (2) the 2025 promotion pool
-(anomaly_common.pool_members, the 48 of the October report). The subject is in both.
+(anomaly_common.pool_members, the 48 of the October report). The subject is in both. (3) Cheriton School
+of Computer Science faculty matched to the 2025 disclosure (data/private/cs_roster.csv, from
+anomaly_cs_scope.py --roster), for the Computer Science comparison sample.
 
 Output (gitignored, names): data/private/anomaly_targets.csv, one row per person with the
 disclosure facts a collector needs as hints (titles, first disclosure year).
@@ -20,6 +22,7 @@ import anomaly_common as ac
 import promotion_cohort as pc
 
 ROSTER = ac.PRIVATE / "health_roster.csv"
+CS_ROSTER = ac.PRIVATE / "cs_roster.csv"
 OUT = ac.PRIVATE / "anomaly_targets.csv"
 
 
@@ -32,20 +35,33 @@ def main() -> None:
     for row in roster:
         rec = by_name[(row["disc_surname"], row["disc_given"])]
         pid = ac.person_id(rec)
-        targets[pid] = {"person_id": pid, "rec": rec, "in_health": "1", "in_pool": "0", "pool_year": "",
+        targets[pid] = {"person_id": pid, "rec": rec, "in_health": "1", "in_pool": "0", "pool_year": "", "in_cs": "0",
                         "unit": row["unit"], "display_name": row["name"], "listed_position": row["position"],
                         "profile_url": row["profile_url"], "also_listed_by": row["also_listed_by"],
                         "match_how": row["match_how"]}
     for rec, pyear in ac.pool_members(2025):
         pid = ac.person_id(rec)
-        t = targets.setdefault(pid, {"person_id": pid, "rec": rec, "in_health": "0", "unit": "",
+        t = targets.setdefault(pid, {"person_id": pid, "rec": rec, "in_health": "0", "in_cs": "0", "unit": "",
                                      "display_name": f"{rec.given.title()} {rec.surname.title()}",
                                      "listed_position": "", "profile_url": "", "also_listed_by": "",
                                      "match_how": "pool"})
         t["in_pool"], t["pool_year"] = "1", str(pyear)
+    if CS_ROSTER.exists():
+        with CS_ROSTER.open(encoding="utf-8") as f:
+            cs = [r for r in csv.DictReader(f) if r["match_2025"] == "unique"]
+        for row in cs:
+            rec = by_name[(row["disc_surname"], row["disc_given"])]
+            pid = ac.person_id(rec)
+            t = targets.setdefault(pid, {"person_id": pid, "rec": rec, "in_health": "0", "in_pool": "0",
+                                         "pool_year": "", "unit": "", "display_name": row["name"],
+                                         "listed_position": "", "profile_url": "", "also_listed_by": "",
+                                         "match_how": row["match_how"]})
+            t["in_cs"] = "1"
+            if not t["unit"]:
+                t["unit"], t["listed_position"], t["profile_url"] = "CS", row["position"], row["profile_url"]
 
     rows = []
-    for pid, t in sorted(targets.items(), key=lambda kv: (kv[1]["in_health"] != "1", kv[0])):
+    for pid, t in sorted(targets.items(), key=lambda kv: (kv[1]["in_health"] != "1", kv[1]["in_cs"] == "1", kv[0])):
         rec = t.pop("rec")
         hist = ac.history(rec)
         years = sorted(hist)
@@ -58,13 +74,14 @@ def main() -> None:
             "disclosure_years": ";".join(map(str, years)),
         })
         rows.append(t)
-    fields = ["person_id", "is_subject", "in_health", "in_pool", "pool_year", "unit", "display_name",
+    fields = ["person_id", "is_subject", "in_health", "in_pool", "pool_year", "in_cs", "unit", "display_name",
               "disc_surname", "disc_given", "listed_position", "profile_url", "also_listed_by", "match_how",
               "title_2025", "title_2024", "first_disclosure_year", "first_disclosure_title", "disclosure_years"]
     pc.write_csv(OUT, rows, fields)
     print(f"Wrote {OUT.relative_to(ac.ROOT)}: {len(rows)} people "
           f"({sum(r['in_health'] == '1' for r in rows)} Health, {sum(r['in_pool'] == '1' for r in rows)} pool, "
-          f"{sum(r['in_health'] == '1' and r['in_pool'] == '1' for r in rows)} both)")
+          f"{sum(r['in_health'] == '1' and r['in_pool'] == '1' for r in rows)} both, "
+          f"{sum(r['in_cs'] == '1' for r in rows)} Computer Science)")
 
 
 if __name__ == "__main__":
