@@ -97,8 +97,18 @@ def health_effort() -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--refresh", action="store_true")
+    ap.add_argument("--roster", action="store_true", help="write data/private/cs_roster.csv only (inputs stage)")
     args = ap.parse_args()
+    rows, dropped, retrieved = build_roster(args.refresh)
+    if args.roster:
+        print(f"Wrote {OUT.relative_to(ac.ROOT)}: {len(rows)} listed, "
+              f"{sum(r['match_2025'] == 'unique' for r in rows)} matched to 2025.")
+        return
+    summarize(rows, dropped, retrieved)
 
+
+def build_roster(refresh: bool = False) -> tuple[list[dict], Counter, str]:
+    """Kept listing entries matched to the 2025 disclosure (writes data/private/cs_roster.csv)."""
     manifest = hr.read_cache_manifest()
     d2025 = pc.load_year(2025)
     index = hr.disclosure_index(d2025)
@@ -106,7 +116,7 @@ def main() -> None:
     dropped = Counter()
     retrieved = ""
     for url in URLS:
-        page, retrieved = hr.fetch(url, manifest, args.refresh)
+        page, retrieved = hr.fetch(url, manifest, refresh)
         for pattern in (hr.CARD, hr.CONTACT):
             for m in pattern.finditer(page):
                 name, pos = hr.clean(m.group("name")), hr.clean(m.group("pos"))
@@ -114,7 +124,11 @@ def main() -> None:
                 if reason:
                     dropped[reason] += 1
                     continue
-                kept.setdefault(pc.normalize_name_part(name), {"name": name, "position": pos})
+                href = m.group("href")
+                href = href if href.startswith("http") else hr.BASE + href
+                row = kept.setdefault(pc.normalize_name_part(name), {"name": name, "position": pos, "profile_url": href})
+                if "/profiles/" in href and "/profiles/" not in row["profile_url"]:
+                    row["profile_url"] = href
     hr.write_cache_manifest(manifest)
 
     rows = []
@@ -122,14 +136,20 @@ def main() -> None:
         hits, how = hr.match_any(row["name"], index, d2025)
         regular = [h for h in hits if pc.is_main_campus_regular(h.cls) and bi.title_rank(h.title)]
         chosen = regular[0] if len(regular) == 1 else None
-        row.update({"match_2025": "unique" if chosen else ("ambiguous" if len(regular) > 1 else "none"),
+        row.update({"person_id": ac.person_id(chosen) if chosen else "",
+                    "disc_surname": chosen.surname if chosen else "", "disc_given": chosen.given if chosen else "",
+                    "match_2025": "unique" if chosen else ("ambiguous" if len(regular) > 1 else "none"),
                     "match_how": how, "title_2025": chosen.title if chosen else "",
                     "title_rank_2025": bi.title_rank(chosen.title) if chosen else "",
                     "senior_admin_title": int(bool(chosen) and bool(bi.SENIOR_ADMIN_TITLE.search(chosen.title))
                                               and not bi.rank_from_title(chosen.title))})
         rows.append(row)
-    pc.write_csv(OUT, rows, ["name", "position", "match_2025", "match_how", "title_2025", "title_rank_2025",
-                             "senior_admin_title"])
+    pc.write_csv(OUT, rows, ["person_id", "name", "position", "profile_url", "disc_surname", "disc_given",
+                             "match_2025", "match_how", "title_2025", "title_rank_2025", "senior_admin_title"])
+    return rows, dropped, retrieved
+
+
+def summarize(rows: list[dict], dropped: Counter, retrieved: str) -> None:
 
     listed = len(rows)
     matched = [r for r in rows if r["match_2025"] == "unique"]

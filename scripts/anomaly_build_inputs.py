@@ -78,7 +78,7 @@ ADMIN_ROLE = re.compile(r"\b(?:Dean|Chair|Director|Vice-President|Provost|Presid
 SENIOR_ADMIN_TITLE = re.compile(r"^(?:President|Vice-President|Provost|Dean)\b|, Dean\b|^Dean,", re.I)
 
 FIELDS = [
-    "person_id", "is_subject", "name_key", "in_health", "in_pool", "pool_year",
+    "person_id", "is_subject", "name_key", "in_health", "in_pool", "pool_year", "in_cs",
     "unit", "faculty", "academic_group", "academic_group_s2", "academic_group_source",
     "current_rank", "current_title_2025", "rank_2024", "rank_2020", "salary_2020", "rank_at_hire", "rank_at_hire_source",
     "hire_year", "hire_year_source", "first_disclosure_year",
@@ -295,6 +295,8 @@ def main() -> None:
         current_rank = rank_from_title(r2025.title) or norm_rank(t["listed_position"])
         unit_text = rec.get("home_unit") or ""
         group, group_src = academic_group(unit_text, t["in_health"] == "1")
+        if t.get("in_cs") == "1" and t["in_health"] != "1":
+            group, group_src = "CSCS", "Computer Science listing"
 
         roles = [f"{a.get('role', '')} ({a.get('years', '')})" for a in rec.get("admin_roles", []) or []]
         title_admin = [h.title for y, h in hist.items() if y in (2024, 2025) and "admin" in h.cls.flags]
@@ -345,6 +347,7 @@ def main() -> None:
             "person_id": pid, "is_subject": t["is_subject"],
             "name_key": f"{r2025.key[0]}|{r2025.key[1]}",
             "in_health": t["in_health"], "in_pool": t["in_pool"], "pool_year": t["pool_year"],
+            "in_cs": t.get("in_cs", "0"),
             "unit": t["unit"] or unit_text, "faculty": "Health" if t["in_health"] == "1" else unit_text,
             "academic_group": group, "academic_group_s2": STAGE2_GROUP.get(group, group),
             "academic_group_source": group_src,
@@ -453,9 +456,11 @@ def write_summary(rows: list[dict]) -> None:
     m = sum(r["match_2025"] == "unique" for r in roster)
     out.append(f"| Total | {len(roster)} | {m} | {m / len(roster):.0%} |")
 
-    for label, key in (("Stage 1: Faculty of Health", "in_health"), ("Stage 2: promotion pool", "in_pool")):
+    for label, key in (("Stage 1: Faculty of Health", "in_health"), ("Stage 2: promotion pool", "in_pool"),
+                       ("Computer Science comparison sample", "in_cs")):
         sub = [r for r in rows if r[key] == "1"]
-        out += ["", f"## {label} (n = {len(sub)}, including the subject)", "",
+        incl = ", including the subject" if key != "in_cs" else ", the subject not included"
+        out += ["", f"## {label} (n = {len(sub)}{incl})", "",
                 "| Variable | Present | Missing | Source: collected | Source: fallback/derived |", "|---|---|---|---|---|"]
         for v in required:
             present = sum(str(r[v]) != "" for r in sub)

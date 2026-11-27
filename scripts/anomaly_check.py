@@ -61,7 +61,7 @@ def dummies(values: list[str], ref: str) -> tuple[list[str], np.ndarray]:
     return levels, np.array([[1.0 if v == lev else 0.0 for lev in levels] for v in values]).reshape(len(values), -1)
 
 
-def refit(spec: str, stage: int) -> list[str]:
+def refit(spec: str, stage: int, screen: bool = True) -> list[str]:
     inputs = {r["person_id"]: r for r in read(ac.PRIVATE / "anomaly_inputs.csv")}
     sample = [r for r in read(ac.PRIVATE / "anomaly_model_samples.csv") if r["spec"] == spec]
     subject = next(r for r in inputs.values() if r["is_subject"] == "1")
@@ -108,7 +108,7 @@ def refit(spec: str, stage: int) -> list[str]:
     print(f"  refit {spec:10s} numpy {pred:12,.2f} vs R {float(r_res['fitted']):12,.2f}; adj R2 {adj:.6f} vs "
           f"{float(r_fit['adj_r2']):.6f}; full rank {keep}  {'ok' if ok else 'MISMATCH'}")
     errors = [] if ok else [f"refit {spec}"]
-    if stage == 1:
+    if stage == 1 and screen:
         errors += screen_check(spec, Xo, y)
     return errors
 
@@ -212,6 +212,8 @@ def main() -> None:
     errors += hand_check()
     print("2. Independent refit (numpy)")
     errors += refit("S1_main", 1) + refit("S2_main", 2)
+    if any(r["spec"] == "C1_main" for r in read(OUT / "anomaly_subject_results.csv")):
+        errors += refit("C1_main", 1, screen=False)
     print("3. Name audit of public outputs")
     errors += name_audit()
     print("4. Row-level audit of public outputs")

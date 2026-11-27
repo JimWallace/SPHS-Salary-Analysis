@@ -19,14 +19,14 @@ OUTPUTS := analysis_output/anomaly_input_summary.md analysis_output/anomaly_fit_
            analysis_output/anomaly_table_coefficients.tex analysis_output/anomaly_screen_rates.csv \
            analysis_output/anomaly_table_rank.tex analysis_output/anomaly_table_screen.tex \
            analysis_output/anomaly_table_cs.tex analysis_output/anomaly_cs_scope.md \
-           analysis_output/anomaly_cs_scope.tex
+           analysis_output/anomaly_cs_scope.tex analysis_output/anomaly_table_csfit.tex
 
 .PHONY: anomaly-wg2020 anomaly anomaly-inputs anomaly-models anomaly-report anomaly-check anomaly-verify anomaly-test
 
 anomaly: anomaly-inputs anomaly-models anomaly-report anomaly-check
 
 anomaly-inputs:
-	cd $(SCRIPTS) && $(PY) anomaly_health_roster.py && $(PY) anomaly_targets.py && $(PY) anomaly_build_inputs.py
+	cd $(SCRIPTS) && $(PY) anomaly_health_roster.py && $(PY) anomaly_cs_scope.py --roster && $(PY) anomaly_targets.py && $(PY) anomaly_build_inputs.py
 
 anomaly-models: anomaly-inputs
 	Rscript $(SCRIPTS)/anomaly_models.R
