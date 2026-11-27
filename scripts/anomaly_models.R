@@ -141,7 +141,7 @@ fit_spec <- function(spec, stage, label, df, formula_fn, notes = "", set = "core
                          crit_abs = gap > FLAG_ABS, crit_rel = actual < FLAG_REL * fitted,
                          flagged = (gap > FLAG_ABS) & (actual < FLAG_REL * fitted),
                          loo_percentile = pct, breakeven_r = gap / WG_R_COEF),
-    residuals = data.frame(spec = spec, residual = c(sort(unname(loo_res)), subj_res),
+    residuals = data.frame(spec = spec, residual = c(sort(unname(loo_res), na.last = TRUE), subj_res),
                            subject = c(rep(0, length(loo_res)), 1)),
     design = design,
     model = m,

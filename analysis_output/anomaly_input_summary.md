@@ -135,15 +135,15 @@ Complete cases, not excluded: **37**
 | Variable | Present | Missing | Source: collected | Source: fallback/derived |
 |---|---|---|---|---|
 | current_rank | 97 | 0 | 0 | 97 |
-| rank_at_hire | 84 | 13 | 83 | 1 |
-| hire_year | 97 | 0 | 82 | 15 |
+| rank_at_hire | 88 | 9 | 87 | 1 |
+| hire_year | 97 | 0 | 87 | 10 |
 | highest_degree | 96 | 1 | 96 | 0 |
 | degree_year | 94 | 3 | 94 | 0 |
 | lag | 94 | 3 | 0 | 94 |
 | salary_2024 | 86 | 11 | 0 | 86 |
 | salary_2025 | 97 | 0 | 0 | 97 |
 
-Complete cases, not excluded: **73**
+Complete cases, not excluded: **76**
 
 | Count | Value |
 |---|---|
@@ -153,10 +153,10 @@ Complete cases, not excluded: **73**
 | 19 | Assistant |
 | 17 | Lecturer |
 | **rank_at_hire** | |
-| 51 | Assistant |
-| 14 | Lecturer |
-| 13 | unknown |
+| 53 | Assistant |
+| 16 | Lecturer |
 | 12 | Professor |
+| 9 | unknown |
 | 7 | Associate |
 | **highest_degree** | |
 | 95 | Doctoral |
@@ -165,13 +165,13 @@ Complete cases, not excluded: **73**
 | **academic_group** | |
 | 97 | CSCS |
 | **confidence (lowest field)** | |
-| 64 | high |
-| 17 | low |
+| 68 | high |
 | 16 | medium |
+| 13 | low |
 | **promotion year source (current rank)** | |
 | 47 | exact |
-| 36 | hire |
-| 12 | censored |
+| 37 | hire |
+| 11 | censored |
 | 2 | interval |
 | **promoted in 2024 or 2025** | |
 | 74 | 0 |
@@ -185,4 +185,4 @@ Complete cases, not excluded: **73**
 | senior administrator (excluded) | 0 |
 | hired 2025 or later (excluded) | 2 |
 | automated check raised | 2 |
-| hire year from first-disclosure fallback | 15 |
+| hire year from first-disclosure fallback | 10 |

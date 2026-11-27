@@ -18,7 +18,7 @@ Listing entries dropped: non-regular position 27, not a faculty rank 131, positi
 
 | Measure | Value |
 |---|---|
-| People in the first collection round (Health and promotion pool) | 120 in 8 batches of up to 15 |
+| People in the first collection round (Health and promotion pool) | 215 in 15 batches of up to 15 |
 | Health colleagues searched again in the second round | 47% |
 | Health colleagues with an ORCID gap fill | 17% |
 | Evidence entries (source, date, quotation) per Health colleague | 3.8 |
