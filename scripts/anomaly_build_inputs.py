@@ -79,12 +79,12 @@ SENIOR_ADMIN_TITLE = re.compile(r"^(?:President|Vice-President|Provost|Dean)\b|,
 
 FIELDS = [
     "person_id", "is_subject", "name_key", "in_health", "in_pool", "pool_year",
-    "unit", "faculty", "academic_group", "academic_group_source",
-    "current_rank", "current_title_2025", "rank_at_hire", "rank_at_hire_source",
+    "unit", "faculty", "academic_group", "academic_group_s2", "academic_group_source",
+    "current_rank", "current_title_2025", "rank_2024", "rank_at_hire", "rank_at_hire_source",
     "hire_year", "hire_year_source", "first_disclosure_year",
     "highest_degree", "degree_year", "lag", "years_since_hire",
     "salary_2023", "salary_2024", "salary_2025", "salary_2025_paid", "salary_max_2024_2025",
-    "admin_flag", "admin_detail", "senior_admin_title", "leave_flag", "leave_detail",
+    "admin_flag", "admin_flag_confirmed", "admin_detail", "senior_admin_title", "leave_flag", "leave_detail",
     "exclude_reason",
     "src_highest_degree", "src_degree_year", "src_hire_year", "src_rank_at_hire", "src_unit",
     "retrieved", "confidence_min", "checks", "manual_verification",
@@ -289,8 +289,10 @@ def main() -> None:
             "name_key": f"{r2025.key[0]}|{r2025.key[1]}",
             "in_health": t["in_health"], "in_pool": t["in_pool"], "pool_year": t["pool_year"],
             "unit": t["unit"] or unit_text, "faculty": "Health" if t["in_health"] == "1" else unit_text,
-            "academic_group": group, "academic_group_source": group_src,
+            "academic_group": group, "academic_group_s2": STAGE2_GROUP.get(group, group),
+            "academic_group_source": group_src,
             "current_rank": current_rank, "current_title_2025": r2025.title,
+            "rank_2024": rank_from_title(hist[2024].title) if 2024 in hist else "",
             "rank_at_hire": rank_hire, "rank_at_hire_source": rank_src,
             "hire_year": hire_year or "", "hire_year_source": hire_src, "first_disclosure_year": first_year,
             "highest_degree": degree, "degree_year": degree_year or "", "lag": "" if lag is None else lag,
@@ -298,7 +300,10 @@ def main() -> None:
             "salary_2023": sal[2023] or "", "salary_2024": sal[2024] or "",
             "salary_2025": f"{salary_2025:.2f}", "salary_2025_paid": sal[2025],
             "salary_max_2024_2025": f"{max(salary_2025, sal[2024] or 0):.2f}",
-            "admin_flag": int(bool(admin_detail)), "admin_detail": admin_detail,
+            "admin_flag": int(bool(admin_detail)),
+            "admin_flag_confirmed": int(bool(title_admin) or any(confirmed_stipend_role(a) for a in
+                                                                 rec.get("admin_roles", []) or [])),
+            "admin_detail": admin_detail,
             "senior_admin_title": int(senior),
             "leave_flag": int(any(not d.startswith("subject") for d in leave_detail)),
             "leave_detail": "; ".join(leave_detail),
@@ -334,6 +339,27 @@ def main() -> None:
     write_summary(rows)
     print(f"Wrote {OUT.relative_to(ac.ROOT)} ({len(rows)} rows), {OUT_LOG.relative_to(ac.ROOT)} ({len(log)} rows), "
           f"{OUT_SUMMARY.relative_to(ac.ROOT)}")
+
+
+# Stage 2 collapses the Working Group's 11 groups to the six Faculties (small cells).
+STAGE2_GROUP = {"CSCS": "Math", "SAF": "Arts", "Econ": "Arts", "Pharmacy": "Sci", "SOVS": "Sci"}
+
+STIPEND_ROLE = re.compile(r"\b(?:Dean|Chair|Director|Provost|President|Principal)\b", re.I)
+DEPUTY_ROLE = re.compile(r"\bAssociate (?:Chair|Director)\b|\bAssistant Director\b", re.I)
+
+
+def confirmed_stipend_role(role: dict) -> bool:
+    """A role that usually carries a stipend (Dean or Associate Dean, Chair, Director, research or named
+    chair; not associate chairs or associate directors) with stated years overlapping 2024-2025."""
+    title, years = str(role.get("role", "")), str(role.get("years", ""))
+    if not STIPEND_ROLE.search(title) or DEPUTY_ROLE.search(title):
+        return False
+    ys = [int(y) for y in re.findall(r"(?:19|20)\d\d", years)]
+    if not ys:
+        return False
+    start = min(ys)
+    end = 9999 if re.search(r"present|current|ongoing|-\s*$|–\s*$", years, re.I) or len(ys) == 1 else max(ys)
+    return start <= 2025 and end >= 2024
 
 
 def current_rank_from_title_only(title: str) -> bool:
@@ -394,7 +420,9 @@ def write_summary(rows: list[dict]) -> None:
         ):
             out.append(f"| **{name}** | |")
             out += [f"| {n} | {k} |" for k, n in sorted(counter.items(), key=lambda kv: -kv[1])]
-        flags = [("admin_flag", sum(r["admin_flag"] == 1 for r in sub)),
+        flags = [("admin_flag (broad: any role, incl. associate chairs and undated)", sum(r["admin_flag"] == 1 for r in sub)),
+                 ("admin_flag_confirmed (stipended role held in 2024-25, or admin in disclosed title)",
+                  sum(r["admin_flag_confirmed"] == 1 for r in sub)),
                  ("leave_flag", sum(r["leave_flag"] == 1 for r in sub)),
                  ("senior administrator (excluded)", sum(r["senior_admin_title"] == 1 for r in sub)),
                  ("hired 2025 or later (excluded)", sum("hired 2025" in r["exclude_reason"] for r in sub)),

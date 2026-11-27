@@ -55,7 +55,8 @@ Complete cases, not excluded: **32**
 
 | Flag | Count |
 |---|---|
-| admin_flag | 37 |
+| admin_flag (broad: any role, incl. associate chairs and undated) | 37 |
+| admin_flag_confirmed (stipended role held in 2024-25, or admin in disclosed title) | 19 |
 | leave_flag | 16 |
 | senior administrator (excluded) | 2 |
 | hired 2025 or later (excluded) | 0 |
@@ -107,7 +108,8 @@ Complete cases, not excluded: **20**
 
 | Flag | Count |
 |---|---|
-| admin_flag | 21 |
+| admin_flag (broad: any role, incl. associate chairs and undated) | 21 |
+| admin_flag_confirmed (stipended role held in 2024-25, or admin in disclosed title) | 7 |
 | leave_flag | 8 |
 | senior administrator (excluded) | 0 |
 | hired 2025 or later (excluded) | 0 |
