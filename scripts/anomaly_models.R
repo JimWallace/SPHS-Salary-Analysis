@@ -43,7 +43,7 @@ num <- c("hire_year", "degree_year", "lag", "years_since_hire", "salary_2024", "
          "salary_max_2024_2025", "admin_flag", "admin_flag_confirmed", "leave_flag")
 for (v in num) d[[v]] <- suppressWarnings(as.numeric(d[[v]]))
 blank <- function(x) is.na(x) | x == ""
-d$hire_collected <- d$hire_year_source == "collected"
+d$hire_collected <- startsWith(d$hire_year_source, "collected")
 d <- d[blank(d$exclude_reason), ]
 stopifnot(sum(d$is_subject == 1) == 1)
 

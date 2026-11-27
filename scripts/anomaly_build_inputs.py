@@ -220,9 +220,9 @@ def main() -> None:
             if not rank_hire:
                 rank_hire, rank_src = "", "unknown"
         if hy_note:
-            hire_src = hy_note
+            hire_src = "collected; " + hy_note
         if rh_note:
-            rank_src = rh_note
+            rank_src = "collected; " + rh_note
 
         first_rank = rank_from_title(hist[first_year].title)
         if hire_src == "collected" and hire_year > first_year and first_rank:
@@ -401,8 +401,8 @@ def write_summary(rows: list[dict]) -> None:
             present = sum(str(r[v]) != "" for r in sub)
             src_field = {"hire_year": "hire_year_source", "rank_at_hire": "rank_at_hire_source"}.get(v)
             if src_field:
-                coll = sum(r[src_field] == "collected" for r in sub)
-                fb = sum(r[src_field] not in ("collected", "unknown", "") for r in sub)
+                coll = sum(r[src_field].startswith("collected") for r in sub)
+                fb = sum(not r[src_field].startswith("collected") and r[src_field] not in ("unknown", "") for r in sub)
             elif v in ("highest_degree", "degree_year"):
                 coll, fb = present, 0
             else:

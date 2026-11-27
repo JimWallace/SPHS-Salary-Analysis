@@ -19,15 +19,15 @@ Scale-only growth used for the leave flag (calendar 2024 to 2025): 3.96%.
 | Variable | Present | Missing | Source: collected | Source: fallback/derived |
 |---|---|---|---|---|
 | current_rank | 79 | 0 | 0 | 79 |
-| rank_at_hire | 51 | 28 | 51 | 0 |
-| hire_year | 79 | 0 | 41 | 38 |
+| rank_at_hire | 69 | 10 | 68 | 1 |
+| hire_year | 79 | 0 | 61 | 18 |
 | highest_degree | 79 | 0 | 79 | 0 |
-| degree_year | 45 | 34 | 45 | 0 |
-| lag | 45 | 34 | 0 | 45 |
+| degree_year | 67 | 12 | 67 | 0 |
+| lag | 67 | 12 | 0 | 67 |
 | salary_2024 | 75 | 4 | 0 | 75 |
 | salary_2025 | 79 | 0 | 0 | 79 |
 
-Complete cases, not excluded: **32**
+Complete cases, not excluded: **55**
 
 | Count | Value |
 |---|---|
@@ -37,11 +37,11 @@ Complete cases, not excluded: **32**
 | 10 | Lecturer |
 | 7 | Assistant |
 | **rank_at_hire** | |
-| 34 | Assistant |
-| 28 | unknown |
-| 8 | Lecturer |
+| 49 | Assistant |
+| 10 | Lecturer |
+| 10 | unknown |
 | 6 | Associate |
-| 3 | Professor |
+| 4 | Professor |
 | **highest_degree** | |
 | 76 | Doctoral |
 | 2 | Masters |
@@ -49,9 +49,9 @@ Complete cases, not excluded: **32**
 | **academic_group** | |
 | 79 | Health |
 | **confidence (lowest field)** | |
-| 31 | high |
-| 29 | medium |
-| 19 | low |
+| 41 | medium |
+| 22 | low |
+| 16 | high |
 
 | Flag | Count |
 |---|---|
@@ -60,51 +60,51 @@ Complete cases, not excluded: **32**
 | leave_flag | 16 |
 | senior administrator (excluded) | 2 |
 | hired 2025 or later (excluded) | 0 |
-| automated check raised | 1 |
-| hire year from first-disclosure fallback | 38 |
+| automated check raised | 2 |
+| hire year from first-disclosure fallback | 18 |
 
 ## Stage 2: promotion pool (n = 48, including the subject)
 
 | Variable | Present | Missing | Source: collected | Source: fallback/derived |
 |---|---|---|---|---|
 | current_rank | 48 | 0 | 0 | 48 |
-| rank_at_hire | 21 | 27 | 19 | 2 |
-| hire_year | 48 | 0 | 23 | 25 |
-| highest_degree | 40 | 8 | 40 | 0 |
-| degree_year | 31 | 17 | 31 | 0 |
-| lag | 31 | 17 | 0 | 31 |
+| rank_at_hire | 40 | 8 | 40 | 0 |
+| hire_year | 48 | 0 | 42 | 6 |
+| highest_degree | 46 | 2 | 46 | 0 |
+| degree_year | 40 | 8 | 40 | 0 |
+| lag | 40 | 8 | 0 | 40 |
 | salary_2024 | 48 | 0 | 0 | 48 |
 | salary_2025 | 48 | 0 | 0 | 48 |
 
-Complete cases, not excluded: **20**
+Complete cases, not excluded: **37**
 
 | Count | Value |
 |---|---|
 | **current_rank** | |
 | 48 | Professor |
 | **rank_at_hire** | |
-| 27 | unknown |
-| 17 | Assistant |
-| 4 | Associate |
-| **highest_degree** | |
-| 40 | Doctoral |
+| 32 | Assistant |
 | 8 | unknown |
+| 8 | Associate |
+| **highest_degree** | |
+| 46 | Doctoral |
+| 2 | unknown |
 | **academic_group** | |
-| 10 | Eng |
-| 9 | Arts |
+| 11 | Eng |
+| 10 | Arts |
 | 6 | Health |
 | 6 | Math |
 | 5 | Sci |
-| 4 | unknown |
 | 4 | Env |
+| 2 | unknown |
 | 2 | CSCS |
 | 1 | Pharmacy |
 | 1 | SAF |
 | **confidence (lowest field)** | |
-| 21 | high |
-| 11 | medium |
-| 10 | low |
-| 6 | none |
+| 20 | medium |
+| 14 | high |
+| 13 | low |
+| 1 | none |
 
 | Flag | Count |
 |---|---|
@@ -114,4 +114,4 @@ Complete cases, not excluded: **20**
 | senior administrator (excluded) | 0 |
 | hired 2025 or later (excluded) | 0 |
 | automated check raised | 0 |
-| hire year from first-disclosure fallback | 25 |
+| hire year from first-disclosure fallback | 6 |

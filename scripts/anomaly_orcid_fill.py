@@ -12,7 +12,7 @@ affiliation with the University of Waterloo. Only a single unambiguous hit is us
   regular faculty rank (not adjunct, research, visiting, postdoctoral or clinical).
 
 Responses are cached in data/private/anomaly_cache/orcid/. Output (gitignored, names):
-data/private/anomaly_collect/supplement_orcid.json, in the collection-protocol format, containing only
+data/private/anomaly_collect/supplement_zz_orcid.json, in the collection-protocol format, containing only
 the fields it fills. anomaly_build_inputs.py uses supplements only where the primary record is null.
 """
 
@@ -31,7 +31,7 @@ import anomaly_common as ac
 CACHE = ac.PRIVATE / "anomaly_cache" / "orcid"
 TARGETS = ac.PRIVATE / "anomaly_targets.csv"
 COLLECT = ac.PRIVATE / "anomaly_collect"
-OUT = COLLECT / "supplement_orcid.json"
+OUT = COLLECT / "supplement_zz_orcid.json"  # sorts last: direct evidence fills gaps first
 API = "https://pub.orcid.org/v3.0"
 
 FACULTY_ROLE = re.compile(r"\b(?:(?:Assistant|Associate) )?Professor\b|\bLecturer\b", re.I)
