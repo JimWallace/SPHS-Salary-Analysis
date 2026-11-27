@@ -83,6 +83,8 @@ FIELDS = [
     "current_rank", "current_title_2025", "rank_2024", "rank_2020", "salary_2020", "rank_at_hire", "rank_at_hire_source",
     "hire_year", "hire_year_source", "first_disclosure_year",
     "highest_degree", "degree_year", "lag", "years_since_hire",
+    "title_rank_2025", "promotion_year", "promotion_year_source", "years_in_rank", "rank_start_censored",
+    "promoted_2024_25",
     "salary_2023", "salary_2024", "salary_2025", "salary_2025_paid", "salary_max_2024_2025",
     "admin_flag", "admin_flag_confirmed", "admin_detail", "senior_admin_title", "leave_flag", "leave_detail",
     "exclude_reason",
@@ -155,6 +157,54 @@ def rank_from_title(title: str) -> str:
     if cls.rank in ("Assistant", "Associate", "Professor"):
         return "Lecturer" if cls.stream == "teaching" else cls.rank
     return ""
+
+
+def title_rank(title: str) -> str:
+    """Rank as written in the disclosed title, keeping the teaching-stream steps apart
+    ('Assistant', 'Associate-TS', 'Lecturer', ...); '' if the title names no rank."""
+    if title.strip().startswith("Lecturer"):
+        return "Lecturer"
+    cls = pc.classify_title(title)
+    if cls.rank in ("Assistant", "Associate", "Professor"):
+        return cls.rank + ("-TS" if cls.stream == "teaching" else "")
+    return ""
+
+
+def rank_timing(titles: dict[int, str], hire_year: int | None, hired_into_rank: bool) -> dict:
+    """Year the person reached their current disclosed rank, read from changes in title across the lists.
+
+    The current rank is the 2025 title rank. Walking back from 2025, the promotion year is the first list
+    in the unbroken run at that rank (lists whose title names no rank, e.g. an administrative title, do
+    not break the run). Sources:
+      exact     the previous list shows a different rank in the year before;
+      interval  the previous list at a different rank is two or more years earlier (the person was below
+                the disclosure threshold or absent); the later bound is used;
+      hire      no earlier list at another rank and the person was hired at this rank (collected rank
+                at hire); the hire year is used;
+      censored  no earlier list at another rank and not hired at this rank: the promotion was in or before
+                the first list at this rank; that year is used as a bound and rank_start_censored = 1.
+    years_in_rank = 2025 - promotion year. promoted_2024_25 = 1 if the promotion year is 2024 or 2025."""
+    years = sorted(y for y, t in titles.items() if title_rank(t))
+    if not years:
+        return {"title_rank_2025": "", "promotion_year": "", "promotion_year_source": "unknown",
+                "years_in_rank": "", "rank_start_censored": "", "promoted_2024_25": ""}
+    ranks = {y: title_rank(titles[y]) for y in years}
+    current = ranks[years[-1]]
+    k = len(years) - 1
+    while k > 0 and ranks[years[k - 1]] == current:
+        k -= 1
+    start = years[k]
+    censored = 0
+    if k > 0:
+        source = "exact" if years[k] - years[k - 1] == 1 else "interval"
+        year = start
+    elif hired_into_rank and hire_year:
+        source, year = "hire", min(hire_year, start)
+    else:
+        source, year, censored = "censored", start, 1
+    return {"title_rank_2025": current, "promotion_year": year, "promotion_year_source": source,
+            "years_in_rank": REFERENCE_YEAR - year, "rank_start_censored": censored,
+            "promoted_2024_25": int(source in ("exact", "interval") and year >= REFERENCE_YEAR - 1)}
 
 
 def academic_group(unit_text: str, in_health: bool) -> tuple[str, str]:
@@ -284,6 +334,13 @@ def main() -> None:
 
         retrieved = sorted({s.get("retrieved", "") for s in rec.get("sources", []) if s.get("retrieved")})
         lag = hire_year - degree_year if (hire_year and degree_year) else None
+        # Hired at the current rank: the first title rank is the entry rank of its ladder (Assistant, or
+        # Assistant/Lecturer in the teaching stream), or the collected rank at hire equals the current one.
+        entry_rank = title_rank(hist[min(hist)].title) if hist else ""
+        hired_into = (bool(rank_hire) and rank_hire == current_rank != "Lecturer") or \
+            entry_rank in ("Assistant", "Assistant-TS", "Lecturer")
+        timing = rank_timing({y: h.title for y, h in hist.items()}, hire_year if hire_src == "collected" else None,
+                             hired_into)
         row = {
             "person_id": pid, "is_subject": t["is_subject"],
             "name_key": f"{r2025.key[0]}|{r2025.key[1]}",
@@ -299,6 +356,7 @@ def main() -> None:
             "hire_year": hire_year or "", "hire_year_source": hire_src, "first_disclosure_year": first_year,
             "highest_degree": degree, "degree_year": degree_year or "", "lag": "" if lag is None else lag,
             "years_since_hire": REFERENCE_YEAR - hire_year if hire_year else "",
+            **timing,
             "salary_2023": sal[2023] or "", "salary_2024": sal[2024] or "",
             "salary_2025": f"{salary_2025:.2f}", "salary_2025_paid": sal[2025],
             "salary_max_2024_2025": f"{max(salary_2025, sal[2024] or 0):.2f}",
@@ -419,6 +477,8 @@ def write_summary(rows: list[dict]) -> None:
             ("highest_degree", Counter(r["highest_degree"] or "unknown" for r in sub)),
             ("academic_group", Counter(r["academic_group"] or "unknown" for r in sub)),
             ("confidence (lowest field)", Counter(r["confidence_min"] or "none" for r in sub)),
+            ("promotion year source (current rank)", Counter(r["promotion_year_source"] for r in sub)),
+            ("promoted in 2024 or 2025", Counter(str(r["promoted_2024_25"]) for r in sub)),
         ):
             out.append(f"| **{name}** | |")
             out += [f"| {n} | {k} |" for k, n in sorted(counter.items(), key=lambda kv: -kv[1])]

@@ -22,7 +22,12 @@
 #   analysis_output/anomaly_subject_design.csv    subject's model-matrix row per spec (for the hand check)
 #   analysis_output/anomaly_residuals_<spec>.csv  sorted LOO residuals (unlabelled; subject marked)
 #   analysis_output/anomaly_results.tex           LaTeX macros for the report
-
+#   analysis_output/anomaly_screen_rates.csv      the screen applied to every colleague: totals only
+#   analysis_output/anomaly_table_{rank,screen,cs}.tex  tables for the added sections
+# Private (data/private/, person ids): anomaly_model_samples.csv, anomaly_screen_rows.csv
+#
+# Specification sets: "core" (Table 1), "rank" (Stage 1 plus time in current rank), "cs" (Stage 2 fits with
+# the subject's academic group set to Mathematics, the group that holds Computer Science).
 options(stringsAsFactors = FALSE, warn = 1)
 
 args <- commandArgs(trailingOnly = FALSE)
@@ -40,7 +45,8 @@ INTERACTION_MIN_CELL <- 5   # Lag x rank-at-hire kept only if every non-referenc
 
 d <- read.csv(file.path(root, "data", "private", "anomaly_inputs.csv"), check.names = FALSE)
 num <- c("hire_year", "degree_year", "lag", "years_since_hire", "salary_2024", "salary_2025",
-         "salary_max_2024_2025", "admin_flag", "admin_flag_confirmed", "leave_flag")
+         "salary_max_2024_2025", "admin_flag", "admin_flag_confirmed", "leave_flag",
+         "years_in_rank", "rank_start_censored", "promoted_2024_25")
 for (v in num) d[[v]] <- suppressWarnings(as.numeric(d[[v]]))
 blank <- function(x) is.na(x) | x == ""
 d$hire_collected <- startsWith(d$hire_year_source, "collected")
@@ -93,7 +99,7 @@ set_levels <- function(df) {
 # Fit, predict and report one specification
 # ---------------------------------------------------------------------------------------------------
 
-fit_spec <- function(spec, stage, label, df, formula_fn, notes = "") {
+fit_spec <- function(spec, stage, label, df, formula_fn, notes = "", set = "core") {
   df <- set_levels(df)
   others <- df[df$is_subject != 1, ]
   subj <- df[df$is_subject == 1, ]
@@ -125,12 +131,12 @@ fit_spec <- function(spec, stage, label, df, formula_fn, notes = "") {
                        coef = unname(coef(m)[colnames(X)]))
 
   list(
-    summary = data.frame(spec = spec, stage = stage, label = label, n = nrow(others),
+    summary = data.frame(spec = spec, stage = stage, set = set, label = label, n = nrow(others),
                          parameters = length(coef(m)) - length(aliased), adj_r2 = s$adj.r.squared,
                          r2 = s$r.squared, resid_sd = s$sigma, interaction = fs$interaction,
                          aliased = paste(aliased, collapse = ";"), notes = notes),
     coefs = cbind(spec = spec, co[, c("term", "estimate", "se", "t", "p")]),
-    subject = data.frame(spec = spec, stage = stage, label = label, n = nrow(others), fitted = fitted,
+    subject = data.frame(spec = spec, stage = stage, set = set, label = label, n = nrow(others), fitted = fitted,
                          actual = actual, gap = gap, ratio = actual / fitted,
                          crit_abs = gap > FLAG_ABS, crit_rel = actual < FLAG_REL * fitted,
                          flagged = (gap > FLAG_ABS) & (actual < FLAG_REL * fitted),
@@ -139,8 +145,47 @@ fit_spec <- function(spec, stage, label, df, formula_fn, notes = "") {
                            subject = c(rep(0, length(loo_res)), 1)),
     design = design,
     model = m,
-    others = others
+    others = others,
+    subj_df = subj,
+    # Each colleague's leave-one-out prediction from the fit without the subject (private).
+    loo = data.frame(spec = spec, person_id = others$person_id, unit = others$unit, actual = others$salary,
+                     h = unname(h), loo_fitted = others$salary - unname(loo_res))
   )
+}
+
+# The subject's prediction from an existing fit with one input changed (e.g. academic group).
+counterfactual <- function(r, spec, label, field, value, set, notes = "") {
+  m <- r$model
+  subj <- r$subj_df
+  if (!(value %in% levels(r$others[[field]]))) stop(spec, ": level ", value, " not in fit")
+  subj[[field]] <- factor(value, levels = levels(r$others[[field]]))
+  fitted <- unname(predict(m, newdata = subj))
+  actual <- subj$salary
+  gap <- fitted - actual
+  loo_res <- r$loo$actual - r$loo$loo_fitted
+  X <- model.matrix(delete.response(terms(m)), model.frame(delete.response(terms(m)), subj, xlev = m$xlevels))
+  sm <- r$summary
+  sm$spec <- spec; sm$set <- set; sm$label <- label; sm$notes <- notes
+  list(
+    summary = sm,
+    coefs = NULL,
+    subject = data.frame(spec = spec, stage = sm$stage, set = set, label = label, n = sm$n, fitted = fitted,
+                         actual = actual, gap = gap, ratio = actual / fitted,
+                         crit_abs = gap > FLAG_ABS, crit_rel = actual < FLAG_REL * fitted,
+                         flagged = (gap > FLAG_ABS) & (actual < FLAG_REL * fitted),
+                         loo_percentile = 100 * mean(loo_res < actual - fitted), breakeven_r = gap / WG_R_COEF),
+    residuals = NULL,
+    design = data.frame(spec = spec, term = colnames(X), x = as.numeric(X[1, ]), coef = unname(coef(m)[colnames(X)])),
+    model = m, others = r$others, subj_df = subj, loo = NULL
+  )
+}
+
+# A formula builder with extra terms; a term with no variation in the fit is left out.
+with_terms <- function(base_fn, extra) function(others) {
+  fs <- base_fn(others)
+  keep <- extra[vapply(extra, function(t) length(unique(others[[t]])) > 1, TRUE)]
+  if (length(keep)) fs$formula <- update(fs$formula, as.formula(paste(". ~ . +", paste(keep, collapse = " + "))))
+  fs
 }
 
 # Model A (Stage 1): Working Group specification minus R score, OPAs, and the academic-group terms.
@@ -221,6 +266,20 @@ add(fit_spec("S1_viii_impute", 1, "(viii) imputing missing lag and rank at hire"
              complete_rows(prep(h_all[h_all$hire_collected, ], "salary_2025", impute = TRUE), s1_vars), model_a,
              "Missing lag: median of the same rank at hire, with an indicator; missing rank at hire: own level."))
 
+# Time in current rank (set "rank"). Promotion years come from changes in disclosed title across the
+# 2011-2025 lists (anomaly_build_inputs.rank_timing). Where the promotion predates the first list at the
+# current rank and the person was not hired at that rank, years in rank is a lower bound and
+# rank_start_censored = 1.
+rk <- base[!is.na(base$years_in_rank), ]
+add(fit_spec("S1_x_rank_years", 1, "Adding years in current rank", rk,
+             with_terms(model_a, c("years_in_rank", "rank_start_censored")),
+             "Censored promotion years enter at their bound, with an indicator.", set = "rank"))
+add(fit_spec("S1_x_rank_known", 1, "Years in rank, uncensored promotion years only",
+             rk[rk$rank_start_censored != 1 | rk$is_subject == 1, ], with_terms(model_a, "years_in_rank"),
+             set = "rank"))
+add(fit_spec("S1_x_recent", 1, "Adding promoted in 2024 or 2025", rk, with_terms(model_a, "promoted_2024_25"),
+             set = "rank"))
+
 # ---------------------------------------------------------------------------------------------------
 # Stage 2: the 2025 promotion pool, adjusted for seniority
 # ---------------------------------------------------------------------------------------------------
@@ -260,21 +319,30 @@ add(fit_spec("S2_vii_fallback", 2, "(vii) adding first-disclosure hire years", p
 pim <- s2_base(impute = TRUE)
 add(fit_spec("S2_viii_impute", 2, "(viii) imputing missing lag", pim, model_s2, pool_note(pim)))
 
+# Computer Science comparison, quick version (set "cs"): each Stage 2 fit, with the subject's academic
+# group set to Mathematics (which holds Computer Science in the collapsed groups) instead of Health.
+for (r in res[vapply(res, function(z) z$summary$stage == 2 && z$summary$set == "core", TRUE)]) {
+  add(counterfactual(r, sub("^S2_", "S2_cs_", r$summary$spec), r$summary$label, "group", "Math", "cs",
+                     "Subject's group set to Mathematics."))
+}
+
 # ---------------------------------------------------------------------------------------------------
 # Write outputs
 # ---------------------------------------------------------------------------------------------------
 
 bind <- function(k) do.call(rbind, lapply(res, `[[`, k))
-fits <- bind("summary"); coefs <- bind("coefs"); subj <- bind("subject"); design <- bind("design")
+fits <- bind("summary"); coefs <- bind("coefs"); subj_all <- bind("subject"); design <- bind("design")
+subj <- subj_all[subj_all$set == "core", ]
 write.csv(fits, file.path(out_dir, "anomaly_fit_summary.csv"), row.names = FALSE)
 write.csv(skipped, file.path(out_dir, "anomaly_skipped_specs.csv"), row.names = FALSE)
 # Sample membership per specification, for the independent re-derivation (private: person ids).
-samples <- do.call(rbind, lapply(res, function(r) data.frame(spec = r$summary$spec, person_id = r$others$person_id,
+samples <- do.call(rbind, lapply(res[vapply(res, function(r) r$summary$set != "cs", TRUE)],
+                                  function(r) data.frame(spec = r$summary$spec, person_id = r$others$person_id,
                                                              salary = r$others$salary, lag = r$others$lag,
                                                              yrs = r$others$yrs)))
 write.csv(samples, file.path(root, "data", "private", "anomaly_model_samples.csv"), row.names = FALSE)
 write.csv(coefs, file.path(out_dir, "anomaly_coefficients.csv"), row.names = FALSE)
-write.csv(subj, file.path(out_dir, "anomaly_subject_results.csv"), row.names = FALSE)
+write.csv(subj_all, file.path(out_dir, "anomaly_subject_results.csv"), row.names = FALSE)
 write.csv(design, file.path(out_dir, "anomaly_subject_design.csv"), row.names = FALSE)
 for (r in res) {
   spec <- r$summary$spec
@@ -293,20 +361,21 @@ money <- function(x) {
 }
 mac <- c("% Generated by scripts/anomaly_models.R. Do not edit.")
 put <- function(name, value) mac <<- c(mac, sprintf("\\newcommand{\\%s}{%s}", name, value))
-for (i in seq_len(nrow(subj))) {
-  key <- sub("^S1_", "One", sub("^S2_", "Two", subj$spec[i]))
+for (i in seq_len(nrow(subj_all))) {
+  subj_i <- subj_all[i, ]
+  key <- sub("^S1_", "One", sub("^S2_", "Two", subj_i$spec))
   key <- gsub("[^A-Za-z]", "", key)
-  f <- fits[fits$spec == subj$spec[i], ]
-  put(paste0(key, "N"), subj$n[i])
-  put(paste0(key, "Fitted"), money(subj$fitted[i]))
-  put(paste0(key, "Actual"), money(subj$actual[i]))
-  put(paste0(key, "Gap"), money(subj$gap[i]))
-  put(paste0(key, "Ratio"), sprintf("%.1f", 100 * subj$ratio[i]))
-  put(paste0(key, "Flag"), if (subj$flagged[i]) "Yes" else "No")
-  put(paste0(key, "CritAbs"), if (subj$crit_abs[i]) "Yes" else "No")
-  put(paste0(key, "CritRel"), if (subj$crit_rel[i]) "Yes" else "No")
-  put(paste0(key, "Pct"), sprintf("%.0f", subj$loo_percentile[i]))
-  put(paste0(key, "BreakEven"), sprintf("%.2f", subj$breakeven_r[i]))
+  f <- fits[fits$spec == subj_i$spec, ]
+  put(paste0(key, "N"), subj_i$n)
+  put(paste0(key, "Fitted"), money(subj_i$fitted))
+  put(paste0(key, "Actual"), money(subj_i$actual))
+  put(paste0(key, "Gap"), money(subj_i$gap))
+  put(paste0(key, "Ratio"), sprintf("%.1f", 100 * subj_i$ratio))
+  put(paste0(key, "Flag"), if (subj_i$flagged) "Yes" else "No")
+  put(paste0(key, "CritAbs"), if (subj_i$crit_abs) "Yes" else "No")
+  put(paste0(key, "CritRel"), if (subj_i$crit_rel) "Yes" else "No")
+  put(paste0(key, "Pct"), sprintf("%.0f", subj_i$loo_percentile))
+  put(paste0(key, "BreakEven"), sprintf("%.2f", subj_i$breakeven_r))
   put(paste0(key, "AdjRsq"), sprintf("%.0f", 100 * f$adj_r2))
   put(paste0(key, "ResidSD"), money(f$resid_sd))
 }
@@ -330,7 +399,6 @@ put("RatioRangeTwoUnflagged", if (any(!subj$flagged & subj$stage == 2))
   rng(100 * subj$ratio[!subj$flagged & subj$stage == 2], "%.1f to %.1f") else "--")
 put("GapRangeOne", paste(money(min(subj$gap[subj$stage == 1])), "to", money(max(subj$gap[subj$stage == 1]))))
 put("GapRangeTwo", paste(money(min(subj$gap[subj$stage == 2])), "to", money(max(subj$gap[subj$stage == 2]))))
-writeLines(mac, file.path(out_dir, "anomaly_results.tex"))
 
 # Table: subject's result in every specification.
 yn <- function(x) ifelse(x, "Yes", "No")
@@ -373,9 +441,105 @@ for (sp in c("S1_main", "S2_main")) {
 }
 writeLines(ct, file.path(out_dir, "anomaly_table_coefficients.tex"))
 
+# ---------------------------------------------------------------------------------------------------
+# The screen applied to every colleague (Stage 1, core specifications). Each colleague's prediction is
+# their leave-one-out prediction from the fit without the subject; the two-part rule is applied as for the
+# subject. Rows with h_ii = 1 (the only member of a category) have no leave-one-out prediction and are
+# counted as not estimable. Row-level results stay in data/private/; the public file has totals only.
+# ---------------------------------------------------------------------------------------------------
+UNITS <- c("SPHS", "KHS", "RLS")
+scr_res <- res[vapply(res, function(r) r$summary$stage == 1 && r$summary$set == "core", TRUE)]
+rows <- do.call(rbind, lapply(scr_res, function(r) {
+  l <- r$loo
+  l$estimable <- l$h < 1 - 1e-8 & is.finite(l$loo_fitted)
+  l$ratio <- ifelse(l$estimable, l$actual / l$loo_fitted, NA)
+  l$flagged <- l$estimable & (l$loo_fitted - l$actual > FLAG_ABS) & (l$actual < FLAG_REL * l$loo_fitted)
+  l
+}))
+write.csv(rows[, c("spec", "person_id", "unit", "actual", "loo_fitted", "ratio", "flagged", "estimable")],
+          file.path(root, "data", "private", "anomaly_screen_rows.csv"), row.names = FALSE)
+q <- function(x, p) unname(quantile(x, p, na.rm = TRUE, type = 7))
+rates <- do.call(rbind, lapply(scr_res, function(r) {
+  l <- rows[rows$spec == r$summary$spec, ]
+  e <- l[l$estimable, ]
+  out <- data.frame(spec = r$summary$spec, label = r$summary$label, n = nrow(l), n_estimable = nrow(e),
+                    n_flagged = sum(e$flagged), pct_flagged = round(100 * mean(e$flagged), 1),
+                    ratio_p10 = round(q(e$ratio, 0.10), 3), ratio_p25 = round(q(e$ratio, 0.25), 3),
+                    ratio_median = round(q(e$ratio, 0.50), 3), ratio_p75 = round(q(e$ratio, 0.75), 3),
+                    ratio_p90 = round(q(e$ratio, 0.90), 3),
+                    subject_flagged = subj$flagged[subj$spec == r$summary$spec])
+  for (u in UNITS) {
+    out[[paste0("n_", u)]] <- sum(e$unit == u)
+    out[[paste0("flagged_", u)]] <- sum(e$flagged & e$unit == u)
+  }
+  out
+}))
+write.csv(rates, file.path(out_dir, "anomaly_screen_rates.csv"), row.names = FALSE)
+
+pct1 <- function(x) sprintf("%.1f", 100 * x)
+st <- c("% Generated by scripts/anomaly_models.R. Do not edit.")
+for (i in seq_len(nrow(rates))) {
+  z <- rates[i, ]
+  st <- c(st, sprintf("%s & %d & %d & %d & %.0f\\%% & %s--%s & %s--%s & %s & %s & %s \\\\",
+    z$label, z$n_estimable, z$n - z$n_estimable, z$n_flagged, z$pct_flagged,
+    pct1(z$ratio_p25), pct1(z$ratio_p75), pct1(z$ratio_p10), pct1(z$ratio_p90),
+    sprintf("%d/%d", z$flagged_SPHS, z$n_SPHS), sprintf("%d/%d", z$flagged_KHS, z$n_KHS),
+    sprintf("%d/%d", z$flagged_RLS, z$n_RLS)))
+}
+writeLines(st, file.path(out_dir, "anomaly_table_screen.tex"))
+m0 <- rates[rates$spec == "S1_main", ]
+put("ScrN", m0$n_estimable); put("ScrNotEst", m0$n - m0$n_estimable); put("ScrFlag", m0$n_flagged)
+put("ScrPct", sprintf("%.0f", m0$pct_flagged))
+put("ScrMedian", pct1(m0$ratio_median)); put("ScrIQR", paste0(pct1(m0$ratio_p25), "\\% to ", pct1(m0$ratio_p75), "\\%"))
+put("ScrDecile", paste0(pct1(m0$ratio_p10), "\\% to ", pct1(m0$ratio_p90), "\\%"))
+for (u in UNITS) put(paste0("Scr", u), sprintf("%d of %d", m0[[paste0("flagged_", u)]], m0[[paste0("n_", u)]]))
+put("ScrFlagRange", sprintf("%d to %d", min(rates$n_flagged), max(rates$n_flagged)))
+put("ScrPctRange", sprintf("%.0f\\%% to %.0f\\%%", min(rates$pct_flagged), max(rates$pct_flagged)))
+put("ScrSpecs", nrow(rates))
+
+# Tables for time in rank and the Computer Science comparison, in the format of Table 1.
+row_tex <- function(z, label = z$label) sprintf("%s & %d & %s & %s & %s & %.1f\\%% & %s & %.2f \\\\",
+  label, z$n, money(z$fitted), money(z$actual), money(z$gap), 100 * z$ratio, yn(z$flagged), z$breakeven_r)
+yn <- function(x) ifelse(x, "Yes", "No")
+rt <- c("% Generated by scripts/anomaly_models.R. Do not edit.",
+        row_tex(subj_all[subj_all$spec == "S1_main", ], "Main (Table 1)"))
+for (i in which(subj_all$set == "rank")) rt <- c(rt, row_tex(subj_all[i, ]))
+writeLines(rt, file.path(out_dir, "anomaly_table_rank.tex"))
+cs <- subj_all[subj_all$set == "cs", ]
+ctab <- c("% Generated by scripts/anomaly_models.R. Do not edit.")
+for (i in seq_len(nrow(cs))) {
+  h <- subj_all[subj_all$spec == sub("^S2_cs_", "S2_", cs$spec[i]), ]
+  ctab <- c(ctab, sprintf("%s & %d & %s & %s & %s & %.1f\\%% & %s & %.2f \\\\", cs$label[i], cs$n[i],
+    money(h$fitted), money(cs$fitted[i]), money(cs$gap[i]), 100 * cs$ratio[i], yn(cs$flagged[i]), cs$breakeven_r[i]))
+}
+writeLines(ctab, file.path(out_dir, "anomaly_table_cs.tex"))
+
+coef_of <- function(sp, term) coefs[coefs$spec == sp & coefs$term == term, ]
+for (x in list(c("RankYearsCoef", "S1_x_rank_years", "years_in_rank"),
+               c("RankKnownCoef", "S1_x_rank_known", "years_in_rank"),
+               c("RankCensCoef", "S1_x_rank_years", "rank_start_censored"),
+               c("RecentCoef", "S1_x_recent", "promoted_2024_25"),
+               c("MathCoef", "S2_main", "groupMath"))) {
+  co <- coef_of(x[2], x[3])
+  put(x[1], if (nrow(co)) money(co$estimate) else "--")
+  put(paste0(x[1], "SE"), if (nrow(co)) money(co$se) else "--")
+  put(paste0(x[1], "Abs"), if (nrow(co)) money(abs(co$estimate)) else "--")
+}
+rkd <- by_spec("S1_x_rank_years")$others
+put("RankRecentN", sum(rkd$promoted_2024_25 == 1)); put("RankRecentTwentyFiveN", sum(rkd$promoted_2024_25 == 1 & as.numeric(rkd$promotion_year) == 2025))
+put("RankCensN", sum(rkd$rank_start_censored == 1))
+put("RankKnownDropped", by_spec("S1_x_rank_years")$summary$n - by_spec("S1_x_rank_known")$summary$n)
+p2 <- by_spec("S2_main")$others
+put("TwoMathN", sum(p2$group == "Math")); put("TwoMathCS", sum(p2$group == "Math" & p2$academic_group == "CSCS"))
+put("TwoHealthN", sum(p2$group == "Health"))
+put("CSFlagN", sum(cs$flagged)); put("CSSpecs", nrow(cs))
+put("CSGapRange", paste(money(min(cs$gap)), "to", money(max(cs$gap))))
+put("CSRatioRange", rng(100 * cs$ratio, "%.1f to %.1f"))
+writeLines(mac, file.path(out_dir, "anomaly_results.tex"))
+
 if (nrow(skipped)) { cat("\n== Not estimable ==\n"); print(skipped) }
 cat("\n== Fit summary ==\n"); print(fits[, c("spec", "n", "parameters", "adj_r2", "resid_sd", "interaction", "aliased")], digits = 3)
-cat("\n== Subject ==\n"); print(subj[, c("spec", "n", "fitted", "actual", "gap", "ratio", "flagged", "loo_percentile", "breakeven_r")], digits = 4)
+cat("\n== Subject ==\n"); print(subj_all[, c("spec", "n", "fitted", "actual", "gap", "ratio", "flagged", "loo_percentile", "breakeven_r")], digits = 4)
 
 # ---------------------------------------------------------------------------------------------------
 # Stage 3 comparison with the subject's own ratings: OFF unless --with-ratings.

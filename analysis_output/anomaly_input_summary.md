@@ -52,6 +52,16 @@ Complete cases, not excluded: **55**
 | 41 | medium |
 | 22 | low |
 | 16 | high |
+| **promotion year source (current rank)** | |
+| 52 | exact |
+| 13 | hire |
+| 8 | censored |
+| 4 | interval |
+| 2 | unknown |
+| **promoted in 2024 or 2025** | |
+| 59 | 0 |
+| 18 | 1 |
+| 2 |  |
 
 | Flag | Count |
 |---|---|
@@ -105,6 +115,10 @@ Complete cases, not excluded: **37**
 | 14 | high |
 | 13 | low |
 | 1 | none |
+| **promotion year source (current rank)** | |
+| 48 | exact |
+| **promoted in 2024 or 2025** | |
+| 48 | 1 |
 
 | Flag | Count |
 |---|---|

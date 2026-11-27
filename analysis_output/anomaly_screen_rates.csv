@@ -1,0 +1,11 @@
+"spec","label","n","n_estimable","n_flagged","pct_flagged","ratio_p10","ratio_p25","ratio_median","ratio_p75","ratio_p90","subject_flagged","n_SPHS","flagged_SPHS","n_KHS","flagged_KHS","n_RLS","flagged_RLS"
+"S1_main","Main: 2025 salaries",50,49,6,12.2,0.887,0.924,0.993,1.071,1.157,TRUE,23,4,20,2,6,0
+"S1_i_2024","(i) 2024 salaries, 2024 ranks",47,46,4,8.7,0.904,0.931,0.988,1.059,1.149,FALSE,22,3,19,1,5,0
+"S1_ii_max","(ii) max(2024, 2025) for colleagues",50,49,5,10.2,0.895,0.928,0.997,1.068,1.15,TRUE,23,3,20,2,6,0
+"S1_iii_admin","(iii) excluding confirmed administrative roles",39,37,3,8.1,0.915,0.944,1.009,1.048,1.114,TRUE,17,2,14,1,6,0
+"S1_iii_admin_broad","(iii-b) excluding any administrative role",29,28,3,10.7,0.889,0.966,1.016,1.064,1.106,TRUE,12,2,12,1,4,0
+"S1_iv_leave","(iv) excluding likely leave",39,37,4,10.8,0.899,0.923,0.994,1.061,1.121,TRUE,18,3,15,0,4,1
+"S1_v_prof","(v) professorial ranks only",46,45,5,11.1,0.865,0.931,0.986,1.069,1.143,TRUE,22,3,18,2,5,0
+"S1_vi_leverage","(vi) excluding high-leverage observations",43,43,4,9.3,0.902,0.926,1.003,1.055,1.09,TRUE,20,2,17,1,6,1
+"S1_vii_fallback","(vii) adding first-disclosure hire years",58,56,8,14.3,0.847,0.93,0.997,1.057,1.163,TRUE,25,4,22,2,9,2
+"S1_viii_impute","(viii) imputing missing lag and rank at hire",58,56,10,17.9,0.809,0.93,0.997,1.076,1.151,TRUE,27,7,23,3,6,0
