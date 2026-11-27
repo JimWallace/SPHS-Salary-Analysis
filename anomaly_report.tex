@@ -18,6 +18,7 @@
 \input{analysis_output/promotion_pool_2025.tex}
 % Private: the subject's own 2020 record and ratings (scripts/anomaly_wg2020_self.py)
 \input{data/private/anomaly_wg2020_self.tex}
+\input{data/private/anomaly_fit2020.tex}
 
 \title{Applying the University's Salary Anomaly Screen to My Salary}
 \author{James R. Wallace\\ School of Public Health Sciences}
@@ -129,6 +130,12 @@ Promotion group & \WAdjTwoFitted & \TwomainActual & \WAdjTwoGap & \WAdjTwoRatio\
 \caption{Main 2025 predictions less the Working Group's value of my rating difference from the unit average. This is an approximation: the Working Group's 2020 rating coefficient is combined with models fitted on 2025 paid salaries.}
 \label{tab:adj}
 \end{table}
+
+\section*{How the Gap Developed}
+
+The same Faculty of Health specification, fitted on 2020 salaries (\FTwentyN\ professorial colleagues hired by 2019), predicts my 2020 salary at \FTwentyPred\ (\FTwentyPredTr\ allowing for the \$100{,}000 disclosure threshold). My 2020 base was \FTwentyRatioLo\% to \FTwentyRatioHi\% of that: close to expected, and below the University model's prediction for me, because Faculty of Health salaries are lower than the University-wide model implies. My position then declined: to \OneiRatio\% of prediction in 2024, while I was an Associate Professor, and to \OnemainRatio\% in 2025, after promotion to Professor.
+
+Most of the 2025 change comes with the promotion. Holding years since hire and lag constant, Faculty of Health Professors are paid \FTwentyFivePrem\ more than Associate Professors in the 2025 fit (\FTwentyPrem\ in 2020). In the Working Group's model the same difference is \WGPrem, because the merit rating and award terms carry much of what distinguishes higher-paid faculty. The two models therefore treat different evidence as the measure of performance: the Working Group's model uses the merit ratings, and a model without them uses rank, which reflects the outcome of the promotion process. My salary is consistent with the first and well below what the second predicts. This is an interpretation of the coefficients; it identifies where the models diverge, not why my salary did.
 
 \section*{Comparison with My Earlier Analyses}
 

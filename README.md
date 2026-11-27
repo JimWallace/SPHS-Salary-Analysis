@@ -112,5 +112,7 @@ make anomaly-verify   # rebuild twice from scratch and confirm identical outputs
 - `scripts/anomaly_check.py`: recomputes the author's fitted salary by hand, refits the main models in Python, and audits the outputs for names.
 - `docs/anomaly_collection_protocol.md`: how degree and hire years were collected from public sources.
 - `anomaly_report.tex`: the report source. The PDF is built locally and not committed.
+- `scripts/anomaly_wg2020_self.py` (`make anomaly-wg2020`): applies the Working Group's published 2020 equation (`data/wg2021_table4_coefficients.csv`, checked against the report's worked example) to the author's own 2020 record. Its inputs (the author's ratings) and outputs stay in `data/private/`.
+- `scripts/anomaly_fit2020.R`: fits the Faculty of Health model on 2020 salaries, including a truncated regression for the $100,000 disclosure threshold, and compares its prediction with the Working Group model's. Its outputs stay in `data/private/`.
 
 Colleague-level inputs (`data/private/anomaly_inputs.csv`, `verification_log.csv`, collected sources) are gitignored. Published outputs in `analysis_output/anomaly_*` contain only the author's values, model coefficients, fit statistics and unlabelled residuals. Rebuilding needs the private inputs, so a fresh checkout cannot reproduce the models.
