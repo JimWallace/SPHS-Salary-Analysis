@@ -37,54 +37,19 @@ Under the University's own model, my average merit rating would need to be about
 
 \section*{Data and Methods}
 
-\begin{enumerate}[leftmargin=*,itemsep=0.2em]
-    \item \textbf{Model.} The \emph{Salary Anomaly Working Group Analysis and Findings} (26 February 2021; archived \WGRetrieved, SHA-256 \texttt{\WGHash\ldots}) fits the 1 May 2020 full-time-equivalent base salary as a linear function of the variables in Table~\ref{tab:vars}, with two interactions: academic group by professorial-versus-lecturer rank, and lag by rank at hire. Its adjusted $R^2$ was 91\%, and the coefficient on the average merit rating (R score) was \WGRCoef\ per unit. A salary is flagged when fitted minus actual exceeds \$5{,}000 and actual is below 90\% of fitted.
+\begin{enumerate}[leftmargin=*,itemsep=0em,topsep=0.2em]
+    \item \textbf{Model.} The \emph{Salary Anomaly Working Group Analysis and Findings} (26 February 2021; archived \WGRetrieved, SHA-256 \texttt{\WGHash\ldots}) fits the 1 May 2020 full-time-equivalent base salary as a linear function of the variables in Table~\ref{tab:vars} (Appendix), which also shows the public-data version of each, with two interactions: academic group by professorial-versus-lecturer rank, and lag by rank at hire. Its adjusted $R^2$ was 91\%, and the coefficient on the average merit rating (R score) was \WGRCoef\ per unit. A salary is flagged when fitted minus actual exceeds \$5{,}000 and actual is below 90\% of fitted.
     \item \textbf{Salary.} University of Waterloo salary disclosure lists, 2011--2025, archived with retrieval dates and SHA-256 hashes. These give salary \emph{paid} in the calendar year, not the May 1 base salary. For me, the annualized base salary (\AnomSubjectBase); my disclosed 2025 figure includes about eight months of sabbatical at 85\% pay.
     \item \textbf{Samples.} Stage~1: regular faculty, including lecturers and teaching-stream faculty (the Working Group's ``Lecturer'' category), listed by the three Faculty of Health units. Of \HealthListed\ listed faculty, \HealthMatched\ (\HealthCoverage\%) appear in the 2025 disclosure; most of the rest are junior or teaching-stream appointments, consistent with salaries below the \$100{,}000 threshold. Stage~2: the \PoolInputs\ research-stream faculty promoted from Associate Professor to Professor in 2024 or 2025, as in my October report. Affiliated colleges, research, clinical, adjunct and visiting ranks, people hired in 2025, and \HealthExcludedAdmin\ senior administrators whose disclosed titles are administrative only are excluded.
     \item \textbf{Collected variables.} Degree year, highest degree, year of first appointment as a UW faculty member at any rank, and rank at hire were collected from public sources (faculty pages, CVs, UW news, archived UW calendars, thesis records, ORCID) under a written protocol. Every value records its source URL, retrieval date and a supporting quotation. Models use people whose hire year comes from a public source; using the first disclosure year instead is a robustness check, because before about 2020 the \$100{,}000 threshold delays first disclosure.
     \item \textbf{Fitting.} Every model is fitted without my row, and my salary is predicted from that fit. My percentile is the share of colleagues whose leave-one-out residual is lower than mine. Stage~1 drops the academic-group terms (everyone is in Health), highest degree (all are doctoral), and the lag-by-rank-at-hire interaction (fewer than five colleagues in some rank-at-hire cells). Stage~2 regresses salary on years since hire, its square, lag, and academic group, with groups collapsed to the six Faculties (Computer Science with Mathematics, Accounting and Finance and Economics with Arts, Pharmacy and Optometry with Science).
 \end{enumerate}
 
-\begin{table}[H]
-\centering
-\small
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{4.1cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{1.6cm}}
-\toprule
-Working Group variable & Public-data version & Status \\
-\midrule
-May 1 base salary (FTE) & Calendar-year salary paid (2025; 2024 and the larger of the two as checks); my annualized base & Proxy \\
-Average R score, 2014--2020 & Not public & Omitted \\
-Outstanding Performance Awards & Not public & Omitted \\
-Lag (hire year $-$ degree year) & Degree and hire years from public sources & Collected \\
-Years since hire, and its square & 2025 $-$ hire year & Collected \\
-Highest degree & Public sources & Collected \\
-Current rank & Disclosed title (teaching stream = Lecturer category) & Direct \\
-Rank at hire & Public sources; disclosed title if first disclosed within a year of hire & Collected \\
-Academic group & Unit, mapped to the Working Group's groups & Collected \\
-Flag rule & Fitted $-$ actual $>$ \$5{,}000 and actual $<$ 90\% of fitted & Exact \\
-\bottomrule
-\end{tabularx}
-\caption{Working Group variables and their public-data versions.}
-\label{tab:vars}
-\end{table}
 
 \section*{Results}
 
-Table~\ref{tab:coef} gives the two main fits. In the Faculty of Health, salary rises with years since hire at a decreasing rate, the rank premia rise from Lecturer to Professor, and salary rises with the lag between degree and hire, as in the Working Group's model (which estimated \$1{,}054 per year). The standard errors are wide because the sample is small. In the promotion group the fit is weak (adjusted $R^2 = \TwomainAdjRsq\%$): lag matters, but years since hire does not rise with salary. Within a group defined by the year of promotion, people who took longer to reach Professor tend to be paid less, and a few high salaries carry much of the residual variance.
+Table~\ref{tab:coef} (Appendix) gives the two main fits. In the Faculty of Health, salary rises with years since hire at a decreasing rate, the rank premia rise from Lecturer to Professor, and salary rises with the lag between degree and hire, as in the Working Group's model (which estimated \$1{,}054 per year). The standard errors are wide because the sample is small. In the promotion group the fit is weak (adjusted $R^2 = \TwomainAdjRsq\%$): lag matters, but years since hire does not rise with salary. Within a group defined by the year of promotion, people who took longer to reach Professor tend to be paid less, and a few high salaries carry much of the residual variance.
 
-\begin{table}[H]
-\centering
-\footnotesize
-\begin{tabular}{lrr}
-\toprule
-Term & Estimate (\$) & Std.\ error (\$) \\
-\midrule
-\csname @@input\endcsname analysis_output/anomaly_table_coefficients.tex 
-\bottomrule
-\end{tabular}
-\caption{Main fits, excluding my row. The reference categories are Assistant Professor (current rank and rank at hire) and Health (group).}
-\label{tab:coef}
-\end{table}
 
 Table~\ref{tab:subject} and Figure~\ref{fig:resid} give my result. In the Faculty of Health the gap is \GapRangeOne\ across specifications, and my salary is flagged in all but the 2024 version, in which it is \OneiRatio\% of its prediction. In the promotion group the gap is \GapRangeTwo; in the specifications where my salary is not flagged, it is \RatioRangeTwoUnflagged\% of its prediction, just above the 90\% line.
 
@@ -107,7 +72,7 @@ Specification & $n$ & Fitted & Actual & Gap & Actual/fitted & Flagged & Break-ev
     \centering
     \begin{tikzpicture}
     \begin{axis}[
-        width=0.98\textwidth, height=0.32\textwidth,
+        width=0.98\textwidth, height=0.27\textwidth,
         xlabel={Faculty of Health colleagues, ordered by leave-one-out residual},
         ylabel={Actual $-$ fitted (\$CAD)},
         xmin=0, xmax=\OnemainTotal+1, xtick=\empty,
@@ -146,7 +111,7 @@ The Working Group's fitted equation can be applied to one person's record, as it
 
 My salary was therefore \WGapLo\ to \WGapHi\ below the prediction, or \WRatioLo\% to \WRatioHi\% of it. The first part of the rule is met and the second is not: the full model would not have flagged my salary in 2020. The model would predict my actual salary only with an average rating of \WRMatchLo\ to \WRMatchHi, below the \WRAvg\ I received, so part of the 2020 shortfall is not explained by my ratings even under the full model. (Averaging over five evaluations rather than seven years gives an average of \WRAvgAlt\ and a prediction of \WFittedAlt.)
 
-The ratings in \WUnitApplies\ were held to an average of \WUnitMean\ (\WUnitSource). My average was \WDeficit\ below that. Under the Working Group's coefficient, that difference is worth about \WDeficitDollars, or about \WShareOne\% of the Faculty of Health gap and \WShareTwo\% of the promotion-group gap in 2025. To account for those gaps, my ratings would need to have been \OnemainBreakEven\ and \TwomainBreakEven\ units below those of comparable colleagues.
+The ratings in \WUnitApplies\ were held to an average of \WUnitMean. My average was \WDeficit\ below that. Under the Working Group's coefficient, that difference is worth about \WDeficitDollars, or about \WShareOne\% of the Faculty of Health gap and \WShareTwo\% of the promotion-group gap in 2025. To account for those gaps, my ratings would need to have been \OnemainBreakEven\ and \TwomainBreakEven\ units below those of comparable colleagues.
 
 \section*{Comparison with My Earlier Analyses}
 
@@ -174,13 +139,13 @@ The estimates agree in size. The Faculty of Health screen gap (\XOneGap) lies wi
 
 \section*{Interpretation and Limitations}
 
-\begin{itemize}[leftmargin=*,itemsep=0.2em]
+\begin{itemize}[leftmargin=*,itemsep=0em,topsep=0.2em]
     \item The analysis is descriptive. It does not identify the cause of the difference.
     \item Without R scores and Outstanding Performance Awards, this is not the Working Group's full model; that is the question it asks. The adjusted $R^2$ (\OnemainAdjRsq\% in the Faculty of Health, \TwomainAdjRsq\% in the promotion group) is below the Working Group's 91\% because the rating terms are missing, the samples are small, and paid salary is a noisier measure than May 1 base salary.
     \item Paid salary includes stipends and is reduced by sabbaticals and leaves. These are handled only by flags and robustness checks: specification (iii) excludes administrative roles, and (iv) excludes people whose 2025 salary rose by less than the scale increase alone (\LeaveThreshold\%).
     \item Degree and hire years come from public sources and may contain errors. A verification log records the source, quotation and confidence for every value, and robustness checks (vii) and (viii) widen the sample with less certain values.
     \item For colleagues promoted in 2025, the 2025 salary includes about six months at the Associate Professor rate. My figure is a full-year rate, so this makes the comparison conservative.
-    \item The samples are small: the standard errors in Table~\ref{tab:coef} are wide, and the predictions should not be read more precisely than the residual standard deviation (\OnemainResidSD\ in the Faculty of Health) allows. The disclosure threshold leaves out some recent and teaching-stream appointments.
+    \item The samples are small: the standard errors in Table~\ref{tab:coef} (Appendix) are wide, and the predictions should not be read more precisely than the residual standard deviation (\OnemainResidSD\ in the Faculty of Health) allows. The disclosure threshold leaves out some recent and teaching-stream appointments.
 \end{itemize}
 
 \section*{Reproducibility}
@@ -190,6 +155,47 @@ The estimates agree in size. The Faculty of Health screen gap (\XOneGap) lies wi
 \newpage
 \appendix
 \section*{Appendix: Methods}
+
+\textbf{Working Group variables and their public-data versions.}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{4.1cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{1.6cm}}
+\toprule
+Working Group variable & Public-data version & Status \\
+\midrule
+May 1 base salary (FTE) & Calendar-year salary paid (2025; 2024 and the larger of the two as checks); my annualized base & Proxy \\
+Average R score, 2014--2020 & Not public & Omitted \\
+Outstanding Performance Awards & Not public & Omitted \\
+Lag (hire year $-$ degree year) & Degree and hire years from public sources & Collected \\
+Years since hire, and its square & 2025 $-$ hire year & Collected \\
+Highest degree & Public sources & Collected \\
+Current rank & Disclosed title (teaching stream = Lecturer category) & Direct \\
+Rank at hire & Public sources; disclosed title if first disclosed within a year of hire & Collected \\
+Academic group & Unit, mapped to the Working Group's groups & Collected \\
+Flag rule & Fitted $-$ actual $>$ \$5{,}000 and actual $<$ 90\% of fitted & Exact \\
+\bottomrule
+\end{tabularx}
+\caption{Working Group variables and their public-data versions.}
+\label{tab:vars}
+\end{table}
+
+\textbf{Main fits.}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabular}{lrr}
+\toprule
+Term & Estimate (\$) & Std.\ error (\$) \\
+\midrule
+\csname @@input\endcsname analysis_output/anomaly_table_coefficients.tex 
+\bottomrule
+\end{tabular}
+\caption{Main fits, excluding my row. The reference categories are Assistant Professor (current rank and rank at hire) and Health (group).}
+\label{tab:coef}
+\end{table}
 
 \textbf{Sources by variable.}
 
