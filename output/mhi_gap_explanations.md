@@ -6,25 +6,25 @@ Outcome: annual raise minus the SPHS median raise that year (2012–2025; stipen
 
 ## 4. Cross-appointments
 
-8 SPHS faculty list a cross- or joint appointment with another University of Waterloo unit on their public profile (Planning, Statistics and Actuarial Science, Computer Science, Systems Design Engineering, Psychology, Pharmacy, Biology). The list is a current snapshot; start dates are unknown.
+11 SPHS faculty hold a cross- or joint appointment with another University of Waterloo unit: their public profile states one, or another unit lists them as faculty (Planning, Statistics and Actuarial Science, Computer Science, Systems Design Engineering, Psychology, Pharmacy, Biology, Sociology and Legal Studies). This matches the definition in the pre-registration. An earlier version of this summary used profile wording only and found 8 people; it missed three. The list is a current snapshot; start dates are unknown.
 
 | Group | People | Annual raises | Mean residual raise | Median of person means | People below median |
 |---|---|---|---|---|---|
-| Non-MHI, SPHS only | 19 | 116 | $809 | $665 | 6 of 19 |
-| Non-MHI, cross-appointed | 5 | 46 | -$723 | -$225 | 5 of 5 |
+| Non-MHI, SPHS only | 18 | 108 | $634 | $646 | 6 of 18 |
+| Non-MHI, cross-appointed | 6 | 54 | -$146 | -$188 | 5 of 6 |
 | MHI, SPHS only | (fewer than 3 people) | – | – | – | – |
-| MHI, cross-appointed | 3 | 17 | -$1,719 | -$1,770 | 3 of 3 |
+| MHI, cross-appointed | 4 | 22 | -$1,676 | -$1,650 | 4 of 4 |
 
 Regression of the residual raise on group indicators with year fixed effects. p-values reassign the indicator among people (cross-appointment is shuffled within MHI and non-MHI faculty, and vice versa).
 
 | Model | Coefficient | Estimate | p |
 |---|---|---|---|
 | MHI only | MHI | -$1,655 | 0.090 |
-| Cross-appointment only | Cross-appointed | -$1,812 | 0.025 |
-| Both | MHI | -$996 | 0.227 |
-| Both | Cross-appointed | -$1,604 | 0.062 |
+| Cross-appointment only | Cross-appointed | -$1,342 | 0.091 |
+| Both | MHI | -$1,057 | 0.334 |
+| Both | Cross-appointed | -$1,060 | 0.233 |
 
-8 of 8 cross-appointed faculty have a below-median average raise, against 15 of 29 faculty overall. If cross-appointment were unrelated to raises, a result this lopsided would occur with probability 0.0015.
+9 of 10 cross-appointed faculty have a below-median average raise, against 15 of 29 faculty overall. If cross-appointment were unrelated to raises, a result this lopsided would occur with probability 0.0036.
 
 ## 2. Funding agency
 
@@ -32,20 +32,20 @@ NSERC and SSHRC awards where the faculty member is the lead applicant at Waterlo
 
 | Group | People | Ever held NSERC (lead) | Ever held SSHRC (lead) |
 |---|---|---|---|
-| Non-MHI, SPHS only | 19 | 0 | 4 |
-| Non-MHI, cross-appointed | 5 | 4 | 1 |
+| Non-MHI, SPHS only | 18 | 0 | 4 |
+| Non-MHI, cross-appointed | 6 | 4 | 1 |
 | MHI, SPHS only | (fewer than 3 people) | – | – |
-| MHI, cross-appointed | 3 | 2 | 0 |
+| MHI, cross-appointed | 4 | 3 | 0 |
 
 Does an NSERC orientation go with smaller raises, and does it account for the MHI gap?
 
-NSERC lead applicants versus everyone else: -$1,633 a year (p = 0.059, NSERC status reassigned among people).
+NSERC lead applicants versus everyone else: -$1,633 a year (p = 0.058, NSERC status reassigned among people).
 
 | Model | MHI coefficient | p (MHI reassigned among people) |
 |---|---|---|
-| MHI alone | -$1,655 | 0.095 |
+| MHI alone | -$1,655 | 0.094 |
 | + NSERC holder | -$1,207 | 0.219 |
-| + NSERC holder + cross-appointed | -$992 | 0.311 |
+| + NSERC holder + cross-appointed | -$1,204 | 0.249 |
 
 Within person: each extra $100,000 of NSERC/SSHRC funding in the two prior fiscal years goes with a -$171 change in the raise (p = 0.873).
 
@@ -55,17 +55,17 @@ Cross-appointment and NSERC funding pick out nearly the same people, and most MH
 
 | Group | People | Mean of person averages | People below median |
 |---|---|---|---|
-| Non-MHI, health sciences only | 19 | $397 | 6 of 19 |
-| Non-MHI, outside ties | 5 | -$665 | 5 of 5 |
+| Non-MHI, health sciences only | 18 | $243 | 6 of 18 |
+| Non-MHI, outside ties | 6 | -$25 | 5 of 6 |
 | MHI, health sciences only | (fewer than 3 people) | – | – |
 | MHI, outside ties | 4 | -$1,719 | 4 of 4 |
 
 | Model | Coefficient | Estimate | p |
 |---|---|---|---|
 | MHI only | MHI | -$1,655 | 0.098 |
-| Outside ties only | Outside ties | -$1,929 | 0.010 |
-| Both | MHI | -$585 | 0.485 |
-| Both | Outside ties | -$1,754 | 0.050 |
+| Outside ties only | Outside ties | -$1,342 | 0.084 |
+| Both | MHI | -$1,057 | 0.343 |
+| Both | Outside ties | -$1,060 | 0.227 |
 
 ## 3. Graduate thesis supervision
 
@@ -73,20 +73,20 @@ Completed master's and PhD theses in UWSpace listing the faculty member as a sup
 
 | Group | People | Theses per year (median of people) | Theses per year (mean) |
 |---|---|---|---|
-| Non-MHI, SPHS only | 19 | 1.00 | 0.84 |
-| Non-MHI, cross-appointed | 5 | 0.67 | 0.88 |
+| Non-MHI, SPHS only | 18 | 1.00 | 0.83 |
+| Non-MHI, cross-appointed | 6 | 0.78 | 0.88 |
 | MHI, SPHS only | (fewer than 3 people) | – | – |
-| MHI, cross-appointed | 3 | 0.83 | 1.00 |
+| MHI, cross-appointed | 4 | 0.75 | 0.89 |
 
-Across people: each extra completed thesis per year goes with a $1,703 difference in the average raise (p = 0.045, supervision rates reassigned among people).
+Across people: each extra completed thesis per year goes with a $1,703 difference in the average raise (p = 0.044, supervision rates reassigned among people).
 
 | Model | MHI coefficient | p (MHI reassigned among people) |
 |---|---|---|
 | MHI alone | -$1,655 | 0.097 |
 | + thesis supervision rate | -$1,486 | 0.121 |
-| + supervision rate + cross-appointed | -$853 | 0.325 |
+| + supervision rate + cross-appointed | -$950 | 0.302 |
 
-Within person: each thesis completed in the two prior years goes with a $239 change in the raise (p = 0.419); each PhD completion, -$464 (p = 0.363).
+Within person: each thesis completed in the two prior years goes with a $239 change in the raise (p = 0.418); each PhD completion, -$464 (p = 0.363).
 
 ## 1. Research output
 
@@ -96,7 +96,7 @@ Groups with fewer than 3 people are suppressed in the tables above.
 
 ## Interpretation
 
-- **The gap follows outside ties more than the MHI label.** Faculty whose research home is partly outside the health sciences (cross-appointed to engineering, computer science, statistics, planning, psychology, pharmacy or biology, or funded by NSERC) receive smaller raises whether or not they are in MHI. Once that is accounted for, the MHI difference is small and not distinguishable from zero. Most MHI faculty have such ties, which is why the gap shows up as an MHI gap.
+- **The gap overlaps heavily with outside ties.** Nearly all cross-appointed faculty have below-median raises, and most MHI faculty are cross-appointed or NSERC-funded. With both in the model, neither MHI affiliation nor cross-appointment alone is clearly distinguishable from zero: the gap is shared between them, and 29 people cannot separate the two. The broader outside-ties measure (cross-appointment or NSERC funding) absorbs more of the MHI difference. All of this is exploratory; the university-wide pre-registered test is the real check.
 - **Thesis supervision does not explain it.** Supervising more completed theses goes with larger raises across people, but MHI and cross-appointed faculty supervise about as many theses as others.
 - **This is consistent with interdisciplinary work being valued less**, for example if work done for, or recognised by, the other unit or agency counts for less in the School's review. It is also consistent with divided effort producing less of what the School counts. Publication data (section 1) and the APR rubric are needed to tell these apart.
 - **Caveats:** 29 people, nine with outside ties; cross-appointments are a current snapshot; CIHR funding is missing; the grouping was suggested by the data rather than specified in advance, so treat the p-values as descriptive.
