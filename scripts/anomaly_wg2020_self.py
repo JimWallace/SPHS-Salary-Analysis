@@ -43,6 +43,7 @@ GROUPS = {"Health": None, "Arts": "ARTS", "Eng": "ENG", "Env": "ENV", "Math": "M
 RANKS = {"Assistant": None, "Associate": "Associate Professor", "Professor": "Professor", "Lecturer": "Lecturer"}
 
 TEMPLATE = {
+    "scenario": "main",
     "base_salary_2020_05_01": "",
     "r_scores_2014_2020": "",
     "opa_count_2020": "",
@@ -113,10 +114,27 @@ def main() -> None:
             w.writerow(TEMPLATE)
         sys.exit(f"Wrote a template to {INPUT.relative_to(ROOT)}. Fill in base salary, R scores and OPAs, then rerun.")
     with INPUT.open(encoding="utf-8") as f:
-        row = next(csv.DictReader(f))
-    missing = [k for k in ("base_salary_2020_05_01", "r_scores_2014_2020", "opa_count_2020") if not row[k].strip()]
-    if missing:
-        sys.exit(f"Fill in {', '.join(missing)} in {INPUT.relative_to(ROOT)}.")
+        rows = list(csv.DictReader(f))
+    results, md = [], ["# Test 1: the Working Group's 2020 model applied to my 1 May 2020 record (PRIVATE)", "",
+                       f"Coefficients: Working Group report, Table 4 (`data/wg2021_table4_coefficients.csv`); "
+                       f"worked example reproduced ({ex:,.2f}).", ""]
+    for row in rows:
+        missing = [k for k in ("base_salary_2020_05_01", "r_scores_2014_2020", "opa_count_2020") if not row[k].strip()]
+        if missing:
+            sys.exit(f"Fill in {', '.join(missing)} in {INPUT.relative_to(ROOT)}.")
+        result, lines = run_scenario(c, row)
+        results.append(result)
+        md += lines
+    with OUT_CSV.open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=list(results[0]))
+        w.writeheader()
+        w.writerows(results)
+    OUT_MD.write_text("\n".join(md) + "\n", encoding="utf-8")
+    print("\n".join(md[4:]))
+    print(f"Wrote {OUT_CSV.relative_to(ROOT)} and {OUT_MD.relative_to(ROOT)} (private).")
+
+
+def run_scenario(c: dict[str, float], row: dict[str, str]) -> tuple[dict, list[str]]:
 
     scores = [float(x) for x in row["r_scores_2014_2020"].replace(",", ";").split(";") if x.strip()]
     r_avg = sum(scores) / len(scores)
@@ -134,20 +152,14 @@ def main() -> None:
     r_flag = (max(actual + FLAG_ABS, actual / FLAG_REL) - without_r) / b_r  # flagged if average R above this
 
     result = {
+        "scenario": row.get("scenario", ""),
         "base_salary_2020_05_01": f"{actual:.2f}", "r_scores_used": len(scores), "r_average": f"{r_avg:.4f}",
         "opa_count": kw["opa"], "fitted_2020": f"{fit:.2f}", "fitted_minus_actual": f"{gap:.2f}",
         "actual_over_fitted": f"{actual / fit:.4f}", "crit_abs": gap > FLAG_ABS, "crit_rel": actual < FLAG_REL * fit,
         "flagged": flagged, "r_at_which_fitted_equals_actual": f"{r_matching:.3f}",
         "r_above_which_flagged": f"{r_flag:.3f}",
     }
-    with OUT_CSV.open("w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=list(result))
-        w.writeheader()
-        w.writerow(result)
-
-    md = ["# Test 1: the Working Group's 2020 model applied to my 1 May 2020 record (PRIVATE)", "",
-          f"Coefficients: Working Group report, Table 4 (`data/wg2021_table4_coefficients.csv`); worked example "
-          f"reproduced ({ex:,.2f}).", "", "| Term | Value | Coefficient | Contribution |", "|---|---|---|---|"]
+    md = [f"## Scenario: {row.get('scenario', '')}", "", "| Term | Value | Coefficient | Contribution |", "|---|---|---|---|"]
     md += [f"| {t} | {v:g} | {b:,.2f} | {v * b:,.2f} |" for t, v, b in ts]
     md += [f"| **Fitted salary** | | | **{fit:,.2f}** |", "",
            f"- Actual base salary, 1 May 2020: {actual:,.2f}",
@@ -157,9 +169,7 @@ def main() -> None:
            f"- Average R used: {r_avg:.3f} ({len(scores)} scores)",
            f"- Average R at which the model would predict exactly my salary: {r_matching:.3f}",
            f"- Average R above which my salary would be flagged: {r_flag:.3f}", ""]
-    OUT_MD.write_text("\n".join(md) + "\n", encoding="utf-8")
-    print("\n".join(md[6:]))
-    print(f"Wrote {OUT_CSV.relative_to(ROOT)} and {OUT_MD.relative_to(ROOT)} (private).")
+    return result, md
 
 
 if __name__ == "__main__":
